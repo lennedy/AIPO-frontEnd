@@ -1,0 +1,33 @@
+node_modules/
+
+CHANGELOG.md
+
+genezio.yaml
+
+gerenciamento de cadastro.code-workspace
+
+gerenciamento e cadastro.code-workspace
+
+public/
+
+package-lock.json
+
+.prettierrc.json
+
+ISSUE_TEMPLATE.md
+
+jsconfig.json
+
+.eslintrc.json
+
+.npmrc
+
+LICENSE.md
+
+README.md
+
+src/assets/images/logo-robotica-small.svg
+
+src/assets/images/logo-robotica-small2.png
+
+build/
