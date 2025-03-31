@@ -385,8 +385,9 @@ function Tables() {
                 <DataTable
                   table={{ columns, rows }}
                   isSorted={false}
-                  entriesPerPage={false}
+                  entriesPerPage={true}
                   showTotalEntries={false}
+                  canSearch
                   noEndBorder
                 />
               </MDBox>

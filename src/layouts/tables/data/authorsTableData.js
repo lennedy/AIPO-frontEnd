@@ -601,7 +601,16 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "Usuário", accessor: "author", width: "45%", align: "left" },
+      {
+        Header: "Usuário",
+        accessor: "author",
+        width: "45%",
+        align: "left",
+        customFilterAndSearch: (term, rowData) => {
+          console.log("Teste");
+          return term == rowData.name;
+        },
+      },
       { Header: "função", accessor: "function", align: "left" },
       { Header: "status da chave", accessor: "status", align: "center" },
       { Header: "Salas autorizadas", accessor: "employed", align: "center" },
