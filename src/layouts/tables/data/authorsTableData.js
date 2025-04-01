@@ -531,6 +531,7 @@ export default function data() {
     temp2[key] = {
       author: <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />,
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
+      search: Usuarios[key].nome + Usuarios[key].matricula,
       status: (
         <MDBox ml={-1}>
           <MDButton
@@ -615,6 +616,7 @@ export default function data() {
       { Header: "status da chave", accessor: "status", align: "center" },
       { Header: "Salas autorizadas", accessor: "employed", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
+      { Header: "search", accessor: "search", align: "center" },
     ],
 
     rows: temp2,

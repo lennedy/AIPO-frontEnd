@@ -195,7 +195,7 @@ function DataTable({
                   align={column.align ? column.align : "left"}
                   sorted={setSortedValue(column)}
                 >
-                  {column.render("Header")}
+                  {column.Header != "search" ? column.render("Header") : null}
                 </DataTableHeadCell>
               ))}
             </TableRow>
@@ -213,7 +213,7 @@ function DataTable({
                     align={cell.column.align ? cell.column.align : "left"}
                     {...cell.getCellProps()}
                   >
-                    {cell.render("Cell")}
+                    {cell.column.Header != "search" ? cell.render("Cell") : null}
                   </DataTableBodyCell>
                 ))}
               </TableRow>
