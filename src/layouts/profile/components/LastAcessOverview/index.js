@@ -39,7 +39,7 @@ function LasAcessOverview() {
   const today = new Date(timeElapsed);
 
   const ano_inicial = today.getFullYear();
-  const mes_inicial = today.getMonth();
+  const mes_inicial = today.getMonth() - 1;
 
   const d_inicial = new Date(ano_inicial, mes_inicial);
 
