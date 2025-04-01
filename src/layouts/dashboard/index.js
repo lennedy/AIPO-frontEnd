@@ -165,7 +165,7 @@ function Dashboard() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox>
+        {/* <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
               <Projects />
@@ -174,7 +174,7 @@ function Dashboard() {
               <OrdersOverview />
             </Grid>
           </Grid>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
       <Footer />
     </DashboardLayout>
