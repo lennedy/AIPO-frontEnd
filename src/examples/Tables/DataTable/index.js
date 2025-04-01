@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
 
 // react-table components
 import { useTable, usePagination, useGlobalFilter, useAsyncDebounce, useSortBy } from "react-table";
+// import { useReactTable, getFilteredRowModel } from "@tanstack/react-table";
 
 // @mui material components
 import Table from "@mui/material/Table";
@@ -61,6 +62,22 @@ function DataTable({
     useSortBy,
     usePagination
   );
+
+  // const table2 = useReactTable({
+  //   data,
+  //   columns,
+  //   getCoreRowModel: getCoreRowModel(),
+  //   getFilteredRowModel: getFilteredRowModel(), // needed for client-side global filtering
+  //   globalFilterFn: "text", // built-in filter function
+  // });
+
+  // Example of a client-side filter function
+  const clientSideFilter = (rows, id, filterValue) => {
+    return rows.filter((row) => {
+      const rowValue = row.values[id];
+      return rowValue.toLowerCase().includes(filterValue.toLowerCase());
+    });
+  };
 
   const {
     getTableProps,
@@ -176,6 +193,8 @@ function DataTable({
                 fullWidth
                 onChange={({ currentTarget }) => {
                   setSearch(search);
+                  console.log("Valor de search");
+                  console.log(currentTarget.value);
                   onSearchChange(currentTarget.value);
                 }}
               />
@@ -204,6 +223,7 @@ function DataTable({
         <TableBody {...getTableBodyProps()}>
           {page.map((row, key) => {
             prepareRow(row);
+            // console.log(key);
             return (
               <TableRow key={key} {...row.getRowProps()}>
                 {row.cells.map((cell, idx) => (

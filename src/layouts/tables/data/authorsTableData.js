@@ -529,7 +529,7 @@ export default function data() {
       usuarioSalas.push([logoRobotica2, UsuariosSalas[Usuarios[key].matricula][i]]);
     }
     temp2[key] = {
-      author: <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />,
+      author: Usuarios[key].nome, //<Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />,
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
       status: (
         <MDBox ml={-1}>
@@ -598,7 +598,8 @@ export default function data() {
       ),
     };
   }
-
+  console.log("TEmp2");
+  // console.log(temp2[0].function.props);
   return {
     columns: [
       {
