@@ -1,3 +1,6 @@
+import Icon from "@mui/material/Icon";
+import Tooltip from "@mui/material/Tooltip";
+
 import { useLocation } from "react-router-dom";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -5,10 +8,10 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Grid from "@mui/material/Grid";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
-import Header from "layouts/profile/components/Header";
 
 import roomListData from "layouts/profile/data/roomListData";
 import RoomList from "examples/Lists/RoomList";
+import AuthorizedUsers from "../components/AuthorizedUsers";
 import LasAcessOverview from "layouts/profile/components/LastAcessOverview";
 import PaymentMethod from "layouts/billing/components/PaymentMethod";
 import RoomHead from "layouts/roomboard/components/RoomHead";
@@ -16,11 +19,19 @@ import RoomHead from "layouts/roomboard/components/RoomHead";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 
+import DataTable from "examples/Tables/DataTable";
+import authorsTableData from "layouts/tables/data/authorsTableData";
+
+import { useMaterialUIController } from "context";
+
 function RoomData() {
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
   const location = useLocation();
   // const { pathname, hash, key } = useLocation();
   const dataChart = reportsBarChartData();
   const authorizedUsers = [];
+  const { columns: pColumns, rows: pRows } = authorsTableData();
 
   return (
     <DashboardLayout>
@@ -34,7 +45,7 @@ function RoomData() {
                   <RoomHead codigo={location.state.codigo} nome={location.state.nome} />
                 </Grid>
                 <Grid item xs={12} md={6} xl={6}>
-                  <RoomList title="Usuários autorizados" profiles={authorizedUsers} shadow={true} />
+                  {<AuthorizedUsers title={"Usuários Autorizados"} profiles={authorizedUsers} />}
                 </Grid>
                 <Grid item xs={12} md={6} xl={6}>
                   <LasAcessOverview
