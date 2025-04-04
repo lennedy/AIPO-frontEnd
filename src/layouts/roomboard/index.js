@@ -31,6 +31,7 @@ import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatist
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 import RoomCard from "layouts/roomboard/components/InfoCards/RoomCard";
 import PaymentMethod from "layouts/billing/components/PaymentMethod";
+// import RoomHead from "layouts/roomboard/components/RoomHead";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
@@ -41,6 +42,7 @@ import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import getApiAddress from "serverAddress";
+import RoomHead from "./components/RoomHead";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -132,7 +134,7 @@ function Dashboard() {
             <Grid item xs={12} lg={8}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <PaymentMethod />
+                  <RoomHead />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
                   <RoomCard icon="key" codigo="A208" nome="Laboratório de robótica" />

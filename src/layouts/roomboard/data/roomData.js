@@ -11,13 +11,16 @@ import roomListData from "layouts/profile/data/roomListData";
 import RoomList from "examples/Lists/RoomList";
 import LasAcessOverview from "layouts/profile/components/LastAcessOverview";
 import PaymentMethod from "layouts/billing/components/PaymentMethod";
+import RoomHead from "layouts/roomboard/components/RoomHead";
 
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 
-function ComponentB() {
+function RoomData() {
   const location = useLocation();
+  // const { pathname, hash, key } = useLocation();
   const dataChart = reportsBarChartData();
+  const authorizedUsers = [];
 
   return (
     <DashboardLayout>
@@ -28,14 +31,10 @@ function ComponentB() {
             <Grid item xs={12} lg={8}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <PaymentMethod />
+                  <RoomHead codigo={location.state.codigo} nome={location.state.nome} />
                 </Grid>
                 <Grid item xs={12} md={6} xl={6}>
-                  <LasAcessOverview
-                    title="Últimos acessos"
-                    profiles={roomListData}
-                    shadow={false}
-                  />
+                  <RoomList title="Usuários autorizados" profiles={authorizedUsers} shadow={true} />
                 </Grid>
                 <Grid item xs={12} md={6} xl={6}>
                   <LasAcessOverview
@@ -53,4 +52,5 @@ function ComponentB() {
     </DashboardLayout>
   );
 }
-export default ComponentB;
+
+export default RoomData;
