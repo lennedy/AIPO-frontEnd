@@ -37,6 +37,8 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import Roomboard from "layouts/roomboard";
+import RoomData from "layouts/roomboard/data/roomData.js";
 import Tables from "layouts/tables";
 import Billing from "layouts/billing";
 import RTL from "layouts/rtl";
@@ -113,12 +115,30 @@ const routes = [
     nivelGerencia: "gerente",
   },
   {
-    type: "collapse",
+    type: "none",
     name: "Sign Up",
     key: "sign-up",
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+    nivelGerencia: "gerente",
+  },
+  {
+    type: "collapse",
+    name: "Roomboard",
+    key: "roomboard",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/roomboard",
+    component: <Roomboard />,
+    nivelGerencia: "gerente",
+  },
+  {
+    type: "none",
+    name: "RoomData",
+    key: "roomdata",
+    icon: <Icon fontSize="small">MeetingRoom</Icon>,
+    route: "/roomdata",
+    component: <RoomData />,
     nivelGerencia: "gerente",
   },
 ];
