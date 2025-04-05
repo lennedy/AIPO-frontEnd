@@ -47,38 +47,27 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   const { darkMode } = controller;
 
   const [editEnable, setEditEnable] = useState(false);
+  const [usersEdit, setUsersEdit] = useState({});
 
-  const { columns: pColumns, rows: pRows } = AuthorizedTableData(editEnable);
+  const teste2 = AuthorizedTableData(editEnable, usersEdit);
+
+  const { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = teste2;
+
+  console.log("usuariosAutorizados");
+
+  if (teste2.usersToEdit != usersEdit) {
+    console.log(teste2.usersToEdit);
+    setUsersEdit(teste2.usersToEdit);
+  }
 
   const handleEditClick = (event) => {
-    setEditEnable(true);
+    setEditEnable(!editEnable);
   };
 
   const handleSendClick = (event) => {
     setEditEnable(false);
     console.log("enviei os dados");
   };
-
-  const renderProfiles = profiles.map(({ image, nomeUsuario, matricula, numAcessos }) => (
-    <MDBox key={nomeSala} component="li" display="flex" alignItems="center" py={1} mb={1}>
-      <MDBox mr={2}>
-        <MDAvatar src={image} alt="something here" shadow="md" />
-      </MDBox>
-      <MDBox display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center">
-        <MDTypography variant="button" fontWeight="medium">
-          {nomeUsuario}
-        </MDTypography>
-        <MDTypography variant="caption" color="text">
-          {matricula}
-        </MDTypography>
-      </MDBox>
-      <MDBox ml="auto">
-        <MDTypography variant="button" fontWeight="medium">
-          {numAcessos}
-        </MDTypography>
-      </MDBox>
-    </MDBox>
-  ));
 
   return (
     <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>

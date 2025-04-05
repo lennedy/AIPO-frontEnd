@@ -63,7 +63,7 @@ import MySelect from "layouts/tables/myComponents";
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function data(editState) {
+export default function data(editState, usuariosParaEditar) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -101,6 +101,8 @@ export default function data(editState) {
 
   const [currentTime, setCurrentTime] = useState(0);
   const [Usuarios, setUsuarios] = useState(0);
+  const [editHabilitadoArray, setEditHabilitadoArray] = useState(usuariosParaEditar);
+  const [edit, setEdit] = useState(false);
   const [Salas, setSalas] = useState(0);
   const [UsuariosSalas, setUsuariosSalas] = useState(0);
 
@@ -147,20 +149,45 @@ export default function data(editState) {
   const theme = useTheme();
 
   var temp2 = [];
+  var usariosParaEditar = editHabilitadoArray;
 
   for (let key in Usuarios) {
     let usuarioSalas = [];
+    // setEditHabilitadoArray([editHabilitadoArray, false]);
     for (let i in UsuariosSalas[Usuarios[key].matricula]) {
       usuarioSalas.push([logoRobotica2, UsuariosSalas[Usuarios[key].matricula][i]]);
     }
     temp2[key] = {
       author: <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />,
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
+      Editar: (
+        <MDBox mt={0.5}>
+          <Checkbox
+            enabled
+            checked={
+              editHabilitadoArray[Usuarios[key].matricula] == null
+                ? false
+                : editHabilitadoArray[Usuarios[key].matricula]
+            }
+            onChange={() => {
+              console.log("Onchage");
+              if (editHabilitadoArray[Usuarios[key].matricula] == null) {
+                usariosParaEditar[Usuarios[key].matricula] = true;
+                setEditHabilitadoArray(usariosParaEditar);
+              } else {
+                usariosParaEditar[Usuarios[key].matricula] =
+                  !usariosParaEditar[Usuarios[key].matricula];
+                setEditHabilitadoArray(usariosParaEditar);
+              }
+              setEdit(!edit);
+            }}
+          />
+        </MDBox>
+      ),
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
   }
 
-  console.log(editState);
   return {
     columns: [
       {
@@ -170,9 +197,11 @@ export default function data(editState) {
         align: "left",
       },
       { Header: "função", accessor: "function", align: "left", hidden: editState },
+      { Header: "Editar", accessor: "Editar", align: "left", hidden: !editState },
       { Header: "search", accessor: "search", align: "center", hidden: true },
     ],
 
     rows: temp2,
+    usersToEdit: editHabilitadoArray,
   };
 }
