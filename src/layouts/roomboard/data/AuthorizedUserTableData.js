@@ -149,6 +149,7 @@ export default function data(editState, usuariosParaEditar) {
   const theme = useTheme();
 
   var temp2 = [];
+  var usuarios_que_serao_editados = [];
   var usariosParaEditar = editHabilitadoArray;
 
   for (let key in Usuarios) {
@@ -186,8 +187,16 @@ export default function data(editState, usuariosParaEditar) {
       ),
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
+    if (editHabilitadoArray[Usuarios[key].matricula] != null) {
+      const temp = {
+        author: (
+          <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />
+        ),
+      };
+      usuarios_que_serao_editados.push(temp);
+    }
   }
-
+  // console.log(usuarios_que_serao_editados);
   return {
     columns: [
       {
@@ -202,6 +211,16 @@ export default function data(editState, usuariosParaEditar) {
     ],
 
     rows: temp2,
-    usersToEdit: editHabilitadoArray,
+    usersToEdit: {
+      columns: [
+        {
+          Header: "Usuário",
+          accessor: "author",
+          width: "45%",
+          align: "left",
+        },
+      ],
+      rows: usuarios_que_serao_editados,
+    },
   };
 }

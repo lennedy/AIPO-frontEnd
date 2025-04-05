@@ -47,26 +47,30 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   const { darkMode } = controller;
 
   const [editEnable, setEditEnable] = useState(false);
+  const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
 
-  const teste2 = AuthorizedTableData(editEnable, usersEdit);
+  const autorizados = AuthorizedTableData(editEnable, usersEdit);
 
-  const { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = teste2;
+  var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
+
+  const { eColumns: edColumns, eRows: edRows } = { usersToEdit: pUsersToEdit };
 
   console.log("usuariosAutorizados");
 
-  if (teste2.usersToEdit != usersEdit) {
-    console.log(teste2.usersToEdit);
-    setUsersEdit(teste2.usersToEdit);
-  }
+  // if (autorizados.usersToEdit != usersEdit) {
+  //   console.log(autorizados.usersToEdit);
+  //   setUsersEdit(autorizados.usersToEdit);
+  // }
 
   const handleEditClick = (event) => {
     setEditEnable(!editEnable);
   };
 
   const handleSendClick = (event) => {
-    setEditEnable(false);
+    setConfigToSend(true);
     console.log("enviei os dados");
+    console.log(autorizados);
   };
 
   return (
@@ -92,14 +96,25 @@ function AuthorizedUsers({ title, profiles, shadow }) {
           </MDBox>
         </MDBox>
       </MDBox>
-      <DataTable
-        table={{ columns: pColumns, rows: pRows }}
-        isSorted={false}
-        entriesPerPage={false}
-        showTotalEntries={false}
-        canSearch
-        noEndBorder
-      />
+      {configToSend == false ? (
+        <DataTable
+          table={{ columns: pColumns, rows: pRows }}
+          isSorted={false}
+          entriesPerPage={false}
+          showTotalEntries={false}
+          canSearch
+          noEndBorder
+        />
+      ) : (
+        <DataTable
+          table={{ columns: pColumns, rows: pRows }}
+          isSorted={false}
+          entriesPerPage={false}
+          showTotalEntries={false}
+          canSearch
+          noEndBorder
+        />
+      )}
     </Card>
   );
 }
