@@ -54,7 +54,7 @@ function AuthorizedUsers({ title, profiles, shadow }) {
 
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
-  const { eColumns: edColumns, eRows: edRows } = { usersToEdit: pUsersToEdit };
+  const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
 
   console.log("usuariosAutorizados");
 
@@ -64,13 +64,15 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   // }
 
   const handleEditClick = (event) => {
+    setConfigToSend(false);
     setEditEnable(!editEnable);
   };
 
   const handleSendClick = (event) => {
     setConfigToSend(true);
     console.log("enviei os dados");
-    console.log(autorizados);
+    console.log(edColumns);
+    console.log(autorizados.usersToEdit);
   };
 
   return (
@@ -88,7 +90,7 @@ function AuthorizedUsers({ title, profiles, shadow }) {
             </Tooltip>
           </MDBox>
           <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-            <Tooltip title="Enviar autorização" placement="top">
+            <Tooltip title="Enviar modificação" placement="top">
               <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
                 <SendIcon />
               </IconButton>
@@ -107,11 +109,10 @@ function AuthorizedUsers({ title, profiles, shadow }) {
         />
       ) : (
         <DataTable
-          table={{ columns: pColumns, rows: pRows }}
+          table={{ columns: edColumns, rows: edRows }}
           isSorted={false}
           entriesPerPage={false}
           showTotalEntries={false}
-          canSearch
           noEndBorder
         />
       )}

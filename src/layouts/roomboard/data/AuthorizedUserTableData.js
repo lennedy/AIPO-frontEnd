@@ -191,12 +191,14 @@ export default function data(editState, usuariosParaEditar) {
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
     if (editHabilitadoArray[Usuarios[key].matricula] != null) {
-      const temp = {
-        author: (
-          <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />
-        ),
-      };
-      usuarios_que_serao_editados.push(temp);
+      if (editHabilitadoArray[Usuarios[key].matricula] == true) {
+        const temp = {
+          author: (
+            <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />
+          ),
+        };
+        usuarios_que_serao_editados.push(temp);
+      }
     }
   }
   // console.log(usuarios_que_serao_editados);
