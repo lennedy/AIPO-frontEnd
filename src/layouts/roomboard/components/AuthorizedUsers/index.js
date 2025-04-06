@@ -64,8 +64,12 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   // }
 
   const handleEditClick = (event) => {
+    if (configToSend) {
+      setEditEnable(true);
+    } else {
+      setEditEnable(!editEnable);
+    }
     setConfigToSend(false);
-    setEditEnable(!editEnable);
   };
 
   const handleSendClick = (event) => {
