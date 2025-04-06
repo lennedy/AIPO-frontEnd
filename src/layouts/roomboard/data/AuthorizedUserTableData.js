@@ -151,36 +151,31 @@ export default function data(editState, usuariosParaEditar) {
   var usuarios_que_serao_editados = [];
   var usariosParaEditar = editHabilitadoArray;
 
-  const myCheckBox = ({ key }) => {
-    // const [edit, setEdit] = useState(false);
-
-    // const handleToggle = () => {
-    //   console.log("Onchage");
-    //   setEdit(!edit);
-    //   if (editHabilitadoArray[Usuarios[key].matricula] == null) {
-    //     usariosParaEditar[Usuarios[key].matricula] = true;
-    //     setEditHabilitadoArray(usariosParaEditar);
-    //   } else {
-    //     usariosParaEditar[Usuarios[key].matricula] = !usariosParaEditar[Usuarios[key].matricula];
-    //     setEditHabilitadoArray(usariosParaEditar);
-    //   }
-    // };
+  function ControlledCheckbox({ usuario }) {
+    const initialChecked =
+      editHabilitadoArray[usuario.matricula] == null
+        ? false
+        : editHabilitadoArray[usuario.matricula];
+    const [checked, setChecked] = useState(initialChecked);
+    const handleChange = (event) => {
+      if (editHabilitadoArray[usuario.matricula] == null) {
+        usariosParaEditar[usuario.matricula] = true;
+        setEditHabilitadoArray(usariosParaEditar);
+      } else {
+        usariosParaEditar[usuario.matricula] = !usariosParaEditar[usuario.matricula];
+        setEditHabilitadoArray(usariosParaEditar);
+      }
+      setChecked(event.target.checked);
+    };
 
     return (
-      <Checkbox enabled />
-      // <MDBox mt={0.5}>
-      //   <Checkbox
-      //     enabled
-      //     checked={
-      //       editHabilitadoArray[Usuarios[key].matricula] == null
-      //         ? false
-      //         : editHabilitadoArray[Usuarios[key].matricula]
-      //     }
-      //     onChange={handleToggle}
-      //   />
-      // </MDBox>
+      <Checkbox
+        checked={checked}
+        onChange={handleChange}
+        inputProps={{ "aria-label": "controlled" }}
+      />
     );
-  };
+  }
 
   for (let key in Usuarios) {
     let usuarioSalas = [];
@@ -191,7 +186,8 @@ export default function data(editState, usuariosParaEditar) {
     temp2[key] = {
       author: <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />,
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
-      Editar: <Checkbox enabled />,
+      // Editar: <Checkbox enabled />,
+      Editar: <ControlledCheckbox usuario={Usuarios[key]} />,
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
     if (editHabilitadoArray[Usuarios[key].matricula] != null) {
