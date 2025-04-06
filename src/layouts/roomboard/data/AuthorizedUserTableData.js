@@ -102,7 +102,6 @@ export default function data(editState, usuariosParaEditar) {
   const [currentTime, setCurrentTime] = useState(0);
   const [Usuarios, setUsuarios] = useState(0);
   const [editHabilitadoArray, setEditHabilitadoArray] = useState(usuariosParaEditar);
-  const [edit, setEdit] = useState(false);
   const [Salas, setSalas] = useState(0);
   const [UsuariosSalas, setUsuariosSalas] = useState(0);
 
@@ -152,6 +151,37 @@ export default function data(editState, usuariosParaEditar) {
   var usuarios_que_serao_editados = [];
   var usariosParaEditar = editHabilitadoArray;
 
+  const myCheckBox = ({ key }) => {
+    // const [edit, setEdit] = useState(false);
+
+    // const handleToggle = () => {
+    //   console.log("Onchage");
+    //   setEdit(!edit);
+    //   if (editHabilitadoArray[Usuarios[key].matricula] == null) {
+    //     usariosParaEditar[Usuarios[key].matricula] = true;
+    //     setEditHabilitadoArray(usariosParaEditar);
+    //   } else {
+    //     usariosParaEditar[Usuarios[key].matricula] = !usariosParaEditar[Usuarios[key].matricula];
+    //     setEditHabilitadoArray(usariosParaEditar);
+    //   }
+    // };
+
+    return (
+      <Checkbox enabled />
+      // <MDBox mt={0.5}>
+      //   <Checkbox
+      //     enabled
+      //     checked={
+      //       editHabilitadoArray[Usuarios[key].matricula] == null
+      //         ? false
+      //         : editHabilitadoArray[Usuarios[key].matricula]
+      //     }
+      //     onChange={handleToggle}
+      //   />
+      // </MDBox>
+    );
+  };
+
   for (let key in Usuarios) {
     let usuarioSalas = [];
     // setEditHabilitadoArray([editHabilitadoArray, false]);
@@ -161,30 +191,7 @@ export default function data(editState, usuariosParaEditar) {
     temp2[key] = {
       author: <Author image={UserImg} name={Usuarios[key].nome} email={Usuarios[key].matricula} />,
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
-      Editar: (
-        <MDBox mt={0.5}>
-          <Checkbox
-            enabled
-            checked={
-              editHabilitadoArray[Usuarios[key].matricula] == null
-                ? false
-                : editHabilitadoArray[Usuarios[key].matricula]
-            }
-            onChange={() => {
-              console.log("Onchage");
-              if (editHabilitadoArray[Usuarios[key].matricula] == null) {
-                usariosParaEditar[Usuarios[key].matricula] = true;
-                setEditHabilitadoArray(usariosParaEditar);
-              } else {
-                usariosParaEditar[Usuarios[key].matricula] =
-                  !usariosParaEditar[Usuarios[key].matricula];
-                setEditHabilitadoArray(usariosParaEditar);
-              }
-              setEdit(!edit);
-            }}
-          />
-        </MDBox>
-      ),
+      Editar: <Checkbox enabled />,
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
     if (editHabilitadoArray[Usuarios[key].matricula] != null) {
