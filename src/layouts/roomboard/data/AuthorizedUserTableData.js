@@ -63,7 +63,7 @@ import MySelect from "layouts/tables/myComponents";
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function data(editState, usuariosParaEditar) {
+export default function data(codigoSala, editState, usuariosParaEditar) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -116,18 +116,18 @@ export default function data(editState, usuariosParaEditar) {
         setCurrentTime(data.time);
       });
     if (isToUpdateUsers) {
-      fetch(api.database + "/usuarios")
+      fetch(api.database + "/getUsuariosPorSala/" + codigoSala)
         .then((res) => res.json())
         .then((data) => {
           setUsuarios(data);
         });
     }
 
-    fetch(api.database + "/salas")
-      .then((res) => res.json())
-      .then((data) => {
-        setSalas(data);
-      });
+    // fetch(api.database + "/salas")
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setSalas(data);
+    //   });
 
     fetch(api.database + "/UsuariosSalas")
       .then((res) => res.json())

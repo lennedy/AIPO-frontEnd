@@ -50,7 +50,7 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
 
-  const autorizados = AuthorizedTableData(editEnable, usersEdit);
+  const autorizados = AuthorizedTableData(profiles.codigo, editEnable, usersEdit);
 
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
