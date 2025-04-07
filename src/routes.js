@@ -76,7 +76,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
     component: <Tables />,
-    nivelGerencia: "gerente",
+    nivelGerencia: "administrador",
   },
   {
     type: "collapse",
@@ -103,7 +103,7 @@ const routes = [
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Notifications />,
-    nivelGerencia: "gerente",
+    nivelGerencia: "administrador",
   },
   {
     type: "none",
