@@ -7,6 +7,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import Switch from "@mui/material/Switch";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -27,7 +28,7 @@ import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import RoomInfo from "layouts/roomboard/components/RoomInfo";
 import robotica from "assets/images/lab-robotica.jpeg";
-import { DateRangePicker, DateRange } from "mui-daterange-picker";
+// import { DateRangePicker, DateRange } from "mui-daterange-picker";
 
 import { useMaterialUIController } from "context";
 import { useState } from "react";
@@ -46,6 +47,10 @@ function RoomData() {
 
   const handleClick = (event) => {
     console.log(nome);
+    setAddAuthorization(!addAuthorization);
+  };
+
+  const handleSwitch = (event) => {
     setAddAuthorization(!addAuthorization);
   };
 
@@ -78,6 +83,16 @@ function RoomData() {
                       </Grid>
                       <Grid>
                         <MDBox>
+                          <Grid container spacing={0}>
+                            <MDTypography>
+                              {addAuthorization == true
+                                ? "Conceder Autorização"
+                                : "Remover Autorização"}
+                            </MDTypography>
+                            <Switch onChange={handleSwitch} />
+                          </Grid>
+                        </MDBox>
+                        <MDBox py={1}>
                           <MDButton variant="gradient" color="dark" onClick={handleClick}>
                             <Icon sx={{ fontWeight: "bold" }}>add</Icon>
                             &nbsp;{codigo == null ? "Adicionar Sala" : "Autorizar acesso"}
@@ -95,7 +110,7 @@ function RoomData() {
                     {<AuthorizedUsers title={"Usuários Autorizados"} profiles={location.state} />}
                   </Grid>
                 ) : (
-                  <Grid item xs={12} md={6} xl={6}>
+                  <Grid item xs={12} md={12} xl={12}>
                     {
                       <ListToAuthorize
                         title={"Usuários para Autorizar"}
