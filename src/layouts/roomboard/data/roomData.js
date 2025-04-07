@@ -94,8 +94,11 @@ function RoomData() {
                         </MDBox>
                         <MDBox py={1}>
                           <MDButton variant="gradient" color="dark" onClick={handleClick}>
-                            <Icon sx={{ fontWeight: "bold" }}>add</Icon>
-                            &nbsp;{codigo == null ? "Adicionar Sala" : "Autorizar acesso"}
+                            {codigo == null
+                              ? "Adicionar Sala"
+                              : addAuthorization == true
+                              ? "Autorizar acesso"
+                              : "Remover acesso"}
                           </MDButton>
                         </MDBox>
                       </Grid>

@@ -22,6 +22,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SendIcon from "@mui/icons-material/Send";
+import CheckIcon from "@mui/icons-material/Check";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -96,7 +97,7 @@ function AuthorizedUsers({ title, profiles, shadow }) {
           <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
             <Tooltip title="Enviar modificação" placement="top">
               <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
-                <SendIcon />
+                <CheckIcon />
               </IconButton>
             </Tooltip>
           </MDBox>
