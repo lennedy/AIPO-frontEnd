@@ -55,10 +55,10 @@ function RoomHead({ nome, codigo, localizacao }) {
         </Grid>
         <Grid>
           <MDBox>
-            <MDButton variant="gradient" color="dark">
+            {/* <MDButton variant="gradient" color="dark">
               <Icon sx={{ fontWeight: "bold" }}>add</Icon>
               &nbsp;{codigo == null ? "Adicionar Sala" : "Autorizar acesso"}
-            </MDButton>
+            </MDButton> */}
           </MDBox>
         </Grid>
       </MDBox>
