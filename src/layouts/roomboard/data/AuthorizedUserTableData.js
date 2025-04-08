@@ -110,11 +110,6 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/time")
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTime(data.time);
-      });
     if (isToUpdateUsers) {
       fetch(api.database + "/getUsuariosPorSala/" + codigoSala)
         .then((res) => res.json())
@@ -122,12 +117,6 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
           setUsuarios(data);
         });
     }
-
-    // fetch(api.database + "/salas")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setSalas(data);
-    //   });
 
     fetch(api.database + "/UsuariosSalas")
       .then((res) => res.json())
