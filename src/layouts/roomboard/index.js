@@ -44,9 +44,10 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import getApiAddress from "serverAddress";
 import RoomHead from "./components/RoomHead";
 
-function Dashboard() {
+function Roomboard() {
   const [currentTime, setCurrentTime] = useState(0);
   const [numberAccess, setAccessToday] = useState(0);
+  const [rooms, setRooms] = useState(0);
 
   useEffect(() => {
     // fetch("/time")
@@ -55,80 +56,26 @@ function Dashboard() {
     //     setCurrentTime(data.time);
     //   });
     const api = getApiAddress();
-    fetch(api.database + "/acessosHoje")
+    fetch(api.database + "/salas")
       .then((res) => res.json())
       .then((data) => {
-        setAccessToday(data.numAcessos);
+        // setAccessToday(data.numAcessos);
+        setRooms(data);
       });
-  });
+  }, []);
 
   const { sales, tasks } = reportsLineChartData();
   const dataChart = reportsBarChartData();
+  // console.log(rooms[0].codigo);
+
+  var salas = [];
+  for (let key in rooms) {
+    salas.push(rooms[key]);
+  }
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
-        {/* <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Acessos em 7 dias"
-                count={120}
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Nº de acessos hoje"
-                count={numberAccess}
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Acesso em 30 dias"
-                count="100"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
-                icon="person"
-                title="Usuários"
-                count="50"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "",
-                }}
-              />
-            </MDBox>
-          </Grid>
-        </Grid> */}
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} lg={8}>
@@ -136,24 +83,13 @@ function Dashboard() {
                 <Grid item xs={12}>
                   <RoomHead />
                 </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <RoomCard icon="key" codigo="A208" nome="Laboratório de robótica" />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard icon="key" title="A208" description="Laboratório de robótica" />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard icon="key" title="A208" description="Laboratório de robótica" />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard icon="key" title="A208" description="Laboratório de robótica" />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard icon="key" title="A208" description="Laboratório de robótica" />
-                </Grid>
-                <Grid item xs={12} md={6} xl={3}>
-                  <DefaultInfoCard icon="key" title="A208" description="Laboratório de robótica" />
-                </Grid>
+                {salas.map((salas) =>
+                  salas.ativo ? (
+                    <Grid key={salas.id} item xs={12} md={6} xl={3}>
+                      <RoomCard icon="key" codigo={salas.codigo} nome={salas.nome} />
+                    </Grid>
+                  ) : null
+                )}
               </Grid>
             </Grid>
           </Grid>
@@ -213,4 +149,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Roomboard;
