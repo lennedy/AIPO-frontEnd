@@ -44,15 +44,29 @@ function RoomData() {
   const codigo = location.state.codigo;
   const nome = location.state.nome;
   const [addAuthorization, setAddAuthorization] = useState(false);
+  const [isToUpdate, setIsToUpdate] = useState(false);
+  // const [listToAuthorize, setListToAuthorize] = useState({});
+  var listToAuthorize = {};
 
   const handleClick = (event) => {
     console.log(nome);
-    setAddAuthorization(!addAuthorization);
+    // setAddAuthorization(!addAuthorization);
+    codigo == null
+      ? "Adicionar Sala"
+      : addAuthorization == true
+      ? "Autorizar acesso"
+      : "Remover acesso";
   };
 
   const handleSwitch = (event) => {
     setAddAuthorization(!addAuthorization);
   };
+
+  function handleListToAuthorizedData(data) {
+    console.log("Informação de um child");
+    console.log(data);
+    listToAuthorize = data;
+  }
 
   return (
     <DashboardLayout>
@@ -118,6 +132,7 @@ function RoomData() {
                       <ListToAuthorize
                         title={"Usuários para Autorizar"}
                         profiles={location.state}
+                        sendDataToParent={handleListToAuthorizedData}
                       />
                     }
                   </Grid>

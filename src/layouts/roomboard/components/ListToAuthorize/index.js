@@ -49,7 +49,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 
-function AuthorizedUsers({ title, profiles, shadow }) {
+function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -57,6 +57,7 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
   const [value2, setValue2] = useState([0, 24]);
+  const [usersToAuthorize, setUsersToAuthorize] = useState([]);
 
   const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit);
 
@@ -67,12 +68,13 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   const minDistanceSlider = 0;
   const maxDistanceSlider = 24;
 
+  var userToAuthorize = [];
+  for (let key in edRows) {
+    userToAuthorize.push({ matricula: edRows[key].author.props.email });
+  }
+  const dataToParent = { enableToSend: configToSend, usersToSend: userToAuthorize };
   console.log("usuariosAutorizados");
-
-  // if (autorizados.usersToEdit != usersEdit) {
-  //   console.log(autorizados.usersToEdit);
-  //   setUsersEdit(autorizados.usersToEdit);
-  // }
+  sendDataToParent(dataToParent);
 
   const handleEditClick = (event) => {
     if (configToSend) {
@@ -86,9 +88,6 @@ function AuthorizedUsers({ title, profiles, shadow }) {
 
   const handleSendClick = (event) => {
     setConfigToSend(true);
-    console.log("enviei os dados");
-    console.log(edColumns);
-    console.log(autorizados.usersToEdit);
   };
 
   const handleChange2 = (event, newValue, activeThumb) => {
@@ -234,6 +233,7 @@ AuthorizedUsers.propTypes = {
   title: PropTypes.string.isRequired,
   profiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   shadow: PropTypes.bool,
+  sendDataToParent: PropTypes.func.isRequired,
 };
 
 export default AuthorizedUsers;
