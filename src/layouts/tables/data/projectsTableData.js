@@ -115,10 +115,10 @@ export default function data() {
   }, [IsToUpdateRoom]);
 
   function EditRoomForm({ identificador, defaultValue }) {
-    const [inputName, setInputName] = useState("");
-    const [inputCode, setInputCode] = useState("");
-    const [inputLocal, setInputLocal] = useState("");
-    const [inputFechadura, setInputFechadura] = useState("");
+    const [inputName, setInputName] = useState(defaultValue.nomeSala);
+    const [inputCode, setInputCode] = useState(defaultValue.codSala);
+    const [inputLocal, setInputLocal] = useState(defaultValue.localizacao);
+    const [inputFechadura, setInputFechadura] = useState(defaultValue.codFechadura);
 
     const handleName = (event) => {
       disableUpdate = false;
@@ -209,7 +209,31 @@ export default function data() {
                   console.log(inputCode);
                   console.log(inputLocal);
                   console.log(inputFechadura);
-                  alert("Funcionalidade não implementada!");
+                  console.log(identificador);
+                  const dadosSala = {
+                    nome: inputName,
+                    codigo: inputCode,
+                    local: inputLocal,
+                    fechadura: inputFechadura,
+                  };
+                  // alert("Funcionalidade não implementada!");
+                  setIsToUpdateRoom(false);
+                  const api = getApiAddress();
+                  fetch(api.database + "/sala/" + identificador, {
+                    method: "PUT",
+                    body: JSON.stringify(dadosSala),
+                    headers: { "Content-type": "application/json; charset=UTF-8" },
+                  })
+                    .then((response) => response.json())
+                    .then((json) => {
+                      if (json["status"] == "ok") {
+                        alert("modificação realizada");
+                      } else {
+                        alert("erro:" + json["status"]);
+                      }
+                    })
+                    .catch((err) => console.log(err))
+                    .finally(() => setIsToUpdateRoom(true));
                 }}
               >
                 atualizar
