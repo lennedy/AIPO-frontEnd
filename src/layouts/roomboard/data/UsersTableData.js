@@ -116,10 +116,10 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
         setCurrentTime(data.time);
       });
     if (isToUpdateUsers) {
-      fetch(api.database + "/usuarios")
+      fetch(api.database + "/getUsuariosNaoAutorizados/" + codigoSala)
         .then((res) => res.json())
         .then((data) => {
-          setUsuarios(data);
+          setUsuarios(data.dados);
         });
     }
 
@@ -204,7 +204,7 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
   // console.log(usuarios_que_serao_editados);
   return {
     columns: [
-      { Header: "Editar", accessor: "Editar", align: "left", hidden: false },
+      { Header: "", accessor: "Editar", align: "left", hidden: false },
       {
         Header: "Usuário",
         accessor: "author",
