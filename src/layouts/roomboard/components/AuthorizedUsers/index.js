@@ -43,7 +43,7 @@ import AuthorizedTableData from "../../data/AuthorizedUserTableData";
 
 import { useMaterialUIController } from "context";
 
-function AuthorizedUsers({ title, profiles, shadow }) {
+function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -58,6 +58,18 @@ function AuthorizedUsers({ title, profiles, shadow }) {
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
 
   console.log("usuariosAutorizados");
+
+  var usersToRemove = [];
+  for (let key in edRows) {
+    usersToRemove.push({ matricula: edRows[key].author.props.email });
+  }
+
+  const enableToSend = userToAuthorize.length > 0 ? configToSend : false;
+  const dataToParent = {
+    enableToSend: enableToSend,
+    usersToRemove: usersToRemove,
+  };
+  sendDataToParent(dataToParent);
 
   // if (autorizados.usersToEdit != usersEdit) {
   //   console.log(autorizados.usersToEdit);
@@ -132,6 +144,7 @@ AuthorizedUsers.propTypes = {
   title: PropTypes.string.isRequired,
   profiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   shadow: PropTypes.bool,
+  sendDataToParent: PropTypes.func.isRequired,
 };
 
 export default AuthorizedUsers;

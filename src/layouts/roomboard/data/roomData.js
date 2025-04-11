@@ -98,6 +98,10 @@ function RoomData() {
     listToAuthorize = data;
   }
 
+  function handleListToRemoveData(data){
+
+  }
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -154,7 +158,11 @@ function RoomData() {
                 </Grid>
                 {!addAuthorization ? (
                   <Grid item xs={12} md={6} xl={6}>
-                    {<AuthorizedUsers title={"Usuários Autorizados"} profiles={location.state} />}
+                    {<AuthorizedUsers
+                      title={"Usuários Autorizados"}
+                      profiles={location.state}
+                      sendDataToParent={handleListToRemoveData}
+                    />}
                   </Grid>
                 ) : (
                   <Grid item xs={12} md={12} xl={12}>
