@@ -32,6 +32,7 @@ import robotica from "assets/images/lab-robotica.jpeg";
 
 import { useMaterialUIController } from "context";
 import { useState } from "react";
+import getApiAddress from "serverAddress";
 
 function RoomData() {
   const [controller] = useMaterialUIController();
@@ -44,15 +45,58 @@ function RoomData() {
   const codigo = location.state.codigo;
   const nome = location.state.nome;
   const [addAuthorization, setAddAuthorization] = useState(false);
+  const [isToUpdate, setIsToUpdate] = useState(false);
+  // const [listToAuthorize, setListToAuthorize] = useState({});
+  var listToAuthorize = { enableToSend: false };
 
   const handleClick = (event) => {
     console.log(nome);
-    setAddAuthorization(!addAuthorization);
+    // setAddAuthorization(!addAuthorization);
+    if (codigo != null) {
+      if (addAuthorization == true) {
+        if (listToAuthorize.enableToSend) {
+          setIsToUpdate(false);
+          const dataToServer = {
+            usuarios: listToAuthorize.usersToAuthorize,
+            dataInicio: listToAuthorize.beginDate,
+            dataFim: listToAuthorize.endDate,
+            horarioInicio: listToAuthorize.beginTime,
+            horarioFim: listToAuthorize.endTime,
+          };
+          const api = getApiAddress();
+          fetch(api.database + "/autorizarUsuariosPorSala/" + codigo, {
+            method: "PUT",
+            body: JSON.stringify(dataToServer),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          })
+            .then((response) => response.json())
+            .then((json) => {
+              if (json["status"] == "ok") {
+                alert("modificação realizada");
+              } else {
+                alert("erro:" + json["status"]);
+              }
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setIsToUpdate(true));
+        } else {
+          alert("Nenhum usuário selecionado");
+        }
+      } else {
+        alert("É para deletar");
+      }
+    }
   };
 
   const handleSwitch = (event) => {
     setAddAuthorization(!addAuthorization);
   };
+
+  function handleListToAuthorizedData(data) {
+    console.log("Informação de um child");
+    console.log(data);
+    listToAuthorize = data;
+  }
 
   return (
     <DashboardLayout>
@@ -118,6 +162,7 @@ function RoomData() {
                       <ListToAuthorize
                         title={"Usuários para Autorizar"}
                         profiles={location.state}
+                        sendDataToParent={handleListToAuthorizedData}
                       />
                     }
                   </Grid>

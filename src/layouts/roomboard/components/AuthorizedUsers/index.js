@@ -75,9 +75,6 @@ function AuthorizedUsers({ title, profiles, shadow }) {
 
   const handleSendClick = (event) => {
     setConfigToSend(true);
-    console.log("enviei os dados");
-    console.log(edColumns);
-    console.log(autorizados.usersToEdit);
   };
 
   return (
