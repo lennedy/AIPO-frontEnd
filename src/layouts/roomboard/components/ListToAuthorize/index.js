@@ -58,6 +58,10 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [usersEdit, setUsersEdit] = useState({});
   const [value2, setValue2] = useState([0, 24]);
   const [usersToAuthorize, setUsersToAuthorize] = useState([]);
+  const [dataInicioValue, setDataInicioValue] = useState(dayjs());
+  const [dataFimValue, setDataFimValue] = useState(null);
+  // const [horarioInicioValue, setHorarioInicioValue] = useState(0);
+  // const [horarioFimValue, setHorarioFimValue] = useState(24);
 
   const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit);
 
@@ -72,7 +76,21 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   for (let key in edRows) {
     userToAuthorize.push({ matricula: edRows[key].author.props.email });
   }
-  const dataToParent = { enableToSend: configToSend, usersToSend: userToAuthorize };
+  const horarioInicio = dayjs().set("hour", value2[0]).set("minute", 0).set("second", 0);
+  const horarioFim = dayjs()
+    .set("hour", value2[1] - 1)
+    .set("minute", 59)
+    .set("second", 59);
+
+  const enableToSend = userToAuthorize.length > 0 ? configToSend : false;
+  const dataToParent = {
+    enableToSend: enableToSend,
+    usersToAuthorize: userToAuthorize,
+    beginDate: dayjs(dataInicioValue).format("YYYY-MM-DD HH:mm:ss"),
+    endDate: dataFimValue == null ? null : dayjs(dataFimValue).format("YYYY-MM-DD HH:mm:ss"),
+    beginTime: horarioInicio.format("HH:mm:ss"),
+    endTime: horarioFim.format("HH:mm:ss"),
+  };
   console.log("usuariosAutorizados");
   sendDataToParent(dataToParent);
 
@@ -176,6 +194,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                     minutes: null,
                     seconds: null,
                   }}
+                  onChange={(newValue) => setDataInicioValue(newValue.toString())}
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -191,6 +210,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                     minutes: null,
                     seconds: null,
                   }}
+                  onChange={(newValue) => setDataFimValue(newValue)}
                 />
               </DemoContainer>
             </LocalizationProvider>

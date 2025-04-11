@@ -32,6 +32,7 @@ import robotica from "assets/images/lab-robotica.jpeg";
 
 import { useMaterialUIController } from "context";
 import { useState } from "react";
+import getApiAddress from "serverAddress";
 
 function RoomData() {
   const [controller] = useMaterialUIController();
@@ -46,16 +47,45 @@ function RoomData() {
   const [addAuthorization, setAddAuthorization] = useState(false);
   const [isToUpdate, setIsToUpdate] = useState(false);
   // const [listToAuthorize, setListToAuthorize] = useState({});
-  var listToAuthorize = {};
+  var listToAuthorize = { enableToSend: false };
 
   const handleClick = (event) => {
     console.log(nome);
     // setAddAuthorization(!addAuthorization);
-    codigo == null
-      ? "Adicionar Sala"
-      : addAuthorization == true
-      ? "Autorizar acesso"
-      : "Remover acesso";
+    if (codigo != null) {
+      if (addAuthorization == true) {
+        if (listToAuthorize.enableToSend) {
+          setIsToUpdate(false);
+          const dataToServer = {
+            usuarios: listToAuthorize.usersToAuthorize,
+            dataInicio: listToAuthorize.beginDate,
+            dataFim: listToAuthorize.endDate,
+            horarioInicio: listToAuthorize.beginTime,
+            horarioFim: listToAuthorize.endTime,
+          };
+          const api = getApiAddress();
+          fetch(api.database + "/autorizarUsuariosPorSala/" + codigo, {
+            method: "PUT",
+            body: JSON.stringify(dataToServer),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          })
+            .then((response) => response.json())
+            .then((json) => {
+              if (json["status"] == "ok") {
+                alert("modificação realizada");
+              } else {
+                alert("erro:" + json["status"]);
+              }
+            })
+            .catch((err) => console.log(err))
+            .finally(() => setIsToUpdate(true));
+        } else {
+          alert("Nenhum usuário selecionado");
+        }
+      } else {
+        alert("É para deletar");
+      }
+    }
   };
 
   const handleSwitch = (event) => {
