@@ -165,7 +165,7 @@ function RoomData() {
                   </Card>
                 </Grid>
                 {!addAuthorization ? (
-                  <Grid item xs={12} md={6} xl={6}>
+                  <Grid item xs={12} md={8} xl={8}>
                     {
                       <AuthorizedUsers
                         title={"Usuários Autorizados"}
@@ -186,7 +186,7 @@ function RoomData() {
                   </Grid>
                 )}
                 {!addAuthorization ? (
-                  <Grid item xs={12} md={6} xl={6}>
+                  <Grid item xs={12} md={4} xl={4}>
                     <LasAcessOverview
                       title="Últimos acessos"
                       profiles={roomListData}
