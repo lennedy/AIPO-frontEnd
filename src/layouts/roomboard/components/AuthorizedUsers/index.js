@@ -64,7 +64,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     usersToRemove.push({ matricula: edRows[key].author.props.email });
   }
 
-  const enableToSend = userToAuthorize.length > 0 ? configToSend : false;
+  const enableToSend = usersToRemove.length > 0 ? configToSend : false;
   const dataToParent = {
     enableToSend: enableToSend,
     usersToRemove: usersToRemove,
