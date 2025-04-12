@@ -104,7 +104,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
             </Tooltip>
           </MDBox>
           <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-            <Tooltip title="Enviar modificação" placement="top">
+            <Tooltip title="Confirmar seleção" placement="top">
               <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
                 <CheckIcon />
               </IconButton>
