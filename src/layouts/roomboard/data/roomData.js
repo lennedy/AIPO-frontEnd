@@ -47,43 +47,51 @@ function RoomData() {
   const [addAuthorization, setAddAuthorization] = useState(false);
   const [isToUpdate, setIsToUpdate] = useState(false);
   // const [listToAuthorize, setListToAuthorize] = useState({});
-  var listToAuthorize = { enableToSend: false };
+  var usersData = { enableToSend: false };
 
   const handleClick = (event) => {
     console.log(nome);
     // setAddAuthorization(!addAuthorization);
     if (codigo != null) {
-      if (addAuthorization == true) {
-        if (listToAuthorize.enableToSend) {
+      var methodToApi = "PUT";
+      var dataToServer = {};
+      if (usersData.enableToSend) {
+        if (addAuthorization == true) {
           setIsToUpdate(false);
-          const dataToServer = {
-            usuarios: listToAuthorize.usersToAuthorize,
-            dataInicio: listToAuthorize.beginDate,
-            dataFim: listToAuthorize.endDate,
-            horarioInicio: listToAuthorize.beginTime,
-            horarioFim: listToAuthorize.endTime,
+          methodToApi = "PUT";
+          dataToServer = {
+            usuarios: usersData.usersToAuthorize,
+            dataInicio: usersData.beginDate,
+            dataFim: usersData.endDate,
+            horarioInicio: usersData.beginTime,
+            horarioFim: usersData.endTime,
           };
-          const api = getApiAddress();
-          fetch(api.database + "/autorizarUsuariosPorSala/" + codigo, {
-            method: "PUT",
-            body: JSON.stringify(dataToServer),
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-          })
-            .then((response) => response.json())
-            .then((json) => {
-              if (json["status"] == "ok") {
-                alert("modificação realizada");
-              } else {
-                alert("erro:" + json["status"]);
-              }
-            })
-            .catch((err) => console.log(err))
-            .finally(() => setIsToUpdate(true));
         } else {
-          alert("Nenhum usuário selecionado");
+          alert("É para deletar");
+          methodToApi = "delete";
+          dataToServer = {
+            usuarios: usersData.usersToRemove,
+          };
+          console.log(dataToServer);
         }
+        const api = getApiAddress();
+        fetch(api.database + "/autorizarUsuariosPorSala/" + codigo, {
+          method: methodToApi,
+          body: JSON.stringify(dataToServer),
+          headers: { "Content-type": "application/json; charset=UTF-8" },
+        })
+          .then((response) => response.json())
+          .then((json) => {
+            if (json["status"] == "ok") {
+              alert("modificação realizada");
+            } else {
+              alert("erro:" + json["status"]);
+            }
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setIsToUpdate(true));
       } else {
-        alert("É para deletar");
+        alert("Seleção não confirmada ou usuários não selecionados");
       }
     }
   };
@@ -95,11 +103,11 @@ function RoomData() {
   function handleListToAuthorizedData(data) {
     console.log("Informação de um child");
     console.log(data);
-    listToAuthorize = data;
+    usersData = data;
   }
 
-  function handleListToRemoveData(data){
-
+  function handleListToRemoveData(data) {
+    usersData = data;
   }
 
   return (
@@ -158,11 +166,13 @@ function RoomData() {
                 </Grid>
                 {!addAuthorization ? (
                   <Grid item xs={12} md={6} xl={6}>
-                    {<AuthorizedUsers
-                      title={"Usuários Autorizados"}
-                      profiles={location.state}
-                      sendDataToParent={handleListToRemoveData}
-                    />}
+                    {
+                      <AuthorizedUsers
+                        title={"Usuários Autorizados"}
+                        profiles={location.state}
+                        sendDataToParent={handleListToRemoveData}
+                      />
+                    }
                   </Grid>
                 ) : (
                   <Grid item xs={12} md={12} xl={12}>
