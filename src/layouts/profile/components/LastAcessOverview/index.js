@@ -74,7 +74,8 @@ function LasAcessOverview() {
 
           if (tamanhoVetor > NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR) {
             for (let i = 1; i <= NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR; i++) {
-              const dateTime = new Date(data[tamanhoVetor - i].timestamp);
+              var dateTime = new Date(data[tamanhoVetor - i].timestamp);
+              dateTime.setHours(dateTime.getHours() + 3); //corrigindo a hora para o horário de brasilia
               const diaHorario = dateTime.toLocaleTimeString("pt-br", options);
               const nomeSala = data[tamanhoVetor - i].nome;
               const autorizado = data[tamanhoVetor - i].autorizado;
