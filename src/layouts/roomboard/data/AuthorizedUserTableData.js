@@ -59,6 +59,7 @@ import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
 //meus componentes
 import MySelect from "layouts/tables/myComponents";
+import TimelineItem from "examples/Timeline/TimelineItem";
 
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
@@ -114,7 +115,29 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
       fetch(api.database + "/getUsuariosPorSala/" + codigoSala)
         .then((res) => res.json())
         .then((data) => {
-          setUsuarios(data);
+          console.log(data);
+          var authorizedUsers = [];
+          for (let key in data.allHours) {
+            const allHours = {
+              acessoDiaTodo: true,
+              nome: data.allHours[key].nome,
+              matricula: data.allHours[key].matricula,
+              tipoUsuario: data.allHours[key].tipoUsuario,
+              ativo: data.allHours[key].ativo,
+            };
+            authorizedUsers.push(allHours);
+          }
+          for (let key in data.limitedHours) {
+            const userData = {
+              acessoDiaTodo: false,
+              nome: data.limitedHours[key].nome,
+              matricula: data.limitedHours[key].matricula,
+              tipoUsuario: data.limitedHours[key].tipoUsuario,
+              ativo: data.limitedHours[key].ativo,
+            };
+            authorizedUsers.push(userData);
+          }
+          setUsuarios(authorizedUsers);
         });
     }
 
@@ -177,6 +200,7 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
       // Editar: <Checkbox enabled />,
       Editar: <ControlledCheckbox usuario={Usuarios[key]} />,
+      tipoAcesso: <Icon>star</Icon>,
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
     if (editHabilitadoArray[Usuarios[key].matricula] != null) {
@@ -194,6 +218,7 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
   return {
     columns: [
       { Header: "", accessor: "Editar", align: "left", hidden: !editState },
+      { Header: "", accessor: "tipoAcesso", align: "left", hidden: !editState },
       {
         Header: "Usuário",
         accessor: "author",
