@@ -201,23 +201,28 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
       // Editar: <Checkbox enabled />,
       Editar: <ControlledCheckbox usuario={Usuarios[key]} />,
       tipoAcesso: (
-        <MDBox
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          bgColor={Usuarios[key].acessoDiaTodo ? "success" : "warning"}
-          color="white"
-          width="2rem"
-          height="2rem"
-          borderRadius="50%"
-          // position="absolute"
-          top="8%"
-          left="2px"
-          zIndex={2}
-          sx={{ fontSize: ({ typography: { size } }) => size.xl }}
+        <Tooltip
+          title={Usuarios[key].acessoDiaTodo ? "Acesso o dia todo" : "Acesso limitado por horário"}
+          placement="top"
         >
-          <Icon fontSize="inherit">access_time</Icon>
-        </MDBox>
+          <MDBox
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            bgColor={Usuarios[key].acessoDiaTodo ? "success" : "warning"}
+            color="white"
+            width="2rem"
+            height="2rem"
+            borderRadius="50%"
+            // position="absolute"
+            top="8%"
+            left="2px"
+            zIndex={2}
+            sx={{ fontSize: ({ typography: { size } }) => size.xl }}
+          >
+            <Icon fontSize="inherit">access_time</Icon>
+          </MDBox>
+        </Tooltip>
       ),
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
@@ -235,8 +240,8 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
   // console.log(usuarios_que_serao_editados);
   return {
     columns: [
-      { Header: "", accessor: "tipoAcesso", align: "left", hidden: false },
-      { Header: "", accessor: "Editar", align: "left", hidden: !editState },
+      { Header: "", accessor: "tipoAcesso", width: "1%", align: "left", hidden: false },
+      { Header: "", accessor: "Editar", width: "1%", align: "left", hidden: !editState },
       {
         Header: "Usuário",
         accessor: "author",
