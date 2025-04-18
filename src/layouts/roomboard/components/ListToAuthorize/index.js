@@ -44,7 +44,9 @@ import UsersTableData from "../../data/UsersTableData";
 
 import { useMaterialUIController } from "context";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "dayjs/locale/pt-br";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
@@ -81,7 +83,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     .set("hour", value2[1] - 1)
     .set("minute", 59)
     .set("second", 59);
-
   const enableToSend = userToAuthorize.length > 0 ? configToSend : false;
   const dataToParent = {
     enableToSend: enableToSend,
@@ -183,15 +184,14 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
             </MDBox>
           </MDBox>
           <MDBox pt={2} px={10} display="flex" justifyContent="space-between" alignItems="center">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
               <DemoContainer components={["DateTimePicker"]}>
                 <DateTimePicker
                   label="Data de inicio"
-                  views={["year", "day"]}
                   defaultValue={dayjs()}
                   viewRenderers={{
-                    hours: null,
-                    minutes: null,
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
                     seconds: null,
                   }}
                   onChange={(newValue) => setDataInicioValue(newValue.toString())}
@@ -200,14 +200,13 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
             </LocalizationProvider>
           </MDBox>
           <MDBox pt={2} px={10} display="flex" justifyContent="space-between" alignItems="center">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
               <DemoContainer components={["DateTimePicker"]}>
                 <DateTimePicker
                   label="Data de fim"
-                  views={["year", "day"]}
                   viewRenderers={{
-                    hours: null,
-                    minutes: null,
+                    hours: renderTimeViewClock,
+                    minutes: renderTimeViewClock,
                     seconds: null,
                   }}
                   onChange={(newValue) => setDataFimValue(newValue)}
