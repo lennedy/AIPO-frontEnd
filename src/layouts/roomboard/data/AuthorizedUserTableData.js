@@ -200,7 +200,25 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
       function: <Job title={Usuarios[key].tipoUsuario} description={Usuarios[key].nivelGerencia} />,
       // Editar: <Checkbox enabled />,
       Editar: <ControlledCheckbox usuario={Usuarios[key]} />,
-      tipoAcesso: <Icon>star</Icon>,
+      tipoAcesso: (
+        <MDBox
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          bgColor={Usuarios[key].acessoDiaTodo ? "success" : "warning"}
+          color="white"
+          width="2rem"
+          height="2rem"
+          borderRadius="50%"
+          // position="absolute"
+          top="8%"
+          left="2px"
+          zIndex={2}
+          sx={{ fontSize: ({ typography: { size } }) => size.xl }}
+        >
+          <Icon fontSize="inherit">access_time</Icon>
+        </MDBox>
+      ),
       search: Usuarios[key].nome + Usuarios[key].matricula,
     };
     if (editHabilitadoArray[Usuarios[key].matricula] != null) {
@@ -217,8 +235,8 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
   // console.log(usuarios_que_serao_editados);
   return {
     columns: [
+      { Header: "", accessor: "tipoAcesso", align: "left", hidden: false },
       { Header: "", accessor: "Editar", align: "left", hidden: !editState },
-      { Header: "", accessor: "tipoAcesso", align: "left", hidden: !editState },
       {
         Header: "Usuário",
         accessor: "author",
