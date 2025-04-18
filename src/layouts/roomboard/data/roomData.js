@@ -17,7 +17,7 @@ import roomListData from "layouts/profile/data/roomListData";
 import RoomList from "examples/Lists/RoomList";
 import AuthorizedUsers from "../components/AuthorizedUsers";
 import ListToAuthorize from "../components/ListToAuthorize";
-import LasAcessOverview from "layouts/profile/components/LastAcessOverview";
+import LasAcessOverview from "layouts/roomboard/components/LastAcessOverview";
 import PaymentMethod from "layouts/billing/components/PaymentMethod";
 import RoomHead from "layouts/roomboard/components/RoomHead";
 
