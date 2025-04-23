@@ -29,7 +29,10 @@ import MDTypography from "components/MDTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 import formatDate from "util";
 
-function LasAcessOverview() {
+// prop-types is library for typechecking of props
+import PropTypes from "prop-types";
+
+function LasAcessOverview({ codigo_salas }) {
   const NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR = 5;
   const [acessosMensais, setAcessosMensais] = useState(1);
   const [ultimosAcessos, setUltimosAcessos] = useState([]);
@@ -51,7 +54,7 @@ function LasAcessOverview() {
   useEffect(() => {
     const api = getApiAddress();
 
-    fetch(api.database + "/dataAcessosPorDataPorUsuario/" + authData.user.matricula, {
+    fetch(api.database + "/getAcessosPorSala/" + codigo_salas, {
       method: "POST",
       body: JSON.stringify(data_inicia_final),
       headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -70,6 +73,7 @@ function LasAcessOverview() {
             minute: "2-digit",
             second: "2-digit",
           };
+          console.log("usuarios autorizados por sala");
           console.log(data);
 
           if (tamanhoVetor > NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR) {
@@ -241,5 +245,10 @@ function LasAcessOverview() {
     </Card>
   );
 }
+
+// Typechecking props for the RoomList
+LasAcessOverview.propTypes = {
+  codigo_salas: PropTypes.string.isRequired,
+};
 
 export default LasAcessOverview;

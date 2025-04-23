@@ -190,6 +190,7 @@ function RoomData() {
                     <LasAcessOverview
                       title="Últimos acessos"
                       profiles={roomListData}
+                      codigo_salas={codigo}
                       shadow={false}
                     />
                   </Grid>
