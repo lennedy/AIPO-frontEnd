@@ -33,7 +33,7 @@ import formatDate from "util";
 import PropTypes from "prop-types";
 
 function LasAcessOverview({ codigo_salas }) {
-  const NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR = 5;
+  const NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR = 10;
   const [acessosMensais, setAcessosMensais] = useState(1);
   const [ultimosAcessos, setUltimosAcessos] = useState([]);
   const authData = useAuth();
@@ -81,12 +81,12 @@ function LasAcessOverview({ codigo_salas }) {
               var dateTime = new Date(data[tamanhoVetor - i].timestamp);
               dateTime.setHours(dateTime.getHours() + 3); //corrigindo a hora para o horário de brasilia
               const diaHorario = dateTime.toLocaleTimeString("pt-br", options);
-              const nomeSala = data[tamanhoVetor - i].nome;
+              const nome = data[tamanhoVetor - i].nome;
               const autorizado = data[tamanhoVetor - i].autorizado;
               const codigo = data[tamanhoVetor - i].codigo;
               ArrayFrontEnd.push({
                 diahorario: diaHorario,
-                nomeSala: nomeSala,
+                nome: nome,
                 autorizado: autorizado,
                 codigo: codigo,
               });
@@ -108,32 +108,33 @@ function LasAcessOverview({ codigo_salas }) {
             }
           }
           setUltimosAcessos(ArrayFrontEnd);
+          setAcessosMensais(tamanhoVetor);
         } else {
           alert("erro:" + json["status"]);
         }
       })
       .catch((err) => console.log(err));
 
-    fetch(api.database + "/acessosPorUsuario/" + authData.user.matricula, {
-      method: "POST",
-      body: JSON.stringify(data_inicia_final),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        if (json["status"] == "ok") {
-          const data = json["data"];
-          let numAcessos = 0;
-          for (let key in data) {
-            console.log(data[key]);
-            numAcessos = data[key] + numAcessos;
-          }
-          setAcessosMensais(numAcessos);
-        } else {
-          alert("erro:" + json["status"]);
-        }
-      })
-      .catch((err) => console.log(err));
+    // fetch(api.database + "/acessosPorUsuario/" + authData.user.matricula, {
+    //   method: "POST",
+    //   body: JSON.stringify(data_inicia_final),
+    //   headers: { "Content-type": "application/json; charset=UTF-8" },
+    // })
+    //   .then((response) => response.json())
+    //   .then((json) => {
+    //     if (json["status"] == "ok") {
+    //       const data = json["data"];
+    //       let numAcessos = 0;
+    //       for (let key in data) {
+    //         console.log(data[key]);
+    //         numAcessos = data[key] + numAcessos;
+    //       }
+    //       setAcessosMensais(numAcessos);
+    //     } else {
+    //       alert("erro:" + json["status"]);
+    //     }
+    //   })
+    //   .catch((err) => console.log(err));
   }, []);
 
   console.log("TEste");
@@ -155,7 +156,17 @@ function LasAcessOverview({ codigo_salas }) {
         </MDBox>
       </MDBox>
       <MDBox p={2}>
-        <TimelineItem
+        {ultimosAcessos.map((acesso, i, ultimosAcessos) => (
+          <TimelineItem
+            key={acesso.matricula}
+            color={acesso.autorizado ? "success" : "error"}
+            icon="vpn_key"
+            title={acesso.nome}
+            dateTime={acesso.diahorario}
+            lastItem={i + 1 >= ultimosAcessos.length ? true : false}
+          />
+        ))}
+        {/* <TimelineItem
           color={
             ultimosAcessos.length >= 5
               ? ultimosAcessos[ultimosAcessos.length - 5].autorizado
@@ -240,7 +251,7 @@ function LasAcessOverview({ codigo_salas }) {
           }
           lastItem
           display={ultimosAcessos.length >= NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR - 4 ? true : false}
-        />
+        /> */}
       </MDBox>
     </Card>
   );
