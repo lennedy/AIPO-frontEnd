@@ -125,10 +125,10 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Roomboard",
+    name: "Salas",
     key: "roomboard",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/roomboard",
+    route: "/salas",
     component: <Roomboard />,
     nivelGerencia: "gerente",
   },
