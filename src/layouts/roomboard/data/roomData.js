@@ -50,7 +50,6 @@ function RoomData() {
   var usersData = { enableToSend: false };
 
   const handleClick = (event) => {
-    console.log(nome);
     // setAddAuthorization(!addAuthorization);
     if (codigo != null) {
       var methodToApi = "PUT";
@@ -67,12 +66,10 @@ function RoomData() {
             horarioFim: usersData.endTime,
           };
         } else {
-          alert("É para deletar");
           methodToApi = "delete";
           dataToServer = {
             usuarios: usersData.usersToRemove,
           };
-          console.log(dataToServer);
         }
         const api = getApiAddress();
         fetch(api.database + "/autorizarUsuariosPorSala/" + codigo, {
@@ -101,8 +98,6 @@ function RoomData() {
   };
 
   function handleListToAuthorizedData(data) {
-    console.log("Informação de um child");
-    console.log(data);
     usersData = data;
   }
 

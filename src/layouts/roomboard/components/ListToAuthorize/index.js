@@ -92,7 +92,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     beginTime: horarioInicio.format("HH:mm:ss"),
     endTime: horarioFim.format("HH:mm:ss"),
   };
-  console.log("usuariosAutorizados");
   sendDataToParent(dataToParent);
 
   const handleEditClick = (event) => {
@@ -102,7 +101,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
       setEditEnable(!editEnable);
     }
     setConfigToSend(false);
-    console.log(Date.now());
   };
 
   const handleSendClick = (event) => {
