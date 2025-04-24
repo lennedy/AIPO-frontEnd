@@ -73,8 +73,6 @@ function LasAcessOverview({ codigo_salas }) {
             minute: "2-digit",
             second: "2-digit",
           };
-          console.log("usuarios autorizados por sala");
-          console.log(data);
 
           if (tamanhoVetor > NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR) {
             for (let i = 1; i <= NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR; i++) {
@@ -91,7 +89,6 @@ function LasAcessOverview({ codigo_salas }) {
                 codigo: codigo,
               });
             }
-            console.log(ArrayFrontEnd);
           } else {
             for (let i = 1; i <= tamanhoVetor; i++) {
               const dateTime = new Date(data[tamanhoVetor - i].timestamp);
@@ -116,8 +113,6 @@ function LasAcessOverview({ codigo_salas }) {
       .catch((err) => console.log(err));
   }, []);
 
-  console.log("TEste");
-  console.log(ultimosAcessos.length);
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={3}>
