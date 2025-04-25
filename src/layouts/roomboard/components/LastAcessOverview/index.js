@@ -29,8 +29,11 @@ import MDTypography from "components/MDTypography";
 import TimelineItem from "examples/Timeline/TimelineItem";
 import formatDate from "util";
 
-function LasAcessOverview() {
-  const NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR = 5;
+// prop-types is library for typechecking of props
+import PropTypes from "prop-types";
+
+function LasAcessOverview({ codigo_salas }) {
+  const NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR = 10;
   const [acessosMensais, setAcessosMensais] = useState(1);
   const [ultimosAcessos, setUltimosAcessos] = useState([]);
   const authData = useAuth();
@@ -51,7 +54,7 @@ function LasAcessOverview() {
   useEffect(() => {
     const api = getApiAddress();
 
-    fetch(api.database + "/dataAcessosPorDataPorUsuario/" + authData.user.matricula, {
+    fetch(api.database + "/getAcessosPorSala/" + codigo_salas, {
       method: "POST",
       body: JSON.stringify(data_inicia_final),
       headers: { "Content-type": "application/json; charset=UTF-8" },
@@ -70,24 +73,22 @@ function LasAcessOverview() {
             minute: "2-digit",
             second: "2-digit",
           };
-          console.log(data);
 
           if (tamanhoVetor > NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR) {
             for (let i = 1; i <= NUMERO_MAXIMO_ACESSOS_PARA_EXIBIR; i++) {
               var dateTime = new Date(data[tamanhoVetor - i].timestamp);
               dateTime.setHours(dateTime.getHours() + 3); //corrigindo a hora para o horário de brasilia
               const diaHorario = dateTime.toLocaleTimeString("pt-br", options);
-              const nomeSala = data[tamanhoVetor - i].nome;
+              const nome = data[tamanhoVetor - i].nome;
               const autorizado = data[tamanhoVetor - i].autorizado;
               const codigo = data[tamanhoVetor - i].codigo;
               ArrayFrontEnd.push({
                 diahorario: diaHorario,
-                nomeSala: nomeSala,
+                nome: nome,
                 autorizado: autorizado,
                 codigo: codigo,
               });
             }
-            console.log(ArrayFrontEnd);
           } else {
             for (let i = 1; i <= tamanhoVetor; i++) {
               const dateTime = new Date(data[tamanhoVetor - i].timestamp);
@@ -104,27 +105,7 @@ function LasAcessOverview() {
             }
           }
           setUltimosAcessos(ArrayFrontEnd);
-        } else {
-          alert("erro:" + json["status"]);
-        }
-      })
-      .catch((err) => console.log(err));
-
-    fetch(api.database + "/acessosPorUsuario/" + authData.user.matricula, {
-      method: "POST",
-      body: JSON.stringify(data_inicia_final),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        if (json["status"] == "ok") {
-          const data = json["data"];
-          let numAcessos = 0;
-          for (let key in data) {
-            console.log(data[key]);
-            numAcessos = data[key] + numAcessos;
-          }
-          setAcessosMensais(numAcessos);
+          setAcessosMensais(tamanhoVetor);
         } else {
           alert("erro:" + json["status"]);
         }
@@ -132,8 +113,6 @@ function LasAcessOverview() {
       .catch((err) => console.log(err));
   }, []);
 
-  console.log("TEste");
-  console.log(ultimosAcessos.length);
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={3}>
@@ -156,7 +135,7 @@ function LasAcessOverview() {
             key={acesso.matricula}
             color={acesso.autorizado ? "success" : "error"}
             icon="vpn_key"
-            title={acesso.nomeSala}
+            title={acesso.nome}
             dateTime={acesso.diahorario}
             lastItem={i + 1 >= ultimosAcessos.length ? true : false}
           />
@@ -165,5 +144,10 @@ function LasAcessOverview() {
     </Card>
   );
 }
+
+// Typechecking props for the RoomList
+LasAcessOverview.propTypes = {
+  codigo_salas: PropTypes.string.isRequired,
+};
 
 export default LasAcessOverview;

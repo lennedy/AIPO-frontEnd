@@ -194,8 +194,10 @@ function DataTable({
                   width={column.width ? column.width : "auto"}
                   align={column.align ? column.align : "left"}
                   sorted={setSortedValue(column)}
+                  hidden={column.hidden}
                 >
-                  {column.Header != "search" ? column.render("Header") : null}
+                  {column.render("Header")}
+                  {/* {column.hidden != true ? column.render("Header") : null} */}
                 </DataTableHeadCell>
               ))}
             </TableRow>
@@ -212,8 +214,10 @@ function DataTable({
                     noBorder={noEndBorder && rows.length - 1 === key}
                     align={cell.column.align ? cell.column.align : "left"}
                     {...cell.getCellProps()}
+                    hidden={cell.column.hidden}
                   >
-                    {cell.column.Header != "search" ? cell.render("Cell") : null}
+                    {cell.render("Cell")}
+                    {/* {cell.column.hidden != true ? cell.render("Cell") : null} */}
                   </DataTableBodyCell>
                 ))}
               </TableRow>

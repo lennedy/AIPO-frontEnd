@@ -616,7 +616,7 @@ export default function data() {
       { Header: "status da chave", accessor: "status", align: "center" },
       { Header: "Salas autorizadas", accessor: "employed", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
-      { Header: "search", accessor: "search", align: "center" },
+      { Header: "search", accessor: "search", align: "center", hidden: true },
     ],
 
     rows: temp2,

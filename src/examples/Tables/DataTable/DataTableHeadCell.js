@@ -25,66 +25,70 @@ import MDBox from "components/MDBox";
 // Material Dashboard 2 React contexts
 import { useMaterialUIController } from "context";
 
-function DataTableHeadCell({ width, children, sorted, align, ...rest }) {
+function DataTableHeadCell({ width, children, sorted, align, hidden, ...rest }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  return (
-    <MDBox
-      component="th"
-      width={width}
-      py={1.5}
-      px={3}
-      sx={({ palette: { light }, borders: { borderWidth } }) => ({
-        borderBottom: `${borderWidth[1]} solid ${light.main}`,
-      })}
-    >
+  if (hidden) {
+    return null;
+  } else {
+    return (
       <MDBox
-        {...rest}
-        position="relative"
-        textAlign={align}
-        color={darkMode ? "white" : "secondary"}
-        opacity={0.7}
-        sx={({ typography: { size, fontWeightBold } }) => ({
-          fontSize: size.xxs,
-          fontWeight: fontWeightBold,
-          textTransform: "uppercase",
-          cursor: sorted && "pointer",
-          userSelect: sorted && "none",
+        component="th"
+        width={width}
+        py={1.5}
+        px={3}
+        sx={({ palette: { light }, borders: { borderWidth } }) => ({
+          borderBottom: `${borderWidth[1]} solid ${light.main}`,
         })}
       >
-        {children}
-        {sorted && (
-          <MDBox
-            position="absolute"
-            top={0}
-            right={align !== "right" ? "16px" : 0}
-            left={align === "right" ? "-5px" : "unset"}
-            sx={({ typography: { size } }) => ({
-              fontSize: size.lg,
-            })}
-          >
-            <MDBox
-              position="absolute"
-              top={-6}
-              color={sorted === "asce" ? "text" : "secondary"}
-              opacity={sorted === "asce" ? 1 : 0.5}
-            >
-              <Icon>arrow_drop_up</Icon>
-            </MDBox>
+        <MDBox
+          {...rest}
+          position="relative"
+          textAlign={align}
+          color={darkMode ? "white" : "secondary"}
+          opacity={0.7}
+          sx={({ typography: { size, fontWeightBold } }) => ({
+            fontSize: size.xxs,
+            fontWeight: fontWeightBold,
+            textTransform: "uppercase",
+            cursor: sorted && "pointer",
+            userSelect: sorted && "none",
+          })}
+        >
+          {children}
+          {sorted && (
             <MDBox
               position="absolute"
               top={0}
-              color={sorted === "desc" ? "text" : "secondary"}
-              opacity={sorted === "desc" ? 1 : 0.5}
+              right={align !== "right" ? "16px" : 0}
+              left={align === "right" ? "-5px" : "unset"}
+              sx={({ typography: { size } }) => ({
+                fontSize: size.lg,
+              })}
             >
-              <Icon>arrow_drop_down</Icon>
+              <MDBox
+                position="absolute"
+                top={-6}
+                color={sorted === "asce" ? "text" : "secondary"}
+                opacity={sorted === "asce" ? 1 : 0.5}
+              >
+                <Icon>arrow_drop_up</Icon>
+              </MDBox>
+              <MDBox
+                position="absolute"
+                top={0}
+                color={sorted === "desc" ? "text" : "secondary"}
+                opacity={sorted === "desc" ? 1 : 0.5}
+              >
+                <Icon>arrow_drop_down</Icon>
+              </MDBox>
             </MDBox>
-          </MDBox>
-        )}
+          )}
+        </MDBox>
       </MDBox>
-    </MDBox>
-  );
+    );
+  }
 }
 
 // Setting default values for the props of DataTableHeadCell
@@ -92,6 +96,7 @@ DataTableHeadCell.defaultProps = {
   width: "auto",
   sorted: "none",
   align: "left",
+  hidden: false,
 };
 
 // Typechecking props for the DataTableHeadCell
@@ -100,6 +105,7 @@ DataTableHeadCell.propTypes = {
   children: PropTypes.node.isRequired,
   sorted: PropTypes.oneOf([false, "none", "asce", "desc"]),
   align: PropTypes.oneOf(["left", "right", "center"]),
+  hidden: PropTypes.bool,
 };
 
 export default DataTableHeadCell;
