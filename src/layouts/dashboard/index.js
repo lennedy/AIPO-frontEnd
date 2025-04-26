@@ -32,6 +32,7 @@ import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatist
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import reportsRoomsData from "layouts/dashboard/data/reportsRoomsData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
@@ -58,6 +59,7 @@ function Dashboard() {
   });
 
   const { sales, tasks } = reportsLineChartData();
+  const { acessosSalas } = reportsRoomsData();
   const dataChart = reportsBarChartData();
   return (
     <DashboardLayout>
@@ -157,9 +159,9 @@ function Dashboard() {
                 <ReportsBarChart
                   color="dark"
                   title="Acesso por Sala"
-                  description="As quatro sals mais acessadas"
+                  description="As cinco salas mais acessadas"
                   date="just updated"
-                  chart={tasks}
+                  chart={acessosSalas}
                 />
               </MDBox>
             </Grid>
