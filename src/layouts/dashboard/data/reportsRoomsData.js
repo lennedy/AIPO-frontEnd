@@ -29,15 +29,10 @@ function formatDate(date, format) {
   return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
 }
 
-export default function chartData() {
-  const [acessosDomingo, setAcessosDomingo] = useState(0);
-  const [acessosSegunda, setAcessosSegunda] = useState(0);
-  const [acessosTerca, setAcessosTerca] = useState(0);
-  const [acessosQuarta, setAcessosQuarta] = useState(0);
-  const [acessosQuinta, setAcessosQuinta] = useState(0);
-  const [acessosSexta, setAcessosSexta] = useState(0);
-  const [acessosSabado, setAcessosSabado] = useState(0);
+export default function roomsData() {
+  const [numAcessos, setNumAcessos] = useState([]);
 
+  const NUM_MAXIMO_SALAS = 5;
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
   //const formatedToday = formatDate(today, "aa-mm-dd");
@@ -57,55 +52,30 @@ export default function chartData() {
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/acessosData", {
-      method: "PUT",
+    fetch(api.database + "/getTodosAcessosPorSala", {
+      method: "POST",
       body: JSON.stringify(data_inicia_final),
       headers: { "Content-type": "application/json; charset=UTF-8" },
     })
       .then((res) => res.json())
       .then((json) => {
-        var domingo = 0;
-        var segunda = 0;
-        var terca = 0;
-        var quarta = 0;
-        var quinta = 0;
-        var sexta = 0;
-        var sabado = 0;
         if (json["status"] == "ok") {
-          const dados = json["Dados"];
-          for (var i = 0; i < json["numResults"]; i++) {
-            const acessDate = new Date(dados[i]["timestamp"]);
-            switch (formatDate(acessDate, "aa-mm-dd")) {
-              case dates2[0]:
-                domingo++;
-                break;
-              case dates2[1]:
-                segunda++;
-                break;
-              case dates2[2]:
-                terca++;
-                break;
-              case dates2[3]:
-                quarta++;
-                break;
-              case dates2[4]:
-                quinta++;
-                break;
-              case dates2[5]:
-                sexta++;
-                break;
-              case dates2[6]:
-                sabado++;
-                break;
+          console.log(json);
+          const dados = json["numAccess"];
+          let salas = Object.keys(dados);
+          var acessos = [];
+          // for (var i = 0; i < dados.length; i++) {
+          //   acessos.push(dados[i]);
+          // }
+          salas.forEach((sala) => {
+            if (salas.length < NUM_MAXIMO_SALAS) {
+              console.log(sala);
+              console.log(dados);
+              acessos.push(salas[sala]);
             }
-          }
-          setAcessosDomingo(domingo);
-          setAcessosSegunda(segunda);
-          setAcessosTerca(terca);
-          setAcessosQuarta(quarta);
-          setAcessosQuinta(quinta);
-          setAcessosSexta(sexta);
-          setAcessosSabado(sabado);
+          });
+          setNumAcessos(acessos);
+          console.log(acessos);
 
           // console.log(formatDate(new Date(dados[35]["timestamp"]), "aa-mm-dd"));
           // console.log(dates2[1]);
