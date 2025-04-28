@@ -58,21 +58,13 @@ export default function roomsData() {
       .then((res) => res.json())
       .then((json) => {
         if (json["status"] == "ok") {
-          console.log("json");
-          // console.log(data_inicia_final);
-          console.log(json);
           const dados = json["numAccess"];
-          console.log(dados);
-          console.log(dados["A111"]);
           let todasSalas = Object.keys(dados);
           var acessos = [];
           var salasParaInterface = [];
 
           todasSalas.forEach((sala, i) => {
             if (todasSalas.length < NUM_MAXIMO_SALAS) {
-              console.log(sala);
-              console.log(i);
-              console.log(dados);
               acessos.push(dados[sala]);
               salasParaInterface.push(sala);
             } else {
@@ -81,18 +73,12 @@ export default function roomsData() {
                 salasParaInterface.push(sala);
               } else {
                 let min = Math.min(...acessos);
-                console.log(min);
-                console.log("acessos");
-                console.log(acessos);
                 if (min < dados[sala]) {
                   // acessos = acessos.filter((num) => num !== min);
                   acessos = acessos.reduce((newArray, currentElement, index) => {
                     if (currentElement !== min) {
                       newArray.push(currentElement);
-                      console.log("index");
-                      console.log(index);
                     } else {
-                      console.log(index);
                       salasParaInterface = salasParaInterface.filter(
                         (value) => value != salasParaInterface[index]
                       );
@@ -107,8 +93,6 @@ export default function roomsData() {
           });
           setNumAcessos(acessos);
           setSalasAcessads(salasParaInterface);
-          console.log(acessos);
-          console.log(salasParaInterface);
         }
       });
   }, []);
