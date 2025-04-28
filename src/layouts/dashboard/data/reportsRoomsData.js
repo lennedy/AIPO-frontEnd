@@ -31,24 +31,22 @@ function formatDate(date, format) {
 
 export default function roomsData() {
   const [numAcessos, setNumAcessos] = useState([]);
+  const [salasAcessadas, setSalasAcessads] = useState([]);
 
-  const NUM_MAXIMO_SALAS = 5;
+  const NUM_MAXIMO_SALAS = 2;
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
   //const formatedToday = formatDate(today, "aa-mm-dd");
 
-  const dates = [];
-  const dates2 = [];
-  const day = new Date();
-  for (var i = 0; i < 7; i++) {
-    day.setDate(today.getDate() - i);
-    dates.push({ week: day.getDay(), date: formatDate(day, "aa-mm-dd") });
-    dates2[day.getDay()] = formatDate(day, "aa-mm-dd");
-  }
+  const ano_inicial = today.getFullYear();
+  const mes_inicial = today.getMonth() - 1;
 
-  const data_inicia_final = { data_inicial: dates[6]["date"], data_final: dates[0]["date"] };
+  const d_inicial = new Date(ano_inicial, mes_inicial);
 
-  // console.log(dates);
+  const data_inicia_final = {
+    data_inicial: formatDate(d_inicial, "aa-mm-dd"),
+    data_final: formatDate(today, "aa-mm-dd"),
+  };
 
   useEffect(() => {
     const api = getApiAddress();
@@ -60,34 +58,67 @@ export default function roomsData() {
       .then((res) => res.json())
       .then((json) => {
         if (json["status"] == "ok") {
+          console.log("json");
+          // console.log(data_inicia_final);
           console.log(json);
           const dados = json["numAccess"];
-          let salas = Object.keys(dados);
+          console.log(dados);
+          console.log(dados["A111"]);
+          let todasSalas = Object.keys(dados);
           var acessos = [];
-          // for (var i = 0; i < dados.length; i++) {
-          //   acessos.push(dados[i]);
-          // }
-          salas.forEach((sala) => {
-            if (salas.length < NUM_MAXIMO_SALAS) {
+          var salasParaInterface = [];
+
+          todasSalas.forEach((sala, i) => {
+            if (todasSalas.length < NUM_MAXIMO_SALAS) {
               console.log(sala);
+              console.log(i);
               console.log(dados);
-              acessos.push(salas[sala]);
+              acessos.push(dados[sala]);
+              salasParaInterface.push(sala);
+            } else {
+              if (i < NUM_MAXIMO_SALAS) {
+                acessos.push(dados[sala]);
+                salasParaInterface.push(sala);
+              } else {
+                let min = Math.min(...acessos);
+                console.log(min);
+                console.log("acessos");
+                console.log(acessos);
+                if (min < dados[sala]) {
+                  // acessos = acessos.filter((num) => num !== min);
+                  acessos = acessos.reduce((newArray, currentElement, index) => {
+                    if (currentElement !== min) {
+                      newArray.push(currentElement);
+                      console.log("index");
+                      console.log(index);
+                    } else {
+                      console.log(index);
+                      salasParaInterface = salasParaInterface.filter(
+                        (value) => value != salasParaInterface[index]
+                      );
+                    }
+                    return newArray;
+                  }, []);
+                  acessos.push(dados[sala]);
+                  salasParaInterface.push(sala);
+                }
+              }
             }
           });
           setNumAcessos(acessos);
+          setSalasAcessads(salasParaInterface);
           console.log(acessos);
-
-          // console.log(formatDate(new Date(dados[35]["timestamp"]), "aa-mm-dd"));
-          // console.log(dates2[1]);
-          // console.log(dados);
+          console.log(salasParaInterface);
         }
       });
   }, []);
-
+  console.log("what the fuck is going on");
+  console.log(numAcessos);
+  console.log(salasAcessadas);
   const data = {
     acessosSalas: {
-      labels: ["a208", "a111", "203", "201", "212"],
-      datasets: { label: "nº de acessos", data: [50, 40, 300, 220, 500] },
+      labels: salasAcessadas,
+      datasets: { label: "nº de acessos", data: numAcessos },
     },
   };
 
