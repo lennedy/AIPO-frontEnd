@@ -33,7 +33,7 @@ export default function roomsData() {
   const [numAcessos, setNumAcessos] = useState([]);
   const [salasAcessadas, setSalasAcessads] = useState([]);
 
-  const NUM_MAXIMO_SALAS = 2;
+  const NUM_MAXIMO_SALAS = 3;
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
   //const formatedToday = formatDate(today, "aa-mm-dd");
@@ -74,17 +74,10 @@ export default function roomsData() {
               } else {
                 let min = Math.min(...acessos);
                 if (min < dados[sala]) {
-                  // acessos = acessos.filter((num) => num !== min);
-                  acessos = acessos.reduce((newArray, currentElement, index) => {
-                    if (currentElement !== min) {
-                      newArray.push(currentElement);
-                    } else {
-                      salasParaInterface = salasParaInterface.filter(
-                        (value) => value != salasParaInterface[index]
-                      );
-                    }
-                    return newArray;
-                  }, []);
+                  const minIndex = acessos.indexOf(min);
+                  acessos.splice(minIndex, 1);
+                  salasParaInterface.splice(minIndex, 1);
+
                   acessos.push(dados[sala]);
                   salasParaInterface.push(sala);
                 }
@@ -93,10 +86,11 @@ export default function roomsData() {
           });
           setNumAcessos(acessos);
           setSalasAcessads(salasParaInterface);
+        } else {
+          alert("erro ao adquirir dados");
         }
       });
   }, []);
-  console.log("what the fuck is going on");
   console.log(numAcessos);
   console.log(salasAcessadas);
   const data = {
