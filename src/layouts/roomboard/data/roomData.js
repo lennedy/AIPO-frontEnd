@@ -151,7 +151,12 @@ function RoomData() {
                           </Grid>
                         </MDBox>
                         <MDBox py={1}>
-                          <MDButton variant="gradient" color="dark" onClick={handleClick}>
+                          <MDButton
+                            variant="gradient"
+                            color="dark"
+                            onClick={handleClick}
+                            disabled={usersData.enableToSend ? false : true}
+                          >
                             {codigo == null
                               ? "Adicionar Sala"
                               : addAuthorization == true
