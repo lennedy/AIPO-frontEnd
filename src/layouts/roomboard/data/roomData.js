@@ -8,6 +8,8 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -145,11 +147,21 @@ function RoomData() {
                         </MDBox>
                         <MDBox py={1}>
                           <MDButton variant="gradient" color="dark" onClick={handleClick}>
-                            {codigo == null
-                              ? "Adicionar Sala"
-                              : addAuthorization == true
-                              ? "Autorizar acesso"
-                              : "Remover acesso"}
+                            {codigo == null ? (
+                              "Adicionar Sala"
+                            ) : (
+                              <Tabs
+                                value={value}
+                                indicatorColor="primary"
+                                textColor="primary"
+                                onChange={handleChange}
+                                aria-label="disabled tabs example"
+                              >
+                                <Tab label="Active" />
+                                <Tab label="Disabled" disabled />
+                                <Tab label="Active" />
+                              </Tabs>
+                            )}
                           </MDButton>
                         </MDBox>
                       </Grid>
