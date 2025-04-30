@@ -95,10 +95,6 @@ function RoomData() {
     }
   };
 
-  const handleSwitch = (event) => {
-    setAddAuthorization(!addAuthorization);
-  };
-
   function handleListToAuthorizedData(data) {
     usersData = data;
   }
@@ -109,8 +105,9 @@ function RoomData() {
 
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleTabsChange = (event, newValue) => {
     setValue(newValue);
+    setAddAuthorization(!addAuthorization);
   };
 
   return (
@@ -143,25 +140,23 @@ function RoomData() {
                       <Grid>
                         <MDBox>
                           <Grid container spacing={0}>
-                            {/* <MDTypography>
-                              {addAuthorization == true
-                                ? "Conceder Autorização"
-                                : "Remover Autorização"}
-                            </MDTypography>
-                            <Switch onChange={handleSwitch} /> */}
                             <Tabs
                               value={value}
-                              onChange={handleChange}
+                              onChange={handleTabsChange}
                               aria-label="basic tabs example"
                             >
-                              <Tab label="Item One" />
-                              <Tab label="Item Two" />
+                              <Tab label="Remover" />
+                              <Tab label="Autorizar" />
                             </Tabs>
                           </Grid>
                         </MDBox>
                         <MDBox py={1}>
                           <MDButton variant="gradient" color="dark" onClick={handleClick}>
-                            {codigo == null ? "Adicionar Sala" : ""}
+                            {codigo == null
+                              ? "Adicionar Sala"
+                              : addAuthorization == true
+                              ? "Autorizar acesso"
+                              : "Remover acesso"}
                           </MDButton>
                         </MDBox>
                       </Grid>
