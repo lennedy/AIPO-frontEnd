@@ -150,7 +150,7 @@ function RoomData() {
                             </Tabs>
                           </Grid>
                         </MDBox>
-                        <MDBox py={1}>
+                        {/* <MDBox py={1}>
                           <MDButton
                             variant="gradient"
                             color="dark"
@@ -163,7 +163,7 @@ function RoomData() {
                               ? "Autorizar acesso"
                               : "Remover acesso"}
                           </MDButton>
-                        </MDBox>
+                        </MDBox> */}
                       </Grid>
                     </MDBox>
                     <MDBox p={1}>
