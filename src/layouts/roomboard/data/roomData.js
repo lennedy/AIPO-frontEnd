@@ -143,9 +143,10 @@ function RoomData() {
                             <Tabs
                               value={value}
                               onChange={handleTabsChange}
+                              orientation="vertical"
                               aria-label="basic tabs example"
                             >
-                              <Tab label="Remover" />
+                              <Tab label="Remover Autorização" />
                               <Tab label="Autorizar" />
                             </Tabs>
                           </Grid>
