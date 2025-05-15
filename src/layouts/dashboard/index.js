@@ -120,7 +120,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
+                icon="event"
                 title="Acessos em 7 dias"
                 count={numAcessos7Dias}
                 percentage={{
@@ -134,7 +134,7 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
+                icon="today"
                 title="Nº de acessos hoje"
                 count={numberAccess}
                 percentage={{
@@ -149,7 +149,7 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
+                icon="event"
                 title="Acessos em 30 dias"
                 count={numAcessosMes}
                 percentage={{
@@ -165,7 +165,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person"
-                title="Usuários"
+                title="Nº de usuários ativos"
                 count={numUsuariosAtivos}
                 percentage={{
                   color: "success",
@@ -183,7 +183,7 @@ function Dashboard() {
                 <ReportsBarChart
                   color="info"
                   title="Acessos por dia"
-                  description="Número de acesso na semana"
+                  description="Número de acessos na semana"
                   date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={dataChart}
                 />
@@ -204,7 +204,7 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="dark"
-                  title="Acesso por Sala"
+                  title="Acessos por Sala"
                   description="As salas mais acessadas nos últimos 30 dias"
                   date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={acessosSalas}
