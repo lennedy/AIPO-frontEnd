@@ -58,14 +58,12 @@ function Basic() {
       //dispatch action from hooks
       auth.loginAction(input, rememberMe);
     } else {
-      // console.log(input.username);
-      alert("please provide a valid input");
+      alert("Usuário ou senha vazios");
     }
   };
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    console.log(name);
     setInput((prev) => ({
       ...prev,
       [name]: value,
@@ -111,20 +109,27 @@ function Basic() {
           <MDBox component="form" role="form">
             <MDBox mb={2}>
               <MDInput
-                type="email"
-                label="Email"
+                type="matricula"
+                label="Matrícula SUAP"
                 name="username"
                 onChange={handleInput}
                 fullWidth
+                autoFocus={true}
               />
             </MDBox>
             <MDBox mb={2}>
               <MDInput
                 type="password"
-                label="Password"
+                label="Senha SUAP"
                 name="password"
                 onChange={handleInput}
                 fullWidth
+                // onKeyPress={handleSubmitEvent}
+                onKeyPress={(event) => {
+                  if (event.key === "Enter") {
+                    handleSubmitEvent(event);
+                  }
+                }}
               />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
@@ -144,7 +149,7 @@ function Basic() {
                 sign in
               </MDButton>
             </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
+            {/* <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Don&apos;t have an account?{" "}
                 <MDTypography
@@ -158,7 +163,7 @@ function Basic() {
                   Sign up
                 </MDTypography>
               </MDTypography>
-            </MDBox>
+            </MDBox> */}
           </MDBox>
         </MDBox>
       </Card>

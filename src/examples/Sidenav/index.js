@@ -201,7 +201,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
-      <MDBox p={2} mt="auto">
+      <MDBox p={2} py={8} mt="auto">
         <MDButton
           component="a"
           target="_blank"
