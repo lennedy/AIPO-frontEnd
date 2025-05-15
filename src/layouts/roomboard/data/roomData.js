@@ -146,8 +146,8 @@ function RoomData() {
                               orientation="vertical"
                               aria-label="basic tabs example"
                             >
-                              <Tab label="Remover Autorização" />
-                              <Tab label="Autorizar" />
+                              <Tab label="Remover acesso" />
+                              <Tab label="Conceder acesso" />
                             </Tabs>
                           </Grid>
                         </MDBox>
