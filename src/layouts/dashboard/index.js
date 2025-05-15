@@ -189,7 +189,7 @@ function Dashboard() {
                 <ReportsBarChart
                   color="dark"
                   title="Acesso por Sala"
-                  description="As salas mais acessadas"
+                  description="As salas mais acessadas nos últimos 30 dias"
                   date="just updated"
                   chart={acessosSalas}
                 />
