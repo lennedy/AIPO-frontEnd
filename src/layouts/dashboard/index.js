@@ -39,10 +39,26 @@ import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import getApiAddress from "serverAddress";
+import formatDate from "util";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(0);
   const [numberAccess, setAccessToday] = useState(0);
+  const [numUsuariosAtivos, serNumUsariosAtivos] = useState(0);
+  const [numAcessosMes, setNumAcessosMes] = useState(0);
+
+  const timeElapsed = Date.now();
+  const today = new Date(timeElapsed);
+
+  const temp = new Date().setDate(today.getDate() - 30);
+  const d_inicial = new Date(temp);
+
+  console.log("ter");
+  console.log(temp);
+  const data_inicia_final = {
+    data_inicial: formatDate(d_inicial, "aa-mm-dd"),
+    data_final: formatDate(today, "aa-mm-dd"),
+  };
 
   useEffect(() => {
     // fetch("/time")
@@ -55,6 +71,24 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         setAccessToday(data.numAcessos);
+      });
+
+    fetch(api.database + "/getUsuariosAtivos")
+      .then((res) => res.json())
+      .then((data) => {
+        serNumUsariosAtivos(data.users.length);
+        // setAccessToday(data.numAcessos);
+      });
+    fetch(api.database + "/acessosData", {
+      method: "PUT",
+      body: JSON.stringify(data_inicia_final),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Terminal");
+        console.log(data_inicia_final);
+        setNumAcessosMes(data.numResults);
       });
   });
 
@@ -101,7 +135,7 @@ function Dashboard() {
                 color="success"
                 icon="store"
                 title="Acesso em 30 dias"
-                count="100"
+                count={numAcessosMes}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -116,7 +150,7 @@ function Dashboard() {
                 color="primary"
                 icon="person"
                 title="Usuários"
-                count="50"
+                count={numUsuariosAtivos}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -144,11 +178,7 @@ function Dashboard() {
                 <ReportsLineChart
                   color="success"
                   title="Acessos por mês"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
+                  description="Número de acessos por mês"
                   date="just updated"
                   chart={sales}
                 />
