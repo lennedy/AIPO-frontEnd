@@ -164,7 +164,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
             </MDBox>
           ) : (
             <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-              <Tooltip title="Editar autorização" placement="top">
+              <Tooltip title="Editar seleção" placement="top">
                 <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
                   <EditIcon />
                 </IconButton>
