@@ -46,17 +46,24 @@ function Dashboard() {
   const [numberAccess, setAccessToday] = useState(0);
   const [numUsuariosAtivos, serNumUsariosAtivos] = useState(0);
   const [numAcessosMes, setNumAcessosMes] = useState(0);
+  const [numAcessos7Dias, setNumAcessos7Dias] = useState(0);
 
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
 
   const temp = new Date().setDate(today.getDate() - 30);
-  const d_inicial = new Date(temp);
+  const d_30_dias = new Date(temp);
 
-  console.log("ter");
-  console.log(temp);
-  const data_inicia_final = {
-    data_inicial: formatDate(d_inicial, "aa-mm-dd"),
+  const data_inicia_final_30 = {
+    data_inicial: formatDate(d_30_dias, "aa-mm-dd"),
+    data_final: formatDate(today, "aa-mm-dd"),
+  };
+
+  const temp2 = new Date().setDate(today.getDate() - 7);
+  const d_7_dias = new Date(temp2);
+
+  const data_inicia_final_7 = {
+    data_inicial: formatDate(d_7_dias, "aa-mm-dd"),
     data_final: formatDate(today, "aa-mm-dd"),
   };
 
@@ -81,14 +88,23 @@ function Dashboard() {
       });
     fetch(api.database + "/acessosData", {
       method: "PUT",
-      body: JSON.stringify(data_inicia_final),
+      body: JSON.stringify(data_inicia_final_30),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setNumAcessosMes(data.numResults);
+      });
+    fetch(api.database + "/acessosData", {
+      method: "PUT",
+      body: JSON.stringify(data_inicia_final_7),
       headers: { "Content-type": "application/json; charset=UTF-8" },
     })
       .then((res) => res.json())
       .then((data) => {
         console.log("Terminal");
-        console.log(data_inicia_final);
-        setNumAcessosMes(data.numResults);
+        console.log(data_inicia_final_7);
+        setNumAcessos7Dias(data.numResults);
       });
   });
 
@@ -106,7 +122,7 @@ function Dashboard() {
                 color="dark"
                 icon="weekend"
                 title="Acessos em 7 dias"
-                count={120}
+                count={numAcessos7Dias}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -134,7 +150,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Acesso em 30 dias"
+                title="Acessos em 30 dias"
                 count={numAcessosMes}
                 percentage={{
                   color: "success",
@@ -168,7 +184,7 @@ function Dashboard() {
                   color="info"
                   title="Acessos por dia"
                   description="Número de acesso na semana"
-                  date="just updated"
+                  date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={dataChart}
                 />
               </MDBox>
@@ -179,7 +195,7 @@ function Dashboard() {
                   color="success"
                   title="Acessos por mês"
                   description="Número de acessos por mês"
-                  date="just updated"
+                  date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={sales}
                 />
               </MDBox>
@@ -190,7 +206,7 @@ function Dashboard() {
                   color="dark"
                   title="Acesso por Sala"
                   description="As salas mais acessadas nos últimos 30 dias"
-                  date="just updated"
+                  date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={acessosSalas}
                 />
               </MDBox>
