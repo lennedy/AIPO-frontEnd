@@ -42,16 +42,18 @@ import projectsTableData from "layouts/tables/data/projectsTableData";
 import AuthorizedTableData from "../../data/AuthorizedUserTableData";
 
 import { useMaterialUIController } from "context";
+import getApiAddress from "serverAddress";
 
 function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  const [editEnable, setEditEnable] = useState(false);
+  const [editEnable, setEditEnable] = useState(true);
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
+  const [isToUpdate, setIsToUpdate] = useState(false);
 
-  const autorizados = AuthorizedTableData(profiles.codigo, editEnable, usersEdit);
+  const autorizados = AuthorizedTableData(profiles.codigo, editEnable, usersEdit, isToUpdate);
 
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
@@ -76,6 +78,40 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   //   setUsersEdit(autorizados.usersToEdit);
   // }
 
+  const handleSendClick = (event) => {
+    // setAddAuthorization(!addAuthorization);
+    if (profiles.codigo != null) {
+      var methodToApi = "PUT";
+      var dataToServer = {};
+      if (enableToSend) {
+        methodToApi = "delete";
+        dataToServer = {
+          usuarios: usersToRemove,
+        };
+        const api = getApiAddress();
+        fetch(api.database + "/autorizarUsuariosPorSala/" + profiles.codigo, {
+          method: methodToApi,
+          body: JSON.stringify(dataToServer),
+          headers: { "Content-type": "application/json; charset=UTF-8" },
+        })
+          .then((response) => response.json())
+          .then((json) => {
+            if (json["status"] == "ok") {
+              alert("modificação realizada");
+              setConfigToSend(false);
+              setIsToUpdate(true);
+            } else {
+              alert("erro:" + json["status"]);
+            }
+          })
+          .catch((err) => console.log(err));
+        // .finally(() => setIsToUpdate(true));
+      } else {
+        alert("Seleção não confirmada ou usuários não selecionados");
+      }
+    }
+  };
+
   const handleEditClick = (event) => {
     if (configToSend) {
       setEditEnable(true);
@@ -85,8 +121,14 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     setConfigToSend(false);
   };
 
-  const handleSendClick = (event) => {
+  const handleCheckClick = (event) => {
     setConfigToSend(true);
+  };
+
+  const handleSendClick2 = (event) => {
+    console.log("estiveaqui");
+    console.log(usersEdit);
+    setConfigToSend(false);
   };
 
   return (
@@ -96,20 +138,39 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
             {title}
           </MDTypography>
-          <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-            <Tooltip title="Editar autorização" placement="top">
-              <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
-          </MDBox>
-          <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-            <Tooltip title="Confirmar seleção" placement="top">
-              <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
-                <CheckIcon />
-              </IconButton>
-            </Tooltip>
-          </MDBox>
+          {configToSend == false ? null : (
+            // <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+            //   <Tooltip title="Editar autorização" placement="top">
+            //     <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
+            //       <EditIcon />
+            //     </IconButton>
+            //   </Tooltip>
+            // </MDBox>
+            <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+              <Tooltip title="Enviar desautorização" placement="top">
+                <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
+                  <SendIcon />
+                </IconButton>
+              </Tooltip>
+            </MDBox>
+          )}
+          {configToSend == false ? (
+            <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+              <Tooltip title="Confirmar seleção" placement="top">
+                <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleCheckClick}>
+                  <CheckIcon />
+                </IconButton>
+              </Tooltip>
+            </MDBox>
+          ) : (
+            <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+              <Tooltip title="Editar seleção" placement="top">
+                <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
+                  <EditIcon />
+                </IconButton>
+              </Tooltip>
+            </MDBox>
+          )}
         </MDBox>
       </MDBox>
       {configToSend == false ? (

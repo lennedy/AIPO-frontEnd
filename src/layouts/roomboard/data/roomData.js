@@ -8,6 +8,8 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -93,10 +95,6 @@ function RoomData() {
     }
   };
 
-  const handleSwitch = (event) => {
-    setAddAuthorization(!addAuthorization);
-  };
-
   function handleListToAuthorizedData(data) {
     usersData = data;
   }
@@ -104,6 +102,13 @@ function RoomData() {
   function handleListToRemoveData(data) {
     usersData = data;
   }
+
+  const [value, setValue] = useState(0);
+
+  const handleTabsChange = (event, newValue) => {
+    setValue(newValue);
+    setAddAuthorization(!addAuthorization);
+  };
 
   return (
     <DashboardLayout>
@@ -135,23 +140,31 @@ function RoomData() {
                       <Grid>
                         <MDBox>
                           <Grid container spacing={0}>
-                            <MDTypography>
-                              {addAuthorization == true
-                                ? "Conceder Autorização"
-                                : "Remover Autorização"}
-                            </MDTypography>
-                            <Switch onChange={handleSwitch} />
+                            <Tabs
+                              value={value}
+                              onChange={handleTabsChange}
+                              orientation="vertical"
+                              aria-label="basic tabs example"
+                            >
+                              <Tab label="Remover acesso" />
+                              <Tab label="Conceder acesso" />
+                            </Tabs>
                           </Grid>
                         </MDBox>
-                        <MDBox py={1}>
-                          <MDButton variant="gradient" color="dark" onClick={handleClick}>
+                        {/* <MDBox py={1}>
+                          <MDButton
+                            variant="gradient"
+                            color="dark"
+                            onClick={handleClick}
+                            disabled={usersData.enableToSend ? false : true}
+                          >
                             {codigo == null
                               ? "Adicionar Sala"
                               : addAuthorization == true
                               ? "Autorizar acesso"
                               : "Remover acesso"}
                           </MDButton>
-                        </MDBox>
+                        </MDBox> */}
                       </Grid>
                     </MDBox>
                     <MDBox p={1}>

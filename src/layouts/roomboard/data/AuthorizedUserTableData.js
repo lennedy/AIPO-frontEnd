@@ -64,7 +64,7 @@ import TimelineItem from "examples/Timeline/TimelineItem";
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function data(codigoSala, editState, usuariosParaEditar) {
+export default function data(codigoSala, editState, usuariosParaEditar, update) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -109,9 +109,13 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
   const [isToUpdate, setIsToUpdate] = useState(true);
   const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
 
+  console.log("Update tabelas");
+  console.log(update);
   useEffect(() => {
     const api = getApiAddress();
-    if (isToUpdateUsers) {
+    console.log("useEffect tabelas");
+    console.log(isToUpdate);
+    if (isToUpdate) {
       fetch(api.database + "/getUsuariosPorSala/" + codigoSala)
         .then((res) => res.json())
         .then((data) => {
@@ -146,7 +150,7 @@ export default function data(codigoSala, editState, usuariosParaEditar) {
       .then((data) => {
         setUsuariosSalas(data);
       });
-  }, [isToUpdate, isToUpdateUsers]);
+  }, [isToUpdate, update]);
 
   const Job = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
