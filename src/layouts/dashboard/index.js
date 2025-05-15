@@ -32,16 +32,40 @@ import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatist
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
+import reportsRoomsData from "layouts/dashboard/data/reportsRoomsData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import getApiAddress from "serverAddress";
+import formatDate from "util";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(0);
   const [numberAccess, setAccessToday] = useState(0);
+  const [numUsuariosAtivos, serNumUsariosAtivos] = useState(0);
+  const [numAcessosMes, setNumAcessosMes] = useState(0);
+  const [numAcessos7Dias, setNumAcessos7Dias] = useState(0);
+
+  const timeElapsed = Date.now();
+  const today = new Date(timeElapsed);
+
+  const temp = new Date().setDate(today.getDate() - 30);
+  const d_30_dias = new Date(temp);
+
+  const data_inicia_final_30 = {
+    data_inicial: formatDate(d_30_dias, "aa-mm-dd"),
+    data_final: formatDate(today, "aa-mm-dd"),
+  };
+
+  const temp2 = new Date().setDate(today.getDate() - 7);
+  const d_7_dias = new Date(temp2);
+
+  const data_inicia_final_7 = {
+    data_inicial: formatDate(d_7_dias, "aa-mm-dd"),
+    data_final: formatDate(today, "aa-mm-dd"),
+  };
 
   useEffect(() => {
     // fetch("/time")
@@ -55,9 +79,37 @@ function Dashboard() {
       .then((data) => {
         setAccessToday(data.numAcessos);
       });
+
+    fetch(api.database + "/getUsuariosAtivos")
+      .then((res) => res.json())
+      .then((data) => {
+        serNumUsariosAtivos(data.users.length);
+        // setAccessToday(data.numAcessos);
+      });
+    fetch(api.database + "/acessosData", {
+      method: "PUT",
+      body: JSON.stringify(data_inicia_final_30),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setNumAcessosMes(data.numResults);
+      });
+    fetch(api.database + "/acessosData", {
+      method: "PUT",
+      body: JSON.stringify(data_inicia_final_7),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Terminal");
+        console.log(data_inicia_final_7);
+        setNumAcessos7Dias(data.numResults);
+      });
   });
 
   const { sales, tasks } = reportsLineChartData();
+  const { acessosSalas } = reportsRoomsData();
   const dataChart = reportsBarChartData();
   return (
     <DashboardLayout>
@@ -68,9 +120,9 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
-                icon="weekend"
+                icon="event"
                 title="Acessos em 7 dias"
-                count={120}
+                count={numAcessos7Dias}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -82,7 +134,7 @@ function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
+                icon="today"
                 title="Nº de acessos hoje"
                 count={numberAccess}
                 percentage={{
@@ -97,9 +149,9 @@ function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
-                title="Acesso em 30 dias"
-                count="100"
+                icon="event"
+                title="Acessos em 30 dias"
+                count={numAcessosMes}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -113,8 +165,8 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person"
-                title="Usuários"
-                count="50"
+                title="Nº de usuários ativos"
+                count={numUsuariosAtivos}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -131,8 +183,8 @@ function Dashboard() {
                 <ReportsBarChart
                   color="info"
                   title="Acessos por dia"
-                  description="Número de acesso na semana"
-                  date="just updated"
+                  description="Número de acessos na semana"
+                  date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={dataChart}
                 />
               </MDBox>
@@ -142,12 +194,8 @@ function Dashboard() {
                 <ReportsLineChart
                   color="success"
                   title="Acessos por mês"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="just updated"
+                  description="Número de acessos por mês"
+                  date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
                   chart={sales}
                 />
               </MDBox>
@@ -156,10 +204,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="dark"
-                  title="Acesso por Sala"
-                  description="As quatro sals mais acessadas"
-                  date="just updated"
-                  chart={tasks}
+                  title="Acessos por Sala"
+                  description="As salas mais acessadas nos últimos 30 dias"
+                  date={"Atualizado de " + today.getHours() + ":" + today.getMinutes()}
+                  chart={acessosSalas}
                 />
               </MDBox>
             </Grid>
