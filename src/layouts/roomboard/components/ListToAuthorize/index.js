@@ -50,11 +50,13 @@ import "dayjs/locale/pt-br";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
+import getApiAddress from "serverAddress";
 
 function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
+  const [isToUpdate, setIsToUpdate] = useState(false);
   const [editEnable, setEditEnable] = useState(false);
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
@@ -103,8 +105,39 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     setConfigToSend(false);
   };
 
-  const handleSendClick = (event) => {
+  const handleCheckClick = (event) => {
     setConfigToSend(true);
+  };
+
+  const handleSendClick = (event) => {
+    if (enableToSend) {
+      setIsToUpdate(false);
+      const dataToServer = {
+        usuarios: dataToParent.usersToAuthorize,
+        dataInicio: dataToParent.beginDate,
+        dataFim: dataToParent.endDate,
+        horarioInicio: dataToParent.beginTime,
+        horarioFim: dataToParent.endTime,
+      };
+      const api = getApiAddress();
+      fetch(api.database + "/autorizarUsuariosPorSala/" + profiles.codigo, {
+        method: "PUT",
+        body: JSON.stringify(dataToServer),
+        headers: { "Content-type": "application/json; charset=UTF-8" },
+      })
+        .then((response) => response.json())
+        .then((json) => {
+          if (json["status"] == "ok") {
+            alert("modificação realizada");
+          } else {
+            alert("erro:" + json["status"]);
+          }
+        })
+        .catch((err) => console.log(err))
+        .finally(() => setIsToUpdate(true));
+    } else {
+      alert("usuarios não selecionados");
+    }
   };
 
   const handleChange2 = (event, newValue, activeThumb) => {
@@ -130,20 +163,44 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
                 {title}
               </MDTypography>
-              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                <Tooltip title="Selecionar autorização" placement="top">
-                  <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-              </MDBox>
-              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                <Tooltip title="Confirmar autorização" placement="top">
-                  <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
-                    <CheckIcon />
-                  </IconButton>
-                </Tooltip>
-              </MDBox>
+              {configToSend == false ? null : (
+                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                  <Tooltip title="Enviar autorização" placement="top">
+                    <IconButton
+                      sx={{ cursor: "pointer" }}
+                      fontSize="small"
+                      onClick={handleSendClick}
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  </Tooltip>
+                </MDBox>
+              )}
+              {configToSend == false ? (
+                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                  <Tooltip title="Confirmar seleção" placement="top">
+                    <IconButton
+                      sx={{ cursor: "pointer" }}
+                      fontSize="small"
+                      onClick={handleCheckClick}
+                    >
+                      <CheckIcon />
+                    </IconButton>
+                  </Tooltip>
+                </MDBox>
+              ) : (
+                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                  <Tooltip title="Editar autorização" placement="top">
+                    <IconButton
+                      sx={{ cursor: "pointer" }}
+                      fontSize="small"
+                      onClick={handleEditClick}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                  </Tooltip>
+                </MDBox>
+              )}
             </MDBox>
           </MDBox>
           {configToSend == false ? (
@@ -219,7 +276,12 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               </MDTypography>
             </MDBox>
           </MDBox>
-          <MDBox pt={2} px={10} display="flex" justifyContent="space-between" alignItems="center">
+          <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
+            <MDBox px={2}>
+              <MDTypography variant="h6" fontWeight="light">
+                {"0:00"}
+              </MDTypography>
+            </MDBox>
             <Slider
               aria-label="Horário de acesso"
               // getAriaValueText={"valuetext"}
@@ -233,6 +295,11 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               value={value2}
               onChange={handleChange2}
             />
+            <MDBox px={2}>
+              <MDTypography variant="h6" fontWeight="light">
+                {"23:59"}
+              </MDTypography>
+            </MDBox>
           </MDBox>
         </Card>
       </Grid>
