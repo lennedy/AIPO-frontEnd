@@ -45,7 +45,7 @@ function PlatformSettings() {
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/serialAvailable")
+    fetch(api.serial + "/serialAvailable")
       .then((res) => res.json())
       .then((data) => {
         if (data.status == "ok") {
@@ -53,6 +53,9 @@ function PlatformSettings() {
         } else {
           setEnableRegisterCard(false);
         }
+      })
+      .catch((error) => {
+        setEnableRegisterCard(false);
       });
 
     fetch(api.database + "/usuario/" + authData.user.matricula)
