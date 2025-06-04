@@ -8,8 +8,6 @@ gerenciamento de cadastro.code-workspace
 
 gerenciamento e cadastro.code-workspace
 
-public/
-
 package-lock.json
 
 .prettierrc.json
