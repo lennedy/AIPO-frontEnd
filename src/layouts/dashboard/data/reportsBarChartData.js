@@ -29,7 +29,7 @@ function formatDate(date, format) {
   return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
 }
 
-export default function chartData() {
+export default function ChartData() {
   const [acessosDomingo, setAcessosDomingo] = useState(0);
   const [acessosSegunda, setAcessosSegunda] = useState(0);
   const [acessosTerca, setAcessosTerca] = useState(0);

@@ -87,7 +87,7 @@ const avatars = (members) =>
     </Tooltip>
   ));
 
-export default function data() {
+export default function Data() {
   const Project = ({ image, name, codigo }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
