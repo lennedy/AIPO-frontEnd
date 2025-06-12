@@ -74,10 +74,8 @@ function PlatformSettings() {
     setUpdateChave(true);
 
     const api = getApiAddress();
-    fetch(api.database + "/chave/" + authData.user.matricula, {
-      method: "PUT",
-      body: JSON.stringify(authData.user.matricula),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
+    fetch(api.serial + "/readKey/", {
+      method: "GET",
     })
       .then((response) => response.json())
       .then((json) => {
