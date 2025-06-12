@@ -62,7 +62,7 @@ import MySelect from "layouts/tables/myComponents";
 
 import getApiAddress from "serverAddress";
 
-export default function data() {
+export default function Data() {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />

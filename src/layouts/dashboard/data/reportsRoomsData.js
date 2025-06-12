@@ -29,7 +29,7 @@ function formatDate(date, format) {
   return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
 }
 
-export default function roomsData() {
+export default function RoomsData() {
   const [numAcessos, setNumAcessos] = useState([]);
   const [salasAcessadas, setSalasAcessads] = useState([]);
 
