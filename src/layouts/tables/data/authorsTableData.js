@@ -553,20 +553,46 @@ export default function Data() {
             size="small"
             onClick={() => {
               if (Usuarios[key].ativo == 1) {
-                console.log("/chave/" + Usuarios[key].matricula);
-                setIsToUpdateUsers(false);
+                // console.log("/chave/" + Usuarios[key].matricula);
+                // setIsToUpdateUsers(false);
+                // const api = getApiAddress();
+                // fetch(api.database + "/chave/" + Usuarios[key].matricula, {
+                //   method: "PUT",
+                //   body: JSON.stringify(Usuarios[key].matricula),
+                //   headers: { "Content-type": "application/json; charset=UTF-8" },
+                // })
+                //   .then((response) => response.json())
+                //   .then((json) =>
+                //     json["status"] == "ok" ? alert("chave lida") : alert("erro:" + json["status"])
+                //   )
+                //   .catch((err) => console.log(err))
+                //   .finally(() => setIsToUpdateUsers(true));
                 const api = getApiAddress();
-                fetch(api.database + "/chave/" + Usuarios[key].matricula, {
-                  method: "PUT",
-                  body: JSON.stringify(Usuarios[key].matricula),
-                  headers: { "Content-type": "application/json; charset=UTF-8" },
-                })
+                fetch(api.serial + "/readKey")
                   .then((response) => response.json())
-                  .then((json) =>
-                    json["status"] == "ok" ? alert("chave lida") : alert("erro:" + json["status"])
-                  )
-                  .catch((err) => console.log(err))
-                  .finally(() => setIsToUpdateUsers(true));
+                  .then((json) => {
+                    if (json["status"] == "ok") {
+                      // alert("chave lida")
+                      fetch(api.database + "/setChave/" + Usuarios[key].matricula, {
+                        method: "PUT",
+                        body: JSON.stringify({ chave: json["chave"] }),
+                        headers: { "Content-type": "application/json; charset=UTF-8" },
+                      })
+                        .then((response) => response.json())
+                        .then((json) =>
+                          json["status"] == "ok"
+                            ? alert("chave cadastrada no banco")
+                            : alert("erro:" + json["status"])
+                        )
+                        .catch((err) => console.log(err))
+                        .finally(() => setIsToUpdateUsers(true));
+                    } else {
+                      alert("erro:" + json["status"]);
+                    }
+                    setUpdateChave(false);
+                  })
+                  .catch((err) => console.log(err));
+                // .finally(() => setIsToUpdateUsers(true));
               }
             }}
           >
