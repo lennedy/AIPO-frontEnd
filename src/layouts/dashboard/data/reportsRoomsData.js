@@ -24,7 +24,7 @@ export default function RoomsData() {
   const [numAcessos, setNumAcessos] = useState([]);
   const [salasAcessadas, setSalasAcessads] = useState([]);
 
-  const NUM_MAXIMO_SALAS = 3;
+  const NUM_MAXIMO_SALAS = 4;
 
   const data_inicia_final = getDate_last30Days();
 
