@@ -36,7 +36,7 @@ function formatDate(date, format) {
   return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
 }
 
-export default function data() {
+export default function Data() {
   const [Salas, setSalas] = useState([]);
   const [Acessos, setAcessos] = useState([]);
   const authData = useAuth();
@@ -75,7 +75,7 @@ export default function data() {
 
     fetch(api.database + "/salasAutorizadas/" + authData.user.matricula, {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(""),
       headers: { "Content-type": "application/json; charset=UTF-8" },
     })
       .then((response) => response.json())

@@ -40,6 +40,7 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import getApiAddress from "serverAddress";
 import formatDate from "util";
+import { getDate_last30Days, getDate_last7Days } from "util";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -51,21 +52,9 @@ function Dashboard() {
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
 
-  const temp = new Date().setDate(today.getDate() - 30);
-  const d_30_dias = new Date(temp);
+  const data_inicia_final_30 = getDate_last30Days();
 
-  const data_inicia_final_30 = {
-    data_inicial: formatDate(d_30_dias, "aa-mm-dd"),
-    data_final: formatDate(today, "aa-mm-dd"),
-  };
-
-  const temp2 = new Date().setDate(today.getDate() - 7);
-  const d_7_dias = new Date(temp2);
-
-  const data_inicia_final_7 = {
-    data_inicial: formatDate(d_7_dias, "aa-mm-dd"),
-    data_final: formatDate(today, "aa-mm-dd"),
-  };
+  const data_inicia_final_7 = getDate_last7Days();
 
   useEffect(() => {
     // fetch("/time")

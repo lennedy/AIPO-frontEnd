@@ -64,7 +64,7 @@ import TimelineItem from "examples/Timeline/TimelineItem";
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function data(codigoSala, editState, usuariosParaEditar, update) {
+export default function Data(codigoSala, editState, usuariosParaEditar, update) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />

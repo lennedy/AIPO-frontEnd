@@ -27,7 +27,7 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import TimelineItem from "examples/Timeline/TimelineItem";
-import formatDate from "util";
+import { getDate_last30Days } from "util";
 
 // prop-types is library for typechecking of props
 import PropTypes from "prop-types";
@@ -38,18 +38,7 @@ function LasAcessOverview({ codigo_salas }) {
   const [ultimosAcessos, setUltimosAcessos] = useState([]);
   const authData = useAuth();
 
-  const timeElapsed = Date.now();
-  const today = new Date(timeElapsed);
-
-  const ano_inicial = today.getFullYear();
-  const mes_inicial = today.getMonth() - 1;
-
-  const d_inicial = new Date(ano_inicial, mes_inicial);
-
-  const data_inicia_final = {
-    data_inicial: formatDate(d_inicial, "aa-mm-dd"),
-    data_final: formatDate(today, "aa-mm-dd"),
-  };
+  const data_inicia_final = getDate_last30Days();
 
   useEffect(() => {
     const api = getApiAddress();

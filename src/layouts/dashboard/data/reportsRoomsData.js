@@ -18,33 +18,15 @@ import { useState, useEffect } from "react";
 
 import getApiAddress from "serverAddress";
 
-function formatDate(date, format) {
-  const map = {
-    mm: date.getMonth() + 1,
-    dd: date.getDate(),
-    aa: date.getFullYear().toString().slice(-2),
-    aaaa: date.getFullYear(),
-  };
+import { getDate_last30Days } from "util";
 
-  return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
-}
-
-export default function roomsData() {
+export default function RoomsData() {
   const [numAcessos, setNumAcessos] = useState([]);
   const [salasAcessadas, setSalasAcessads] = useState([]);
 
   const NUM_MAXIMO_SALAS = 3;
-  const timeElapsed = Date.now();
-  const today = new Date(timeElapsed);
-  //const formatedToday = formatDate(today, "aa-mm-dd");
 
-  const temp = new Date().setDate(today.getDate() - 30);
-  const d_inicial = new Date(temp);
-
-  const data_inicia_final = {
-    data_inicial: formatDate(d_inicial, "aa-mm-dd"),
-    data_final: formatDate(today, "aa-mm-dd"),
-  };
+  const data_inicia_final = getDate_last30Days();
 
   useEffect(() => {
     const api = getApiAddress();

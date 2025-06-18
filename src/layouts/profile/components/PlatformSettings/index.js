@@ -45,7 +45,7 @@ function PlatformSettings() {
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/serialAvailable")
+    fetch(api.serial + "/serialAvailable")
       .then((res) => res.json())
       .then((data) => {
         if (data.status == "ok") {
@@ -53,6 +53,9 @@ function PlatformSettings() {
         } else {
           setEnableRegisterCard(false);
         }
+      })
+      .catch((error) => {
+        setEnableRegisterCard(false);
       });
 
     fetch(api.database + "/usuario/" + authData.user.matricula)
@@ -71,15 +74,28 @@ function PlatformSettings() {
     setUpdateChave(true);
 
     const api = getApiAddress();
-    fetch(api.database + "/chave/" + authData.user.matricula, {
-      method: "PUT",
-      body: JSON.stringify(authData.user.matricula),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
+    fetch(api.serial + "/readKey")
       .then((response) => response.json())
       .then((json) => {
-        json["status"] == "ok" ? alert("chave lida") : alert("erro:" + json["status"]);
-        setUpdateChave(false);
+        if (json["status"] == "ok") {
+          // alert("chave lida")
+          fetch(api.database + "/setChave/" + authData.user.matricula, {
+            method: "PUT",
+            body: JSON.stringify({ chave: json["chave"] }),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          })
+            .then((response) => response.json())
+            .then((json) => {
+              json["status"] == "ok"
+                ? alert("chave gravada no banco")
+                : alert("erro:" + json["status"]);
+              setUpdateChave(false);
+            })
+            .catch((err) => console.log(err));
+          // .finally(() => setUpdateChave(false));
+        } else {
+          alert("erro:" + json["status"]);
+        }
       })
       .catch((err) => console.log(err));
     // .finally(() => setIsToUpdateUsers(true));

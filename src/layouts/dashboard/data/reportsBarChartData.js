@@ -18,18 +18,9 @@ import { useState, useEffect } from "react";
 
 import getApiAddress from "serverAddress";
 
-function formatDate(date, format) {
-  const map = {
-    mm: date.getMonth() + 1,
-    dd: date.getDate(),
-    aa: date.getFullYear().toString().slice(-2),
-    aaaa: date.getFullYear(),
-  };
+import formatDate from "util";
 
-  return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
-}
-
-export default function chartData() {
+export default function ChartData() {
   const [acessosDomingo, setAcessosDomingo] = useState(0);
   const [acessosSegunda, setAcessosSegunda] = useState(0);
   const [acessosTerca, setAcessosTerca] = useState(0);
@@ -53,7 +44,9 @@ export default function chartData() {
 
   const data_inicia_final = { data_inicial: dates[6]["date"], data_final: dates[0]["date"] };
 
-  // console.log(dates);
+  console.log("Estive aqui");
+  console.log(dates);
+  console.log(data_inicia_final);
 
   useEffect(() => {
     const api = getApiAddress();
