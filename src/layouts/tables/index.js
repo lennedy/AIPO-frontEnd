@@ -44,6 +44,7 @@ import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import MySelect from "./myComponents";
 import getApiAddress from "serverAddress";
+import { useAuth } from "context/AuthProvider";
 
 function Tables() {
   const handleAddUser = (event) => {
@@ -79,6 +80,9 @@ function Tables() {
         typeof event.target.value === "string" ? event.target.value.split(",") : event.target.value
       );
     };
+
+    const authData = useAuth();
+
     return (
       <Popup
         trigger={
@@ -177,10 +181,14 @@ function Tables() {
                   };
                   console.log(_data);
                   const api = getApiAddress();
+
                   fetch(api.database + "/adicionarUsuarios", {
                     method: "POST",
                     body: JSON.stringify(_data),
-                    headers: { "Content-type": "application/json; charset=UTF-8" },
+                    headers: {
+                      "Content-type": "application/json; charset=UTF-8",
+                      Authorization: "Bearer " + authData.tokenLocal,
+                    },
                   })
                     .then((response) => response.json())
                     .then((json) =>
