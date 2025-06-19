@@ -18,6 +18,7 @@ const AuthProvider = ({ children }) => {
     foto: foto,
   });
   const [token, setToken] = useState(localStorage.getItem("site.token") || "");
+  const [tokenLocal, setTokenLocal] = useState(localStorage.getItem("site.tokenLocal") || "");
   const [nivelGerencia, setNivelGerencia] = useState(
     localStorage.getItem("site.nivelGerencia") || ""
   );
@@ -48,8 +49,12 @@ const AuthProvider = ({ children }) => {
 
         setToken(res.data.token);
         setNivelGerencia(res.data.nivelGerencia);
+        setTokenLocal(res.data.token_local);
+        console.log("coalizao");
+        console.log(res.data.token_local);
         if (lembrar) {
           localStorage.setItem("site.token", res.data.token);
+          localStorage.setItem("site.tokenLocal", res.data.token_local);
           localStorage.setItem("site.nivelGerencia", res.data.nivelGerencia);
           localStorage.setItem("site.nome", res.data.nome_usual);
           localStorage.setItem("site.matricula", res.data.matricula);
@@ -81,6 +86,7 @@ const AuthProvider = ({ children }) => {
     setUser(null);
     setToken("");
     localStorage.removeItem("site.token");
+    localStorage.removeItem("site.tokenLocal");
     localStorage.removeItem("site.nivelGerencia");
     localStorage.removeItem("site.nome");
     localStorage.removeItem("site.matricula");
@@ -90,7 +96,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, user, nivelGerencia, loginAction, logOut }}>
+    <AuthContext.Provider value={{ token, tokenLocal, user, nivelGerencia, loginAction, logOut }}>
       {children}
     </AuthContext.Provider>
   );
