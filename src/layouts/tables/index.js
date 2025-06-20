@@ -322,6 +322,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
+                  setIsToUpdate(false);
                   const _data = {
                     nome: inputSala,
                     codigo: inputCodSala,
@@ -333,14 +334,13 @@ function Tables() {
                   fetch(api.database + "/adicionarSala", {
                     method: "POST",
                     body: JSON.stringify(_data),
-                    headers: { "Content-type": "application/json; charset=UTF-8" },
+                    headers: {
+                      "Content-type": "application/json; charset=UTF-8",
+                      Authorization: "Bearer " + authData.tokenLocal,
+                    },
                   })
                     .then((response) => response.json())
-                    .then((json) =>
-                      json["status"] == "ok"
-                        ? alert("Adição realizada com sucesso")
-                        : alert("Erro:" + json["status"])
-                    )
+                    .then((json) => errorHandling(json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdate(true));
                 }}
