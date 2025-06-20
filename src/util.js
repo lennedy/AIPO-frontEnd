@@ -1,3 +1,5 @@
+import { useAuth } from "context/AuthProvider";
+
 export default function formatDate(date, format) {
   const map = {
     mm: date.getMonth() + 1,
@@ -34,6 +36,8 @@ export function getDate_last7Days() {
 }
 
 export function errorHandling(json, message) {
+  const authData = useAuth();
+  
   if (json["status"] == "ok") {
     alert(message);
   } else if (json["status"] == "Token has expired") {
