@@ -32,3 +32,14 @@ export function getDate_last30Days() {
 export function getDate_last7Days() {
   return getDate_lastDays(6);
 }
+
+export function errorHandling(json, message) {
+  if (json["status"] == "ok") {
+    alert(message);
+  } else if (json["status"] == "Token has expired") {
+    alert("O login expirou. Refaça o login");
+    authData.logOut();
+  } else {
+    alert("Erro:" + json["status"]);
+  }
+}

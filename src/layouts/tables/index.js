@@ -45,6 +45,7 @@ import projectsTableData from "layouts/tables/data/projectsTableData";
 import MySelect from "./myComponents";
 import getApiAddress from "serverAddress";
 import { useAuth } from "context/AuthProvider";
+import { errorHandling } from "util";
 
 function Tables() {
   const handleAddUser = (event) => {
@@ -173,6 +174,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
+                  setIsToUpdate(false);
                   const _data = {
                     nome: inputName,
                     matricula: inputMatr,
@@ -191,16 +193,7 @@ function Tables() {
                     },
                   })
                     .then((response) => response.json())
-                    .then((json) => {
-                      if (json["status"] == "ok") {
-                        alert("Adição realizada com sucesso");
-                      } else if (json["status"] == "Token has expired") {
-                        alert("O login expirou. Refaça o login");
-                        authData.logOut();
-                      } else {
-                        alert("Erro:" + json["status"]);
-                      }
-                    })
+                    .then((json) => errorHandling(json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdate(true));
                 }}
@@ -241,6 +234,9 @@ function Tables() {
     const handleFechadura = (event) => {
       setInputFechadura(event.target.value);
     };
+
+    const authData = useAuth();
+
     return (
       <Popup
         trigger={
