@@ -191,11 +191,16 @@ function Tables() {
                     },
                   })
                     .then((response) => response.json())
-                    .then((json) =>
-                      json["status"] == "ok"
-                        ? alert("Adição realizada com sucesso")
-                        : alert("Erro:" + json["status"])
-                    )
+                    .then((json) => {
+                      if (json["status"] == "ok") {
+                        alert("Adição realizada com sucesso");
+                      } else if (json["status"] == "Token has expired") {
+                        alert("O login expirou. Refaça o login");
+                        authData.logOut();
+                      } else {
+                        alert("Erro:" + json["status"]);
+                      }
+                    })
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdate(true));
                 }}
