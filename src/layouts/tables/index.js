@@ -193,7 +193,7 @@ function Tables() {
                     },
                   })
                     .then((response) => response.json())
-                    .then((json) => errorHandling(json, "Adição realizada com sucesso"))
+                    .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdate(true));
                 }}
@@ -340,7 +340,7 @@ function Tables() {
                     },
                   })
                     .then((response) => response.json())
-                    .then((json) => errorHandling(json, "Adição realizada com sucesso"))
+                    .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdate(true));
                 }}
