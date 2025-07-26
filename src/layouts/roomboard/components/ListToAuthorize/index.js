@@ -26,6 +26,7 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import SendIcon from "@mui/icons-material/Send";
 import Slider from "@mui/material/Slider";
+import Popup from "examples/Popup";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -204,11 +205,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                 </MDBox>
               )}
               <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                <Tooltip title="Adicionar usuário do SUAP" placement="top">
-                  <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
-                    <AddIcon />
-                  </IconButton>
-                </Tooltip>
+                <Popup></Popup>
               </MDBox>
             </MDBox>
           </MDBox>
