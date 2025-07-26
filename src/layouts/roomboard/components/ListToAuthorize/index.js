@@ -21,6 +21,8 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import SendIcon from "@mui/icons-material/Send";
 import Slider from "@mui/material/Slider";
@@ -201,6 +203,13 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                   </Tooltip>
                 </MDBox>
               )}
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Adicionar usuário do SUAP" placement="top">
+                  <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
+                    <AddIcon />
+                  </IconButton>
+                </Tooltip>
+              </MDBox>
             </MDBox>
           </MDBox>
           {configToSend == false ? (
