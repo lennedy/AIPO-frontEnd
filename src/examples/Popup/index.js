@@ -26,7 +26,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import Tooltip from "@mui/material/Tooltip";
 
-export default function FormDialog() {
+export default function FormDialog({ message }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -49,7 +49,7 @@ export default function FormDialog() {
   return (
     <React.Fragment>
       {/* <Button onClick={handleClickOpen}> Adicionar usuarios do SUAP </Button> */}
-      <Tooltip title="Editar seleção" placement="top">
+      <Tooltip title={message} placement="top">
         <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleClickOpen}>
           <AddIcon />
         </IconButton>
@@ -82,3 +82,7 @@ export default function FormDialog() {
     </React.Fragment>
   );
 }
+
+FormDialog.propTypes = {
+  message: PropTypes.string.isRequired,
+};
