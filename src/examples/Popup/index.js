@@ -13,56 +13,72 @@ const Modal = () => (
 
 
  */
-import React from "react";
-import Popup from "reactjs-popup";
-import "reactjs-popup/dist/index.css";
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import Icon from "@mui/material/Icon";
+import * as React from "react";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import Tooltip from "@mui/material/Tooltip";
 
-export default () => (
-  <Popup
-    trigger={
-      <MDTypography component="a" href="#" color="text">
-        <Icon>more_vert</Icon>
-      </MDTypography>
-    }
-    modal
-    nested
-  >
-    {(close) => (
-      //<MDBox display="flex" alignItems="center" lineHeight={1}></MDBox>
-      <div className="modal">
-        <button className="close" onClick={close}>
-          &times;
-        </button>
-        <div className="header"> Modal Title </div>
-        <div className="content">
-          {" "}
-          delectus doloremque, explicabo tempore dicta adipisci fugit amet dignissimos?
-          <br />
-          explicabo nemo nam libero ad, doloribus, voluptas rem alias. Vitae?
-        </div>
-        <div className="actions">
-          <Popup
-            trigger={<button className="button"> Trigger </button>}
-            position="top center"
-            nested
-          >
-            <span> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae </span>
-          </Popup>
-          <button
-            className="button"
-            onClick={() => {
-              console.log("modal closed ");
-              close();
-            }}
-          >
-            close modal
-          </button>
-        </div>
-      </div>
-      //</MDBox>
-    )}
-  </Popup>
-);
+export default function FormDialog() {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const formJson = Object.fromEntries(formData.entries());
+    const email = formJson.email;
+    console.log(email);
+    handleClose();
+  };
+
+  return (
+    <React.Fragment>
+      {/* <Button onClick={handleClickOpen}> Adicionar usuarios do SUAP </Button> */}
+      <Tooltip title="Editar seleção" placement="top">
+        <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleClickOpen}>
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent sx={{ paddingBottom: 0 }}>
+          <DialogContentText>
+            To subscribe to this website, please enter your email address here. We
+          </DialogContentText>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              id="name"
+              name="email"
+              label="Email Address"
+              type="email"
+              fullWidth
+              variant="standard"
+            />
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button type="submit">Subscribe</Button>
+            </DialogActions>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
+  );
+}
