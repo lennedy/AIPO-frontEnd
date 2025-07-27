@@ -25,6 +25,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import Tooltip from "@mui/material/Tooltip";
+import PropTypes from "prop-types";
 
 export default function FormDialog({ message }) {
   const [open, setOpen] = React.useState(false);
