@@ -42,8 +42,8 @@ export default function FormDialog({ message }) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const formJson = Object.fromEntries(formData.entries());
-    const email = formJson.email;
-    console.log(email);
+    const matricula = formJson.matricula;
+    console.log(matricula);
     handleClose();
   };
 
@@ -56,26 +56,24 @@ export default function FormDialog({ message }) {
         </IconButton>
       </Tooltip>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Adicionar usuário do SUAP</DialogTitle>
         <DialogContent sx={{ paddingBottom: 0 }}>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-          </DialogContentText>
+          <DialogContentText>Adicione a matrícula e pressione o botão de procura</DialogContentText>
           <form onSubmit={handleSubmit}>
             <TextField
               autoFocus
               required
               margin="dense"
               id="name"
-              name="email"
-              label="Email Address"
-              type="email"
+              name="matricula"
+              label="Matrícula do suap"
+              type="search"
               fullWidth
               variant="standard"
             />
             <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button type="submit">Subscribe</Button>
+              <Button onClick={handleClose}>cancelar</Button>
+              <Button type="submit">procurar</Button>
             </DialogActions>
           </form>
         </DialogContent>
