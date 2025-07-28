@@ -39,6 +39,8 @@ import MDPagination from "components/MDPagination";
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
 
+import Popup from "examples/Popup";
+
 function DataTable({
   entriesPerPage,
   canSearch,
@@ -208,26 +210,13 @@ function DataTable({
           {rows.length === 0 && buttonEnable == true ? (
             <TableRow>
               <DataTableBodyCell colSpan={columns.length} align="center">
-                <MDBox
-                  pt={2}
-                  px={2}
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  {/* <MDTypography variant="button" fontWeight="regular">
-                    Nenhum resultado encontrado
-                  </MDTypography> */}
-                  <MDBox pt={2} px={2} display="flex" justifyContent="space-between">
-                    <MDTypography variant="button" fontWeight="regular">
-                      Nenhum resultado encontrado
-                    </MDTypography>
+                <MDBox py={3}>
+                  <MDTypography variant="button" fontWeight="regular">
+                    Nenhum resultado encontrado.
+                  </MDTypography>
+                  <MDBox mt={2}>
+                    <Popup message="procurar no SUAP" label="Prouarar no SUAP" />
                   </MDBox>
-                  {/* <MDBox pt={2} px={2} display="flex" justifyContent="space-between">
-                    <MDTypography variant="button" fontWeight="regular">
-                      Nenhum resultado encontrado
-                    </MDTypography>
-                  </MDBox> */}
                 </MDBox>
               </DataTableBodyCell>
             </TableRow>
