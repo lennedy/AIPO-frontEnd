@@ -47,6 +47,7 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
+  buttonEnable,
 }) {
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
@@ -204,25 +205,53 @@ function DataTable({
           ))}
         </MDBox>
         <TableBody {...getTableBodyProps()}>
-          {page.map((row, key) => {
-            prepareRow(row);
-            return (
-              <TableRow key={key} {...row.getRowProps()}>
-                {row.cells.map((cell, idx) => (
-                  <DataTableBodyCell
-                    key={idx}
-                    noBorder={noEndBorder && rows.length - 1 === key}
-                    align={cell.column.align ? cell.column.align : "left"}
-                    {...cell.getCellProps()}
-                    hidden={cell.column.hidden}
-                  >
-                    {cell.render("Cell")}
-                    {/* {cell.column.hidden != true ? cell.render("Cell") : null} */}
-                  </DataTableBodyCell>
-                ))}
-              </TableRow>
-            );
-          })}
+          {rows.length === 0 && buttonEnable == true ? (
+            <TableRow>
+              <DataTableBodyCell colSpan={columns.length} align="center">
+                <MDBox
+                  pt={2}
+                  px={2}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  {/* <MDTypography variant="button" fontWeight="regular">
+                    Nenhum resultado encontrado
+                  </MDTypography> */}
+                  <MDBox pt={2} px={2} display="flex" justifyContent="space-between">
+                    <MDTypography variant="button" fontWeight="regular">
+                      Nenhum resultado encontrado
+                    </MDTypography>
+                  </MDBox>
+                  {/* <MDBox pt={2} px={2} display="flex" justifyContent="space-between">
+                    <MDTypography variant="button" fontWeight="regular">
+                      Nenhum resultado encontrado
+                    </MDTypography>
+                  </MDBox> */}
+                </MDBox>
+              </DataTableBodyCell>
+            </TableRow>
+          ) : (
+            page.map((row, key) => {
+              prepareRow(row);
+              return (
+                <TableRow key={key} {...row.getRowProps()}>
+                  {row.cells.map((cell, idx) => (
+                    <DataTableBodyCell
+                      key={idx}
+                      noBorder={noEndBorder && rows.length - 1 === key}
+                      align={cell.column.align ? cell.column.align : "left"}
+                      {...cell.getCellProps()}
+                      hidden={cell.column.hidden}
+                    >
+                      {cell.render("Cell")}
+                      {/* {cell.column.hidden != true ? cell.render("Cell") : null} */}
+                    </DataTableBodyCell>
+                  ))}
+                </TableRow>
+              );
+            })
+          )}
         </TableBody>
       </Table>
 
@@ -280,7 +309,7 @@ DataTable.defaultProps = {
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },
   isSorted: true,
-  noEndBorder: false,
+  buttonEnable: false,
 };
 
 // Typechecking props for the DataTable
@@ -310,6 +339,7 @@ DataTable.propTypes = {
   }),
   isSorted: PropTypes.bool,
   noEndBorder: PropTypes.bool,
+  buttonEnable: PropTypes.bool,
 };
 
 export default DataTable;
