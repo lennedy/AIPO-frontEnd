@@ -119,7 +119,11 @@ export default function FormDialog({ message, label }) {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Adicionar usuário do SUAP</DialogTitle>
         <DialogContent sx={{ paddingBottom: 0 }}>
-          <DialogContentText>Adicione a matrícula e pressione o botão de procura</DialogContentText>
+          <DialogContentText>
+            {addUser == false
+              ? "Procure usuário no SUAP"
+              : "Adicione a matrícula e pressione o botão de procura"}
+          </DialogContentText>
           <form onSubmit={addUser == false ? handleSubmit : handleSubmitDatabase}>
             {addUser == false ? (
               <TextField
