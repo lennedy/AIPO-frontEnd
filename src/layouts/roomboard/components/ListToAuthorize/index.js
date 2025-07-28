@@ -217,6 +217,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               showTotalEntries={false}
               canSearch
               noEndBorder
+              buttonEnable={true}
             />
           ) : (
             <DataTable
