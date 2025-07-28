@@ -26,9 +26,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import Tooltip from "@mui/material/Tooltip";
 import PropTypes from "prop-types";
+import getApiAddress from "serverAddress";
+import dialogAddUser from "examples/PopupAddUser";
 
 export default function FormDialog({ message, label }) {
   const [open, setOpen] = React.useState(false);
+  const [addUser, setAddUser] = React.useState(false);
+  const [nome, setNome] = React.useState("");
+  const [matr, setMatr] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -44,7 +49,55 @@ export default function FormDialog({ message, label }) {
     const formJson = Object.fromEntries(formData.entries());
     const matricula = formJson.matricula;
     console.log(matricula);
-    handleClose();
+    const api = getApiAddress();
+    fetch(api.database + "/procurarUsuarioSUAP/" + matricula)
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        console.log(json.dados.nome);
+        setNome(json.dados.nome);
+        setMatr(json.dados.matricula);
+        setAddUser(true);
+      })
+      .catch((err) => console.log(err));
+    // .finally(() => setIsToUpdateUsers(true));
+    // handleClose();
+  };
+
+  const handleSubmitDatabase = (event) => {
+    event.preventDefault();
+    const api = getApiAddress();
+    const dataToServer = {
+      nome: nome,
+      matricula: matr,
+      tipoUsuario: "Aluno",
+      nivelGerencia: "Usuário",
+    };
+    console.log(dataToServer);
+    fetch(api.database + "/adicionarUsuarios", {
+      method: "POST",
+      body: JSON.stringify(dataToServer),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+        // console.log(json.dados.nome);
+        setAddUser(false);
+        if (json["status"] == "ok") {
+          alert("Adição realizada com sucesso");
+          handleClose();
+        } else {
+          alert("Erro:" + json["status"]);
+        }
+      })
+      // .then((json) =>
+      //   json["status"] == "ok"
+      //     ? alert("Adição realizada com sucesso")
+      //     : alert("Erro:" + json["status"])
+      // )
+      .catch((err) => console.log(err));
+    // .finally(() => setIsToUpdateUsers(true));
   };
 
   return (
@@ -67,21 +120,80 @@ export default function FormDialog({ message, label }) {
         <DialogTitle>Adicionar usuário do SUAP</DialogTitle>
         <DialogContent sx={{ paddingBottom: 0 }}>
           <DialogContentText>Adicione a matrícula e pressione o botão de procura</DialogContentText>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              id="name"
-              name="matricula"
-              label="Matrícula do suap"
-              type="search"
-              fullWidth
-              variant="standard"
-            />
+          <form onSubmit={addUser == false ? handleSubmit : handleSubmitDatabase}>
+            {addUser == false ? (
+              <TextField
+                autoFocus
+                required={addUser ? false : true}
+                disabled={addUser ? true : false}
+                margin="dense"
+                id="name"
+                name="matricula"
+                label="Matrícula do suap"
+                type="search"
+                fullWidth
+                variant="standard"
+              />
+            ) : (
+              <TextField
+                autoFocus
+                required={addUser ? false : true}
+                disabled={addUser ? true : false}
+                margin="dense"
+                id="name"
+                value={matr}
+                name="matricula"
+                label="Matrícula do suap"
+                type="search"
+                fullWidth
+                variant="standard"
+              />
+            )}
+            {addUser == false ? null : (
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                name="nome"
+                label="Nome"
+                disabled
+                value={nome}
+                type="text"
+                fullWidth
+                variant="standard"
+              />
+            )}
+            {addUser == false ? null : (
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                name="Tipo usuario"
+                label="Tipo de usuário"
+                disabled
+                value="Aluno"
+                type="text"
+                fullWidth
+                variant="standard"
+              />
+            )}
+            {addUser == false ? null : (
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                name="Nível gerenciamento"
+                label="Nível de gerenciamento"
+                disabled
+                value="Usuário"
+                type="text"
+                fullWidth
+                variant="standard"
+              />
+            )}
             <DialogActions>
               <Button onClick={handleClose}>cancelar</Button>
-              <Button type="submit">procurar</Button>
+              <Button type="submit">{addUser == false ? "procurar" : "enviar para o banco"}</Button>
             </DialogActions>
           </form>
         </DialogContent>
