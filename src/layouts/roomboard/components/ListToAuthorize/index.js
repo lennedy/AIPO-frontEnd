@@ -204,9 +204,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                   </Tooltip>
                 </MDBox>
               )}
-              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                <Popup message="Adicionar usuário do SUAP"></Popup>
-              </MDBox>
             </MDBox>
           </MDBox>
           {configToSend == false ? (
