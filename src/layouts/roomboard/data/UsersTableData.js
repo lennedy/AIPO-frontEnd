@@ -110,28 +110,11 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
 
   useEffect(() => {
     const api = getApiAddress();
-    console.log("rato");
-    fetch(api.database + "/time")
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTime(data.time);
-      });
-    // if (isToUpdateUsers) {
     fetch(api.database + "/usuarios")
       .then((res) => res.json())
       .then((data) => {
-        console.log("rumbora");
-        console.log(data);
         setUsuarios(data);
       });
-    // }
-
-    // fetch(api.database + "/salas")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setSalas(data);
-    //   });
-
     fetch(api.database + "/UsuariosSalas")
       .then((res) => res.json())
       .then((data) => {
