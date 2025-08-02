@@ -63,7 +63,7 @@ import MySelect from "layouts/tables/myComponents";
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function Data(codigoSala, editState, usuariosParaEditar) {
+export default function Data(codigoSala, editState, usuariosParaEditar, isToUpdateUsers) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -106,23 +106,25 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
   const [UsuariosSalas, setUsuariosSalas] = useState(0);
 
   const [isToUpdate, setIsToUpdate] = useState(true);
-  const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
+  // const [isToUpdateUsers, setIsToUpdateUsers] = useState(updateUsers);
 
   useEffect(() => {
     const api = getApiAddress();
+    console.log("rato");
     fetch(api.database + "/time")
       .then((res) => res.json())
       .then((data) => {
         setCurrentTime(data.time);
       });
-    if (isToUpdateUsers) {
-      fetch(api.database + "/usuarios")
-        .then((res) => res.json())
-        .then((data) => {
-          // console.log(data);
-          setUsuarios(data);
-        });
-    }
+    // if (isToUpdateUsers) {
+    fetch(api.database + "/usuarios")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("rumbora");
+        console.log(data);
+        setUsuarios(data);
+      });
+    // }
 
     // fetch(api.database + "/salas")
     //   .then((res) => res.json())
@@ -135,7 +137,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
       .then((data) => {
         setUsuariosSalas(data);
       });
-  }, [isToUpdate, isToUpdateUsers]);
+  }, [isToUpdateUsers, isToUpdate]);
 
   const Job = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">

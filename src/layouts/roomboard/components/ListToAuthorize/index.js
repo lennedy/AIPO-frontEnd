@@ -59,7 +59,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  const [isToUpdate, setIsToUpdate] = useState(false);
+  const [isToUpdate, setIsToUpdate] = useState(true);
   const [editEnable, setEditEnable] = useState(false);
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
@@ -70,15 +70,15 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   // const [horarioInicioValue, setHorarioInicioValue] = useState(0);
   // const [horarioFimValue, setHorarioFimValue] = useState(24);
 
-  const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit);
-
+  const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit, isToUpdate);
+  console.log("Estou atualizando listToAuthorize");
+  console.log(autorizados);
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
 
   const minDistanceSlider = 0;
   const maxDistanceSlider = 24;
-
   var userToAuthorize = [];
   for (let key in edRows) {
     userToAuthorize.push({ matricula: edRows[key].author.props.email });
@@ -114,7 +114,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
 
   const handleSendClick = (event) => {
     if (enableToSend) {
-      setIsToUpdate(false);
+      // setIsToUpdate(false);
       const dataToServer = {
         usuarios: dataToParent.usersToAuthorize,
         dataInicio: dataToParent.beginDate,
@@ -137,7 +137,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           }
         })
         .catch((err) => console.log(err))
-        .finally(() => setIsToUpdate(true));
+        .finally(() => setIsToUpdate(!isToUpdate));
     } else {
       alert("usuarios não selecionados");
     }
@@ -155,6 +155,41 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     } else {
       setValue2(newValue);
     }
+  };
+
+  const handleAddNewUser = (event) => {
+    // event.preventDefault();
+    setIsToUpdate(false);
+    const api = getApiAddress();
+    const dataToServer = {
+      nome: "teste",
+      matricula: "matr",
+      tipoUsuario: "Aluno",
+      nivelGerencia: "Usuário",
+    };
+    console.log(dataToServer);
+    fetch(api.database + "/adicionarUsuarios", {
+      method: "POST",
+      body: JSON.stringify(dataToServer),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+
+        if (json["status"] == "ok") {
+          alert("Adição realizada com sucesso");
+        } else {
+          alert("Erro:" + json["status"]);
+        }
+      })
+      // .then((json) =>
+      //   json["status"] == "ok"
+      //     ? alert("Adição realizada com sucesso")
+      //     : alert("Erro:" + json["status"])
+      // )
+      .catch((err) => console.log(err))
+      .finally(() => setIsToUpdate(true));
   };
 
   return (
@@ -215,6 +250,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               canSearch
               noEndBorder
               buttonEnable={true}
+              handleAddUser={handleAddNewUser}
             />
           ) : (
             <DataTable

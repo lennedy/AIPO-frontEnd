@@ -29,7 +29,7 @@ import PropTypes from "prop-types";
 import getApiAddress from "serverAddress";
 import dialogAddUser from "examples/PopupAddUser";
 
-export default function FormDialog({ message, label }) {
+export default function FormDialog({ message, label, handleAddUser }) {
   const [open, setOpen] = React.useState(false);
   const [addUser, setAddUser] = React.useState(false);
   const [nome, setNome] = React.useState("");
@@ -100,6 +100,12 @@ export default function FormDialog({ message, label }) {
     // .finally(() => setIsToUpdateUsers(true));
   };
 
+  const handleAddUserLocal = (event) => {
+    event.preventDefault();
+    handleAddUser();
+    handleClose();
+  };
+
   return (
     <React.Fragment>
       {/* <Button onClick={handleClickOpen}> Adicionar usuarios do SUAP </Button> */}
@@ -117,14 +123,14 @@ export default function FormDialog({ message, label }) {
         </Button>
       </Tooltip>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Adicionar usuário do SUAP</DialogTitle>
+        <DialogTitle>
+          {addUser == false ? "Procure usuário no SUAP" : "Adicionar usuário do SUAP no banco"}
+        </DialogTitle>
         <DialogContent sx={{ paddingBottom: 0 }}>
           <DialogContentText>
-            {addUser == false
-              ? "Procure usuário no SUAP"
-              : "Adicione a matrícula e pressione o botão de procura"}
+            {addUser == false ? "" : "Dados do usuário para ser adicionado"}
           </DialogContentText>
-          <form onSubmit={addUser == false ? handleSubmit : handleSubmitDatabase}>
+          <form onSubmit={addUser == false ? handleSubmit : handleAddUserLocal}>
             {addUser == false ? (
               <TextField
                 autoFocus
@@ -197,7 +203,7 @@ export default function FormDialog({ message, label }) {
             )}
             <DialogActions>
               <Button onClick={handleClose}>cancelar</Button>
-              <Button type="submit">{addUser == false ? "procurar" : "enviar para o banco"}</Button>
+              <Button type="submit">{addUser == false ? "procurar" : "adcionar no banco"}</Button>
             </DialogActions>
           </form>
         </DialogContent>
@@ -209,4 +215,5 @@ export default function FormDialog({ message, label }) {
 FormDialog.propTypes = {
   message: PropTypes.string.isRequired,
   label: PropTypes.string,
+  handleAddUser: PropTypes.func.isRequired,
 };

@@ -50,6 +50,7 @@ function DataTable({
   isSorted,
   noEndBorder,
   buttonEnable,
+  handleAddUser,
 }) {
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
@@ -215,7 +216,11 @@ function DataTable({
                     Nenhum resultado encontrado.
                   </MDTypography>
                   <MDBox mt={2}>
-                    <Popup message="procurar no SUAP" label="Prouarar no SUAP" />
+                    <Popup
+                      message="procurar no SUAP"
+                      label="Prouarar no SUAP"
+                      handleAddUser={handleAddUser}
+                    />
                   </MDBox>
                 </MDBox>
               </DataTableBodyCell>
@@ -329,6 +334,7 @@ DataTable.propTypes = {
   isSorted: PropTypes.bool,
   noEndBorder: PropTypes.bool,
   buttonEnable: PropTypes.bool,
+  handleAddUser: PropTypes.func,
 };
 
 export default DataTable;
