@@ -50,16 +50,24 @@ export default function FormDialog({ message, label, handleAddUser }) {
     const matricula = formJson.matricula;
     console.log(matricula);
     const api = getApiAddress();
-    fetch(api.database + "/procurarUsuarioSUAP/" + matricula)
+    const endereco = api.database + "/procurarUsuarioSUAP/" + matricula.replace(/\s/g, "");
+    // console.log(endereco);
+    fetch(endereco)
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
-        console.log(json.dados.nome);
-        setNome(json.dados.nome);
-        setMatr(json.dados.matricula);
-        setAddUser(true);
+        // console.log(json);
+        if (json.status != "ok") {
+          alert(json.status);
+        } else {
+          console.log(json.dados.nome);
+          setNome(json.dados.nome);
+          setMatr(json.dados.matricula);
+          setAddUser(true);
+        }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log(err);
+      });
     // .finally(() => setIsToUpdateUsers(true));
     // handleClose();
   };
