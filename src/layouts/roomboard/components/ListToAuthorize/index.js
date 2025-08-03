@@ -71,8 +71,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   // const [horarioFimValue, setHorarioFimValue] = useState(24);
 
   const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit, isToUpdate);
-  console.log("Estou atualizando listToAuthorize");
-  console.log(autorizados);
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
@@ -157,20 +155,16 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     }
   };
 
-  const handleAddNewUser = (event) => {
+  const handleAddNewUser = (userData) => {
     // event.preventDefault();
     setIsToUpdate(false);
     const api = getApiAddress();
-    const dataToServer = {
-      nome: "teste",
-      matricula: "matr",
-      tipoUsuario: "Aluno",
-      nivelGerencia: "Usuário",
-    };
-    console.log(dataToServer);
+
+    console.log(userData);
+
     fetch(api.database + "/adicionarUsuarios", {
       method: "POST",
-      body: JSON.stringify(dataToServer),
+      body: JSON.stringify(userData),
       headers: { "Content-type": "application/json; charset=UTF-8" },
     })
       .then((response) => response.json())
@@ -183,11 +177,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           alert("Erro:" + json["status"]);
         }
       })
-      // .then((json) =>
-      //   json["status"] == "ok"
-      //     ? alert("Adição realizada com sucesso")
-      //     : alert("Erro:" + json["status"])
-      // )
       .catch((err) => console.log(err))
       .finally(() => setIsToUpdate(true));
   };

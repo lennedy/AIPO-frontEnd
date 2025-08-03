@@ -110,7 +110,13 @@ export default function FormDialog({ message, label, handleAddUser }) {
 
   const handleAddUserLocal = (event) => {
     event.preventDefault();
-    handleAddUser();
+    const userData = {
+      nome: nome,
+      matricula: matr,
+      nivelGerencia: "Aluno",
+      tipoUsuario: "Usuário",
+    };
+    handleAddUser(userData);
     handleClose();
   };
 
