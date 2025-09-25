@@ -589,7 +589,7 @@ export default function Data() {
                     } else {
                       alert("erro:" + json["status"]);
                     }
-                    setUpdateChave(false);
+                    // setUpdateChave(false);
                   })
                   .catch((err) => console.log(err));
                 // .finally(() => setIsToUpdateUsers(true));
