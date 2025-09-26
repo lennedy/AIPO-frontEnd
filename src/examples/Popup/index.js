@@ -28,12 +28,15 @@ import Tooltip from "@mui/material/Tooltip";
 import PropTypes from "prop-types";
 import getApiAddress from "serverAddress";
 import dialogAddUser from "examples/PopupAddUser";
+import { useAuth } from "context/AuthProvider";
 
 export default function FormDialog({ message, label, handleAddUser }) {
   const [open, setOpen] = React.useState(false);
   const [addUser, setAddUser] = React.useState(false);
   const [nome, setNome] = React.useState("");
   const [matr, setMatr] = React.useState("");
+
+  const authData = useAuth();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,7 +55,12 @@ export default function FormDialog({ message, label, handleAddUser }) {
     const api = getApiAddress();
     const endereco = api.database + "/procurarUsuarioSUAP/" + matricula.replace(/\s/g, "");
     // console.log(endereco);
-    fetch(endereco)
+    fetch(endereco, {
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + authData.tokenLocal,
+      },
+    })
       .then((response) => response.json())
       .then((json) => {
         // console.log(json);
