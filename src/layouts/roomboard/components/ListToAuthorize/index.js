@@ -21,9 +21,12 @@ import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import SendIcon from "@mui/icons-material/Send";
 import Slider from "@mui/material/Slider";
+import Popup from "examples/Popup";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -56,7 +59,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  const [isToUpdate, setIsToUpdate] = useState(false);
+  const [isToUpdate, setIsToUpdate] = useState(true);
   const [editEnable, setEditEnable] = useState(false);
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
@@ -67,15 +70,13 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   // const [horarioInicioValue, setHorarioInicioValue] = useState(0);
   // const [horarioFimValue, setHorarioFimValue] = useState(24);
 
-  const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit);
-
+  const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit, isToUpdate);
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
 
   const minDistanceSlider = 0;
   const maxDistanceSlider = 24;
-
   var userToAuthorize = [];
   for (let key in edRows) {
     userToAuthorize.push({ matricula: edRows[key].author.props.email });
@@ -111,7 +112,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
 
   const handleSendClick = (event) => {
     if (enableToSend) {
-      setIsToUpdate(false);
+      // setIsToUpdate(false);
       const dataToServer = {
         usuarios: dataToParent.usersToAuthorize,
         dataInicio: dataToParent.beginDate,
@@ -134,7 +135,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           }
         })
         .catch((err) => console.log(err))
-        .finally(() => setIsToUpdate(true));
+        .finally(() => setIsToUpdate(!isToUpdate));
     } else {
       alert("usuarios não selecionados");
     }
@@ -152,6 +153,32 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     } else {
       setValue2(newValue);
     }
+  };
+
+  const handleAddNewUser = (userData) => {
+    // event.preventDefault();
+    setIsToUpdate(false);
+    const api = getApiAddress();
+
+    console.log(userData);
+
+    fetch(api.database + "/adicionarUsuarios", {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        console.log(json);
+
+        if (json["status"] == "ok") {
+          alert("Adição realizada com sucesso");
+        } else {
+          alert("Erro:" + json["status"]);
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsToUpdate(true));
   };
 
   return (
@@ -211,6 +238,8 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               showTotalEntries={false}
               canSearch
               noEndBorder
+              buttonEnable={true}
+              handleAddUser={handleAddNewUser}
             />
           ) : (
             <DataTable

@@ -30,6 +30,7 @@ import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import RoomInfo from "layouts/roomboard/components/RoomInfo";
 import robotica from "assets/images/lab-robotica.jpeg";
+import ifrn from "assets/images/IFRN_medio.png";
 // import { DateRangePicker, DateRange } from "mui-daterange-picker";
 
 import { useMaterialUIController } from "context";
@@ -134,7 +135,7 @@ function RoomData() {
                             Salas
                           </MDTypography>
                         ) : (
-                          <RoomInfo image={robotica} name={nome} codigo={codigo} />
+                          <RoomInfo image={codigo=="A208"?robotica:ifrn} name={nome} codigo={codigo} />
                         )}
                       </Grid>
                       <Grid>

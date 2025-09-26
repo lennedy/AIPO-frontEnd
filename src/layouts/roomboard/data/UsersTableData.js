@@ -65,7 +65,7 @@ import MySelect from "layouts/tables/myComponents";
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function Data(codigoSala, editState, usuariosParaEditar) {
+export default function Data(codigoSala, editState, usuariosParaEditar, isToUpdateUsers) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -108,17 +108,17 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
   const [UsuariosSalas, setUsuariosSalas] = useState(0);
 
   const [isToUpdate, setIsToUpdate] = useState(true);
-  const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
+  // const [isToUpdateUsers, setIsToUpdateUsers] = useState(updateUsers);
 
   const authData = useAuth();
   
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/time")
+    fetch(api.database + "/usuarios")
       .then((res) => res.json())
       .then((data) => {
-        setCurrentTime(data.time);
+        setUsuarios(data);
       });
     if (isToUpdateUsers) {
       fetch(api.database + "/usuarios", {
@@ -146,7 +146,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
       .then((data) => {
         setUsuariosSalas(data);
       });
-  }, [isToUpdate, isToUpdateUsers]);
+  }, [isToUpdateUsers, isToUpdate]);
 
   const Job = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
