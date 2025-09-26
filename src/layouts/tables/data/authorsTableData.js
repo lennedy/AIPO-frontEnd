@@ -57,6 +57,8 @@ import logoSlack from "assets/images/small-logos/logo-slack.svg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
+import { useAuth } from "context/AuthProvider";
+
 //meus componentes
 import MySelect from "layouts/tables/myComponents";
 
@@ -106,6 +108,8 @@ export default function Data() {
   const [isToUpdate, setIsToUpdate] = useState(true);
   const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
 
+  const authData = useAuth();
+
   useEffect(() => {
     const api = getApiAddress();
     fetch(api.database + "/time")
@@ -114,7 +118,13 @@ export default function Data() {
         setCurrentTime(data.time);
       });
     if (isToUpdateUsers) {
-      fetch(api.database + "/usuarios")
+      fetch(api.database + "/usuarios", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + authData.tokenLocal,
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
           setUsuarios(data);
