@@ -55,7 +55,11 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import getApiAddress from "serverAddress";
 
+import { useAuth } from "context/AuthProvider";
+
 function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
+  const authData = useAuth();
+
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -165,7 +169,10 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     fetch(api.database + "/adicionarUsuarios", {
       method: "POST",
       body: JSON.stringify(userData),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + authData.tokenLocal,
+      },
     })
       .then((response) => response.json())
       .then((json) => {
