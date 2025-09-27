@@ -99,7 +99,7 @@ function DataTable({
       //initialState: { pageIndex: 0 }
       // Começa do que estava salvo
       initialState: {
-        pageIndex: paginationModel.page,
+        pageIndex: 0,
         pageSize: paginationModel.pageSize,
       },
       // Não reseta página automaticamente quando data/ordenação muda
@@ -173,6 +173,7 @@ function DataTable({
   // Search input state handle
   const onSearchChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
+    if (pageIndex !== 0) gotoPage(0);
   }, 100);
 
   // A function that sets the sorted value for the table
