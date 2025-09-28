@@ -96,6 +96,10 @@ function DataTable({
     {
       columns,
       data,
+      autoResetPage: false,
+      autoResetFilters: false,
+      autoResetSortBy: false,
+      autoResetGlobalFilter: false,
       //initialState: { pageIndex: 0 }
       // Começa do que estava salvo
       initialState: {
