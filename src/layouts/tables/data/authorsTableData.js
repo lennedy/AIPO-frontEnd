@@ -103,7 +103,7 @@ export default function Data( onOpenRowMenu ) {
       </Tooltip>
     ));
 
-  const [currentTime, setCurrentTime] = useState(0);
+  // const [currentTime, setCurrentTime] = useState(0);
   const [Usuarios, setUsuarios] = useState(0);
   const [Salas, setSalas] = useState(0);
   const [UsuariosSalas, setUsuariosSalas] = useState(0);
@@ -115,11 +115,11 @@ export default function Data( onOpenRowMenu ) {
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/time")
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTime(data.time);
-      });
+    // fetch(api.database + "/time")
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setCurrentTime(data.time);
+    //   });
     if (isToUpdateUsers) {
       fetch(api.database + "/usuarios", {
         method: "GET",
