@@ -390,7 +390,7 @@ function Tables() {
 
   const [isToUpdate, setIsToUpdate] = useState(true);
   // --- estado do formulário de edição (elevado!)
-  const [editingUser, setEditingUser] = React.useState({editing: null, userData: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""} });
+  const [editingUser, setEditingUser] = React.useState({editing: null, userData: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "usuário", tipoUsuario: "aluno"} });
 
   // const { columns, rows } = authorsTableData({ onOpenRowPopup: handleOpenRowMenu });
   const { columns, rows } = useMemo(

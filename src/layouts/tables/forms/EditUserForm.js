@@ -62,7 +62,7 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
     setInputUsuarioAtivo(!inputUsuarioAtivo);
   };
 
-  const dadosVaziosUsuario = {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""}
+  const dadosVaziosUsuario = {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "usuário", tipoUsuario: "aluno"}
 
   return (
   //   <Popup
