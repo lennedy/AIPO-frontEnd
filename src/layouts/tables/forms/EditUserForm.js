@@ -28,6 +28,15 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
   console.log("inputName");
   console.log(inputName);
 
+  useEffect(()=>{
+    setInputMatr(defaultValue?.matricula ?? "");
+    setInputName(defaultValue?.nome ?? "");
+    setInputTipoUsuario([defaultValue.tipoUsuario]);
+    setInputTipoGeren([defaultValue.nivelGerencia]);
+    setInputChave(defaultValue.chave);
+    setInputUsuarioAtivo(defaultValue.usuarioAtivo);
+  }, [identificadorUsuario]);
+
   const handleMatr = (event) => {
     setInputMatr(event.target.value);
   };
