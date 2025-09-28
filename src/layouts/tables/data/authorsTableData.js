@@ -36,6 +36,7 @@ import Card from "@mui/material/Card";
 import MenuItem from "@mui/material/MenuItem";
 import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
@@ -57,6 +58,8 @@ import logoSlack from "assets/images/small-logos/logo-slack.svg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
+import EditUserForm from "layouts/tables/forms/EditUserForm";
+
 import { useAuth } from "context/AuthProvider";
 
 //meus componentes
@@ -64,7 +67,7 @@ import MySelect from "layouts/tables/myComponents";
 
 import getApiAddress from "serverAddress";
 
-export default function Data() {
+export default function Data( onOpenRowMenu ) {
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -144,223 +147,223 @@ export default function Data() {
       });
   }, [isToUpdate, isToUpdateUsers]);
 
-  function EditUserForm({ identificadorUsuario, defaultValue }) {
-    const [inputMatr, setInputMatr] = useState(defaultValue.matricula);
-    const [inputName, setInputName] = useState(defaultValue.nome);
-    const [inputTipoUsario, setInputTipoUsuario] = useState([defaultValue.tipoUsuario]);
-    const [inputTipoGeren, setInputTipoGeren] = useState([defaultValue.nivelGerencia]);
-    const [inputChave, setInputChave] = useState(defaultValue.chave);
-    const [inputUsuarioAtivo, setInputUsuarioAtivo] = useState(defaultValue.usuarioAtivo);
+  // function EditUserForm({ identificadorUsuario, defaultValue }) {
+  //   const [inputMatr, setInputMatr] = useState(defaultValue.matricula);
+  //   const [inputName, setInputName] = useState(defaultValue.nome);
+  //   const [inputTipoUsario, setInputTipoUsuario] = useState([defaultValue.tipoUsuario]);
+  //   const [inputTipoGeren, setInputTipoGeren] = useState([defaultValue.nivelGerencia]);
+  //   const [inputChave, setInputChave] = useState(defaultValue.chave);
+  //   const [inputUsuarioAtivo, setInputUsuarioAtivo] = useState(defaultValue.usuarioAtivo);
 
-    const handleMatr = (event) => {
-      setInputMatr(event.target.value);
-    };
-    const handleName = (event) => {
-      setInputName(event.target.value);
-    };
-    const handleTipoUsuario = (event) => {
-      const {
-        target: { value },
-      } = event;
-      setInputTipoUsuario(typeof value === "string" ? value.split(",") : value);
-    };
-    const handleTipoGeren = (event) => {
-      const {
-        target: { value },
-      } = event;
-      setInputTipoGeren(typeof value === "string" ? value.split(",") : value);
-    };
-    const handleChave = (event) => {
-      setInputChave(event.target.value);
-    };
-    const handleUsuarioAtivo = (event) => {
-      setInputUsuarioAtivo(!inputUsuarioAtivo);
-    };
+  //   const handleMatr = (event) => {
+  //     setInputMatr(event.target.value);
+  //   };
+  //   const handleName = (event) => {
+  //     setInputName(event.target.value);
+  //   };
+  //   const handleTipoUsuario = (event) => {
+  //     const {
+  //       target: { value },
+  //     } = event;
+  //     setInputTipoUsuario(typeof value === "string" ? value.split(",") : value);
+  //   };
+  //   const handleTipoGeren = (event) => {
+  //     const {
+  //       target: { value },
+  //     } = event;
+  //     setInputTipoGeren(typeof value === "string" ? value.split(",") : value);
+  //   };
+  //   const handleChave = (event) => {
+  //     setInputChave(event.target.value);
+  //   };
+  //   const handleUsuarioAtivo = (event) => {
+  //     setInputUsuarioAtivo(!inputUsuarioAtivo);
+  //   };
 
-    return (
-      <Popup
-        trigger={
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        }
-        onClose={() => {}}
-        modal
-        nested
-      >
-        {(close) => (
-          <Card>
-            <MDBox className="modal">
-              <MDButton
-                className="close"
-                onClick={() => {
-                  close();
-                }}
-              >
-                &times;
-              </MDButton>
-              <MDBox display="flex" alignItems="center" justifyContent="center">
-                <MDTypography variant="h6">Edição de usuário</MDTypography>
-              </MDBox>
-            </MDBox>
-            <MDBox pt={3}></MDBox>
-            <MDInput
-              type="text"
-              label="Matrícula"
-              required="true"
-              onChange={handleMatr}
-              defaultValue={defaultValue.matricula}
-              fullWidth
-            ></MDInput>
-            <MDBox pt={1}></MDBox>
-            <MDInput
-              type="text"
-              label="Nome"
-              required="true"
-              onChange={handleName}
-              defaultValue={defaultValue.nome}
-              fullWidth
-            ></MDInput>
-            <MDBox pt={1}></MDBox>
-            <MySelect
-              labelName={"Tipo de usuário"}
-              selectOptions={["aluno", "TAE", "docente", "terceirizado", "externo"]}
-              onChange={handleTipoUsuario}
-              value={inputTipoUsario}
-            />
-            <MDBox pt={1}></MDBox>
-            <MySelect
-              labelName="Tipo de gerenciamento"
-              selectOptions={["usuário", "gerente", "administrador"]}
-              onChange={handleTipoGeren}
-              value={inputTipoGeren}
-            />
-            <MDBox display="flex" alignItems="center">
-              <MDInput
-                type="text"
-                label="Chave de acesso"
-                onChange={handleChave}
-                defaultValue={defaultValue.chave}
-                fullWidth
-              ></MDInput>
-              <MDButton
-                variant="contained"
-                onClick={() => {
-                  const api = getApiAddress();
-                  setIsToUpdateUsers(false);
-                  fetch(api.database + "/chave/" + identificadorUsuario, {
-                    method: "DELETE",
-                    body: JSON.stringify(identificadorUsuario),
-                    headers: { "Content-type": "application/json; charset=UTF-8" },
-                  })
-                    .then((response) => response.json())
-                    .then((json) => {
-                      if (json["status"] == "ok") {
-                        alert("modificação realizada");
-                      } else {
-                        alert("erro:" + json["status"]);
-                      }
-                    })
-                    .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdateUsers(true));
-                }}
-              >
-                <MDTypography variant="button" fontWeight="regular" color="text">
-                  Apagar chave
-                </MDTypography>
-              </MDButton>
-            </MDBox>
-            <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-              <MDBox mt={0.5}>
-                <Switch checked={inputUsuarioAtivo} onChange={handleUsuarioAtivo} />
-              </MDBox>
-              <MDBox width="80%" ml={0.5}>
-                <MDTypography variant="button" fontWeight="regular" color="text">
-                  Usuário ativo
-                </MDTypography>
-              </MDBox>
-            </MDBox>
-            <div className="actions">
-              <MDButton
-                className="button"
-                onClick={() => {
-                  console.log(inputMatr);
-                  console.log(inputName);
-                  console.log(inputTipoUsario);
-                  console.log(inputTipoGeren);
-                  console.log(inputChave);
-                  const data = {
-                    matr: inputMatr,
-                    nome: inputName,
-                    tipoUsuario: inputTipoUsario[0],
-                    tipoGerencia: inputTipoGeren[0],
-                    usuarioAtivo:
-                      inputUsuarioAtivo == true
-                        ? 1
-                        : inputUsuarioAtivo == false
-                        ? 0
-                        : inputUsuarioAtivo,
-                  };
-                  setIsToUpdateUsers(false);
-                  const api = getApiAddress();
-                  fetch(api.database + "/usuario/" + identificadorUsuario, {
-                    method: "PUT",
-                    body: JSON.stringify(data),
-                    headers: { "Content-type": "application/json; charset=UTF-8" },
-                  })
-                    .then((response) => response.json())
-                    .then((json) => {
-                      if (json["status"] == "ok") {
-                        alert("modificação realizada");
-                      } else {
-                        if (json["status"] == "sem chave") {
-                          alert("cadastre uma chave para autorizar o usuário");
-                          close();
-                        } else {
-                          alert("erro:" + json["status"]);
-                        }
-                      }
-                    })
-                    .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdateUsers(true));
-                }}
-              >
-                atualizar
-              </MDButton>
-              <MDButton
-                className="button"
-                onClick={() => {
-                  console.log("modal closed ");
-                  close();
-                }}
-              >
-                Cancelar
-              </MDButton>
-              <MDButton
-                className="button"
-                onClick={() => {
-                  console.log("/usuario/" + identificadorUsuario);
-                  setIsToUpdateUsers(false);
-                  const api = getApiAddress();
-                  fetch(api.database + "/usuario/" + identificadorUsuario, {
-                    method: "DELETE",
-                    body: JSON.stringify(identificadorUsuario),
-                    headers: { "Content-type": "application/json; charset=UTF-8" },
-                  })
-                    .then((response) => response.json())
-                    .then((json) => console.log(json))
-                    .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdateUsers(true));
-                }}
-              >
-                Apagar
-              </MDButton>
-            </div>
-          </Card>
-        )}
-      </Popup>
-    );
-  }
+  //   return (
+  //     <Popup
+  //       trigger={
+  //         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+  //           Edit
+  //         </MDTypography>
+  //       }
+  //       onClose={() => {}}
+  //       modal
+  //       nested
+  //     >
+  //       {(close) => (
+  //         <Card>
+  //           <MDBox className="modal">
+  //             <MDButton
+  //               className="close"
+  //               onClick={() => {
+  //                 close();
+  //               }}
+  //             >
+  //               &times;
+  //             </MDButton>
+  //             <MDBox display="flex" alignItems="center" justifyContent="center">
+  //               <MDTypography variant="h6">Edição de usuário</MDTypography>
+  //             </MDBox>
+  //           </MDBox>
+  //           <MDBox pt={3}></MDBox>
+  //           <MDInput
+  //             type="text"
+  //             label="Matrícula"
+  //             required="true"
+  //             onChange={handleMatr}
+  //             defaultValue={defaultValue.matricula}
+  //             fullWidth
+  //           ></MDInput>
+  //           <MDBox pt={1}></MDBox>
+  //           <MDInput
+  //             type="text"
+  //             label="Nome"
+  //             required="true"
+  //             onChange={handleName}
+  //             defaultValue={defaultValue.nome}
+  //             fullWidth
+  //           ></MDInput>
+  //           <MDBox pt={1}></MDBox>
+  //           <MySelect
+  //             labelName={"Tipo de usuário"}
+  //             selectOptions={["aluno", "TAE", "docente", "terceirizado", "externo"]}
+  //             onChange={handleTipoUsuario}
+  //             value={inputTipoUsario}
+  //           />
+  //           <MDBox pt={1}></MDBox>
+  //           <MySelect
+  //             labelName="Tipo de gerenciamento"
+  //             selectOptions={["usuário", "gerente", "administrador"]}
+  //             onChange={handleTipoGeren}
+  //             value={inputTipoGeren}
+  //           />
+  //           <MDBox display="flex" alignItems="center">
+  //             <MDInput
+  //               type="text"
+  //               label="Chave de acesso"
+  //               onChange={handleChave}
+  //               defaultValue={defaultValue.chave}
+  //               fullWidth
+  //             ></MDInput>
+  //             <MDButton
+  //               variant="contained"
+  //               onClick={() => {
+  //                 const api = getApiAddress();
+  //                 setIsToUpdateUsers(false);
+  //                 fetch(api.database + "/chave/" + identificadorUsuario, {
+  //                   method: "DELETE",
+  //                   body: JSON.stringify(identificadorUsuario),
+  //                   headers: { "Content-type": "application/json; charset=UTF-8" },
+  //                 })
+  //                   .then((response) => response.json())
+  //                   .then((json) => {
+  //                     if (json["status"] == "ok") {
+  //                       alert("modificação realizada");
+  //                     } else {
+  //                       alert("erro:" + json["status"]);
+  //                     }
+  //                   })
+  //                   .catch((err) => console.log(err))
+  //                   .finally(() => setIsToUpdateUsers(true));
+  //               }}
+  //             >
+  //               <MDTypography variant="button" fontWeight="regular" color="text">
+  //                 Apagar chave
+  //               </MDTypography>
+  //             </MDButton>
+  //           </MDBox>
+  //           <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
+  //             <MDBox mt={0.5}>
+  //               <Switch checked={inputUsuarioAtivo} onChange={handleUsuarioAtivo} />
+  //             </MDBox>
+  //             <MDBox width="80%" ml={0.5}>
+  //               <MDTypography variant="button" fontWeight="regular" color="text">
+  //                 Usuário ativo
+  //               </MDTypography>
+  //             </MDBox>
+  //           </MDBox>
+  //           <div className="actions">
+  //             <MDButton
+  //               className="button"
+  //               onClick={() => {
+  //                 console.log(inputMatr);
+  //                 console.log(inputName);
+  //                 console.log(inputTipoUsario);
+  //                 console.log(inputTipoGeren);
+  //                 console.log(inputChave);
+  //                 const data = {
+  //                   matr: inputMatr,
+  //                   nome: inputName,
+  //                   tipoUsuario: inputTipoUsario[0],
+  //                   tipoGerencia: inputTipoGeren[0],
+  //                   usuarioAtivo:
+  //                     inputUsuarioAtivo == true
+  //                       ? 1
+  //                       : inputUsuarioAtivo == false
+  //                       ? 0
+  //                       : inputUsuarioAtivo,
+  //                 };
+  //                 setIsToUpdateUsers(false);
+  //                 const api = getApiAddress();
+  //                 fetch(api.database + "/usuario/" + identificadorUsuario, {
+  //                   method: "PUT",
+  //                   body: JSON.stringify(data),
+  //                   headers: { "Content-type": "application/json; charset=UTF-8" },
+  //                 })
+  //                   .then((response) => response.json())
+  //                   .then((json) => {
+  //                     if (json["status"] == "ok") {
+  //                       alert("modificação realizada");
+  //                     } else {
+  //                       if (json["status"] == "sem chave") {
+  //                         alert("cadastre uma chave para autorizar o usuário");
+  //                         close();
+  //                       } else {
+  //                         alert("erro:" + json["status"]);
+  //                       }
+  //                     }
+  //                   })
+  //                   .catch((err) => console.log(err))
+  //                   .finally(() => setIsToUpdateUsers(true));
+  //               }}
+  //             >
+  //               atualizar
+  //             </MDButton>
+  //             <MDButton
+  //               className="button"
+  //               onClick={() => {
+  //                 console.log("modal closed ");
+  //                 close();
+  //               }}
+  //             >
+  //               Cancelar
+  //             </MDButton>
+  //             <MDButton
+  //               className="button"
+  //               onClick={() => {
+  //                 console.log("/usuario/" + identificadorUsuario);
+  //                 setIsToUpdateUsers(false);
+  //                 const api = getApiAddress();
+  //                 fetch(api.database + "/usuario/" + identificadorUsuario, {
+  //                   method: "DELETE",
+  //                   body: JSON.stringify(identificadorUsuario),
+  //                   headers: { "Content-type": "application/json; charset=UTF-8" },
+  //                 })
+  //                   .then((response) => response.json())
+  //                   .then((json) => console.log(json))
+  //                   .catch((err) => console.log(err))
+  //                   .finally(() => setIsToUpdateUsers(true));
+  //               }}
+  //             >
+  //               Apagar
+  //             </MDButton>
+  //           </div>
+  //         </Card>
+  //       )}
+  //     </Popup>
+  //   );
+  // }
 
   function AutorizeForm({ identificadorUsuario, salas }) {
     let codigos = [];
@@ -621,18 +624,38 @@ export default function Data() {
         </MDBox>
       ),
       action: (
-        <EditUserForm
-          identificadorUsuario={Usuarios[key].matricula}
-          defaultValue={{
-            matricula: Usuarios[key].matricula,
-            nome: Usuarios[key].nome,
-            tipoUsuario: Usuarios[key].tipoUsuario,
-            nivelGerencia: Usuarios[key].nivelGerencia,
-            chave: Usuarios[key].chave,
-            usuarioAtivo: Usuarios[key].ativo,
-          }}
-        />
+        <IconButton
+          onClick={(e) => onOpenRowMenu(Usuarios[key], e)}
+        >
+          {/* {avatars(usuarioSalas)}
+          <AutorizeForm identificadorUsuario={Usuarios[key].matricula} salas={Salas} /> */}
+          <Icon>more_vert</Icon>
+        </IconButton>
       ),
+      // action: (
+      //   <EditUserForm
+      //     identificadorUsuario={Usuarios[key].matricula}
+      //     defaultValue={{
+      //       matricula: Usuarios[key].matricula,
+      //       nome: Usuarios[key].nome,
+      //       tipoUsuario: Usuarios[key].tipoUsuario,
+      //       nivelGerencia: Usuarios[key].nivelGerencia,
+      //       chave: Usuarios[key].chave,
+      //       usuarioAtivo: Usuarios[key].ativo,
+      //     }}
+      //   />
+      //   ),
+       // NÃO renderize o <Menu> aqui; apenas o botão que abre
+      // action:({ row }) => (
+      //   <IconButton
+      //     // size="small"
+      //     // aria-haspopup="true"
+      //     // aria-controls="row-actions-menu"
+      //     // onClick={(e) => onOpenRowMenu(row.original, e)}
+      //   >
+      //     <Icon>more_vert</Icon>
+      //   </IconButton>
+      // ),
     };
   }
 

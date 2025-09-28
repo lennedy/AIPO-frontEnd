@@ -14,7 +14,9 @@ Coded by www.creative-tim.com
 */
 
 import Popup from "reactjs-popup";
-import { useState } from "react";
+import React, { useMemo, useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -25,7 +27,7 @@ import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import MenuItem from "@mui/material/MenuItem";
+// import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -47,7 +49,18 @@ import getApiAddress from "serverAddress";
 import { useAuth } from "context/AuthProvider";
 import { errorHandling } from "util";
 
+// import EditUserForm from "layouts/tables/forms/EditUserForm";
+
 function Tables() {
+  // Estado único e estável do popup (fora da tabela)
+  const [rowMenu, setRowMenu] = useState({ anchorEl: null, row: null });
+  const open = Boolean(rowMenu.anchorEl);
+  const handleOpenRowMenu = (row, event) => {
+    console.log(row);
+    setRowMenu({ anchorEl: event.currentTarget, row });
+  };
+  const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: null });
+
   const handleAddUser = (event) => {
     alert("teste agora");
   };
@@ -365,7 +378,15 @@ function Tables() {
 
   const [isToUpdate, setIsToUpdate] = useState(true);
 
-  const { columns, rows } = authorsTableData();
+  // const { columns, rows } = authorsTableData({ onOpenRowPopup: handleOpenRowMenu });
+  const { columns, rows } = useMemo(
+    () => authorsTableData( handleOpenRowMenu ),
+    [handleOpenRowMenu]
+  );
+
+  console.log("nilse")
+  console.log(rows);
+  
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
   return (
@@ -432,6 +453,26 @@ function Tables() {
           </Grid>
         </Grid>
       </MDBox>
+     {/* Menu ÚNICO fora da tabela => não desmonta no resize */}
+     <Menu
+       id="row-actions-menu"
+       anchorEl={rowMenu.anchorEl}
+       open={open}
+       onClose={handleCloseRowMenu}
+       keepMounted
+       // deixe via Portal (padrão) para ficar fora da árvore da tabela
+       // disablePortal={false}
+       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+       transformOrigin={{ vertical: "top", horizontal: "right" }}
+     >
+       {/* USE AQUI as mesmas ações que você tinha antes */}
+       <MenuItem onClick={() => { /* … */ handleCloseRowMenu(); }}>
+         Editar
+       </MenuItem>
+       <MenuItem onClick={() => { /* … */ handleCloseRowMenu(); }}>
+         Remover
+       </MenuItem>
+     </Menu>
       <Footer />
     </DashboardLayout>
   );
