@@ -21,12 +21,6 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
   const [inputTipoGeren, setInputTipoGeren] = useState([defaultValue.nivelGerencia]);
   const [inputChave, setInputChave] = useState(defaultValue.chave);
   const [inputUsuarioAtivo, setInputUsuarioAtivo] = useState(defaultValue.usuarioAtivo);
-  console.log("usuario ativo");
-  console.log(defaultValue.usuarioAtivo);
-  console.log("inputUsuarioAtivo");
-  console.log(inputUsuarioAtivo);
-  console.log("inputName");
-  console.log(inputName);
 
   useEffect(()=>{
     setInputMatr(defaultValue?.matricula ?? "");
