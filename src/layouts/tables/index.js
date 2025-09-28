@@ -19,6 +19,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 // @mui material components
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
@@ -49,17 +50,28 @@ import getApiAddress from "serverAddress";
 import { useAuth } from "context/AuthProvider";
 import { errorHandling } from "util";
 
-// import EditUserForm from "layouts/tables/forms/EditUserForm";
+import EditUserForm from "layouts/tables/forms/EditUserForm";
+// import { log } from "console";
+
+  //   // matricula: rowMenu.row.matricula,
+  //   // nome: rowMenu.row.nome,
+  //   usuarioAtivo: rowMenu.row.ativo,
+  //   chave: rowMenu.row.chave,
+  //   nivelGerencia: rowMenu.row.nivelGerencia,
+  //   tipoUsuario: rowMenu.row.tipoUsuario,
 
 function Tables() {
+
   // Estado único e estável do popup (fora da tabela)
-  const [rowMenu, setRowMenu] = useState({ anchorEl: null, row: null });
+  const [rowMenu, setRowMenu] = useState({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""} });
   const open = Boolean(rowMenu.anchorEl);
   const handleOpenRowMenu = (row, event) => {
+    console.log("row");
     console.log(row);
-    setRowMenu({ anchorEl: event.currentTarget, row });
+    setRowMenu({ anchorEl: event.currentTarget, row: row });
+    // console.log(row);
   };
-  const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: null });
+  const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""}});
 
   const handleAddUser = (event) => {
     alert("teste agora");
@@ -377,6 +389,8 @@ function Tables() {
   }
 
   const [isToUpdate, setIsToUpdate] = useState(true);
+  // --- estado do formulário de edição (elevado!)
+  const [editingUser, setEditingUser] = React.useState({editing: null, userData: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""} });
 
   // const { columns, rows } = authorsTableData({ onOpenRowPopup: handleOpenRowMenu });
   const { columns, rows } = useMemo(
@@ -388,6 +402,19 @@ function Tables() {
   console.log(rows);
   
   const { columns: pColumns, rows: pRows } = projectsTableData();
+
+  console.log("Dados Usuario");
+  console.log(editingUser);
+  console.log(editingUser.userData);
+
+  const dadosUsuario = {
+    matricula: editingUser.userData.matricula,
+    nome: editingUser.userData.nome,
+    usuarioAtivo: editingUser.userData.ativo,
+    chave: editingUser.userData.chave,
+    nivelGerencia: editingUser.userData.nivelGerencia,
+    tipoUsuario: editingUser.userData.tipoUsuario,
+  };
 
   return (
     <DashboardLayout>
@@ -466,13 +493,45 @@ function Tables() {
        transformOrigin={{ vertical: "top", horizontal: "right" }}
      >
        {/* USE AQUI as mesmas ações que você tinha antes */}
-       <MenuItem onClick={() => { /* … */ handleCloseRowMenu(); }}>
+       <MenuItem onClick={() => { 
+          setEditingUser({editing: true, userData: rowMenu.row});
+          handleCloseRowMenu();
+        }}>
          Editar
        </MenuItem>
        <MenuItem onClick={() => { /* … */ handleCloseRowMenu(); }}>
          Remover
        </MenuItem>
      </Menu>
+           {/* Dialog fora da célula, para não desmontar a tabela */}
+      {/* <Dialog
+        open={Boolean(editingUser)}
+        onClose={() => setEditingUser(null)}
+        // evita que o clique dentro do Dialog borbulhe e dispare handlers da linha/tabela
+        onClick={(e) => e.stopPropagation()}
+        fullWidth
+        maxWidth="sm"
+      > */}
+      {/* <DialogTitle>Editar usuário</DialogTitle> */}
+        {/* <DialogContent dividers> */}
+          {/* {editingUser && (
+            <EditUserForm
+              user={editingUser}
+              onCancel={() => setEditingUser(null)}
+              onSaved={() => {
+                // se precisar, faça refetch de dados aqui
+                setEditingUser(null);
+              }}
+            />
+          )} */}
+        {/* </DialogContent> */}
+      {/* </Dialog> */}
+      <EditUserForm 
+        identificadorUsuario = {dadosUsuario.matricula}
+        defaultValue = {dadosUsuario}
+        editingUser = {editingUser.editing}
+        setEditingUser = {setEditingUser}
+      />
       <Footer />
     </DashboardLayout>
   );
