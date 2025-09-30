@@ -59,7 +59,7 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
   const dadosVaziosUsuario = {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "usuário", tipoUsuario: "aluno"}
 
   return (
-    
+
   <Dialog
     open={Boolean(editingUser)}
     onClose={() => setEditingUser(false)}
@@ -217,8 +217,8 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
               })
                 .then((response) => response.json())
                 .then((json) => console.log(json))
-                .catch((err) => console.log(err));
-                // .finally(() => setIsToUpdateUsers(true));
+                .catch((err) => console.log(err))
+                .finally(() => setIsToUpdate(!isToUpdate));
             }}
           >
             Apagar
