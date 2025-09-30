@@ -53,6 +53,7 @@ import { errorHandling } from "util";
 
 import EditUserForm from "layouts/tables/forms/EditUserForm";
 import AuthorizeUserForm from "layouts/tables/forms/authorizeForm";
+import WaitTagRead from "layouts/tables/forms/WaitTagRead"
 
 // import { log } from "console";
 
@@ -76,6 +77,7 @@ function Tables() {
   const [dadosUsuarioEditar, setDadosUsuarioEditar] = useState();
   const [exibirEditUsuario, setExibirEditUsuario] = useState(false);
   const [exibirAutorizacaoUsuario, setExibirAutorizacaoUsuario] = useState(false);
+  const [exibirTagWait, setExibirTagWait] = useState(false);
 
   const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""}});
 
@@ -453,9 +455,36 @@ function Tables() {
     setExibirAutorizacaoUsuario(true);
   };
 
-  const handleReadTag = (event) => {
-    console.log("handlTag");
+  const handleReadTag = (event, dadosUsuario) => {
+    const api = getApiAddress();
 
+    console.log("handlTag");
+    setExibirTagWait(true);
+    fetch(api.serial + "/readKey")
+      .then((response) => response.json())
+      .then((json) => {
+        if (json["status"] == "ok") {
+          // alert("chave lida")
+          fetch(api.database + "/setChave/" + dadosUsuario.matricula, {
+            method: "PUT",
+            body: JSON.stringify({ chave: json["chave"] }),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          })
+            .then((response) => response.json())
+            .then((json) =>
+              json["status"] == "ok"
+                ? alert("chave cadastrada no banco")
+                : alert("erro:" + json["status"])
+            )
+            .catch((err) => console.log(err))
+            .finally(() => setIsToUpdate(!isToUpdate));
+        } else {
+          alert("erro:" + json["status"]);
+        }
+        // setUpdateChave(false);
+      })
+      .catch((err) => console.log(err));
+    // .finally(() => setIsToUpdateUsers(true));
   }
 
   // const Usuarios = [
@@ -583,6 +612,10 @@ function Tables() {
         setExibirForm = {setExibirAutorizacaoUsuario}
         isToUpdate = {isToUpdate}
         setIsToUpdate = {setIsToUpdate}
+      />
+      <WaitTagRead  
+        exibir = {exibirTagWait}
+        setExibir = {setExibirTagWait}
       />
       <Footer />
     </DashboardLayout>
