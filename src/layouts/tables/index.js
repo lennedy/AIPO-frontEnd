@@ -208,7 +208,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
-                  setIsToUpdate(false);
+                  setIsToUpdateUsers(false);
                   const _data = {
                     nome: inputName,
                     matricula: inputMatr,
@@ -229,10 +229,10 @@ function Tables() {
                     .then((response) => response.json())
                     .then((json) => {
                       errorHandling(authData, json, "Adição realizada com sucesso");
-                      setIsToUpdate(!isToUpdate);
+                      setIsToUpdateUsers(!isToUpdateUsers);
                     })
                     .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdate(true));
+                    .finally(() => setIsToUpdateUsers(true));
                 }}
               >
                 Adicionar
@@ -359,7 +359,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
-                  setIsToUpdate(false);
+                  setIsToUpdateRooms(false);
                   const _data = {
                     nome: inputSala,
                     codigo: inputCodSala,
@@ -379,7 +379,7 @@ function Tables() {
                     .then((response) => response.json())
                     .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdate(true));
+                    .finally(() => setIsToUpdateRooms(true));
                 }}
               >
                 Adicionar
@@ -400,7 +400,7 @@ function Tables() {
     );
   }
 
-  const [isToUpdate, setIsToUpdate] = useState(true);
+  const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
   const [isToUpdateRooms, setIsToUpdateRooms ] = useState(true);
   // --- estado do formulário de edição (elevado!)
   const [editingUser, setEditingUser] = React.useState({editing: null, userData: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "usuário", tipoUsuario: "aluno"} });
@@ -433,7 +433,7 @@ function Tables() {
       .then((data) => {
         setUsuariosSalas(data);
       });
-  }, [isToUpdate,isToUpdateRooms]);
+  }, [isToUpdateUsers,isToUpdateRooms]);
 
   const handleUserEdit = (event, dadosUsuario) => {
     
@@ -483,7 +483,7 @@ function Tables() {
                 : alert("erro:" + json["status"])
             )
             .catch((err) => console.log(err))
-            .finally(() => setIsToUpdate(!isToUpdate));
+            .finally(() => setIsToUpdateUsers(!isToUpdateUsers));
         } else {
           alert("erro:" + json["status"]);
         }
@@ -604,16 +604,16 @@ function Tables() {
         defaultValue = {dadosUsuarioEditar}
         editingUser = {exibirEditUsuario}
         setEditingUser = {setExibirEditUsuario}
-        isToUpdate = {isToUpdate}
-        setIsToUpdate = {setIsToUpdate}
+        isToUpdate = {isToUpdateUsers}
+        setIsToUpdate = {setIsToUpdateUsers}
       />
       <AuthorizeUserForm
         identificadorUsuario = {identUsuarioEditar}
         salas = {salas}
         exibirForm = {exibirAutorizacaoUsuario}
         setExibirForm = {setExibirAutorizacaoUsuario}
-        isToUpdate = {isToUpdate}
-        setIsToUpdate = {setIsToUpdate}
+        isToUpdate = {isToUpdateUsers}
+        setIsToUpdate = {setIsToUpdateUsers}
       />
       <WaitTagRead  
         exibir = {exibirTagWait}
