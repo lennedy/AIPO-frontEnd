@@ -623,6 +623,8 @@ function Tables() {
         exibir = {exibirSalaEditar}
         defaultValue = {dadosSalaEditar}
         setExibir = {setExibirSalaEditar}
+        isToUpdate = {isToUpdateRooms}
+        setIsToUpdate = {setIsToUpdateRooms}
       />
       <Footer />
     </DashboardLayout>
