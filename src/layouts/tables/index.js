@@ -45,6 +45,7 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import usersTableData from "layouts/tables/data/usersTableData";
+import roomsTableData from "layouts/tables/data/roomsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import MySelect from "./myComponents";
 import getApiAddress from "serverAddress";
@@ -52,8 +53,10 @@ import { useAuth } from "context/AuthProvider";
 import { errorHandling } from "util";
 
 import EditUserForm from "layouts/tables/forms/EditUserForm";
+import EditRoomForm from "layouts/tables/forms/EditRoomForm";
 import AuthorizeUserForm from "layouts/tables/forms/authorizeForm";
 import WaitTagRead from "layouts/tables/forms/WaitTagRead"
+
 
 // import { log } from "console";
 
@@ -78,6 +81,8 @@ function Tables() {
   const [exibirEditUsuario, setExibirEditUsuario] = useState(false);
   const [exibirAutorizacaoUsuario, setExibirAutorizacaoUsuario] = useState(false);
   const [exibirTagWait, setExibirTagWait] = useState(false);
+  const [exibirSalaEditar, setExibirSalaEditar] = useState(false);
+  const [dadosSalaEditar, setDadosSalaEditar] = useState();
 
   const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""}});
 
@@ -396,6 +401,7 @@ function Tables() {
   }
 
   const [isToUpdate, setIsToUpdate] = useState(true);
+  const [isToUpdateRooms, setIsToUpdateRooms ] = useState(true);
   // --- estado do formulário de edição (elevado!)
   const [editingUser, setEditingUser] = React.useState({editing: null, userData: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "usuário", tipoUsuario: "aluno"} });
 
@@ -427,7 +433,7 @@ function Tables() {
       .then((data) => {
         setUsuariosSalas(data);
       });
-  }, [isToUpdate]);
+  }, [isToUpdate,isToUpdateRooms]);
 
   const handleUserEdit = (event, dadosUsuario) => {
     
@@ -485,29 +491,25 @@ function Tables() {
       })
       .catch((err) => console.log(err));
     // .finally(() => setIsToUpdateUsers(true));
-  }
+  };
 
-  // const Usuarios = [
-  //   {matricula: 2, nome: "ste", tipoUsuario: "omilho", nivelGerencia: "gerente", ativo: true, chave: "ab de"},
-  //   {matricula: 2, nome: "ste", tipoUsuario: "omilho", nivelGerencia: "gerente", ativo: true, chave: "ab de"}]
-  // const UsuariosPorSalas = []
+  const handleRoomEdit = (event, dadosSala) => {
+    const dados = {
+      nomeSala: dadosSala.nome,
+      codSala: dadosSala.codigo,
+      codFechadura: dadosSala.fechadura,
+      localizacao: dadosSala.local,
+    }
+    setDadosSalaEditar(dados);
+    setExibirSalaEditar(true);
+    console.log("handleRoomEdit");
+  };
 
   const { columns, rows } = usersTableData( usuarios, usuariosSalas, handleUserEdit, handleAuthorizeEdit,  handleReadTag );
-  // const { columns, rows } = useMemo(
-  //   () => usersTableData( Usuarios, UsuariosPorSalas, handleUserEdit, handleAuthorizeEdit,  handleReadTag ),
-  //   [handleOpenRowMenu]
-  // );
   
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  // const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns: pColumns, rows: pRows } = roomsTableData(salas,handleRoomEdit);
 
-  // const dadosUsuario = {
-  //   matricula: editingUser.userData.matricula,
-  //   nome: editingUser.userData.nome,
-  //   usuarioAtivo: editingUser.userData.ativo,
-  //   chave: editingUser.userData.chave,
-  //   nivelGerencia: editingUser.userData.nivelGerencia,
-  //   tipoUsuario: editingUser.userData.tipoUsuario,
-  // };
   console.log("usuariosSala");
   console.log(usuariosSalas);
   return (
@@ -616,6 +618,11 @@ function Tables() {
       <WaitTagRead  
         exibir = {exibirTagWait}
         setExibir = {setExibirTagWait}
+      />
+      <EditRoomForm
+        exibir = {exibirSalaEditar}
+        defaultValue = {dadosSalaEditar}
+        setExibir = {setExibirSalaEditar}
       />
       <Footer />
     </DashboardLayout>
