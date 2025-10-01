@@ -10,6 +10,7 @@ import MDButton from "components/MDButton";
 import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
 import IconButton from "@mui/material/IconButton";
+import EditIcon from '@mui/icons-material/Edit';
 
 import logoRobotica2 from "assets/images/logo-robotica-small2.png";
 import UserImg from "assets/images/usuario.png";
@@ -119,7 +120,8 @@ export default function UsersTableData(Usuarios, UsuariosSalas, onEdit, onAuthor
         >
           {/* {avatars(usuarioSalas)}
           <AutorizeForm identificadorUsuario={Usuarios[key].matricula} salas={Salas} /> */}
-          <Icon>more_vert</Icon>
+          {/* <Icon>more_vert</Icon> */}
+          <EditIcon/>
         </IconButton>
       ),
     };
