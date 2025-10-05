@@ -178,7 +178,7 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
                 .then((response) => response.json())
                 .then((json) => {
                   if (json["status"] == "ok") {
-                    setIsToUpdate(!isToUpdate);
+                    setIsToUpdate(true);
                     alert("modificação realizada");
                     setEditingUser(false);
                   } else {
@@ -218,7 +218,7 @@ function EditUserForm({ identificadorUsuario, defaultValue, editingUser, setEdit
                 .then((response) => response.json())
                 .then((json) => console.log(json))
                 .catch((err) => console.log(err))
-                .finally(() => setIsToUpdate(!isToUpdate));
+                .finally(() => setIsToUpdate(true));
             }}
           >
             Apagar

@@ -410,29 +410,35 @@ function Tables() {
     const api = getApiAddress();
     
 
-    fetch(api.database + "/usuarios", {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: "Bearer " + authData.tokenLocal,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setUsuarios(data);
-      });
+    if(isToUpdateUsers){
+      fetch(api.database + "/usuarios", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + authData.tokenLocal,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUsuarios(data);
+        });
+      fetch(api.database + "/UsuariosSalas")
+        .then((res) => res.json())
+        .then((data) => {
+          setUsuariosSalas(data);
+        });
+      setIsToUpdateUsers(false);
+    }
 
-    fetch(api.database + "/salas")
-      .then((res) => res.json())
-      .then((data) => {
-        setSalas(data);
-      });
+    if(isToUpdateRooms){
+      fetch(api.database + "/salas")
+        .then((res) => res.json())
+        .then((data) => {
+          setSalas(data);
+        });
+      setIsToUpdateRooms(false);
+    }
 
-    fetch(api.database + "/UsuariosSalas")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsuariosSalas(data);
-      });
   }, [isToUpdateUsers,isToUpdateRooms]);
 
   const handleUserEdit = (event, dadosUsuario) => {
