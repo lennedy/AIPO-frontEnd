@@ -16,6 +16,13 @@ function EditRoomForm({ identificador, defaultValue, exibir, setExibir, isToUpda
   const [inputLocal, setInputLocal] = useState(defaultValue.localizacao);
   const [inputFechadura, setInputFechadura] = useState(defaultValue.codFechadura);
 
+  useEffect(()=>{
+    setInputName(defaultValue?.nomeSala ?? "");
+    setInputCode(defaultValue.codSala);
+    setInputLocal(defaultValue.localizacao);
+    setInputFechadura(defaultValue.codFechadura);
+  }, [identificador]);
+
   const handleName = (event) => {
     // disableUpdate = false;
     // nameChanged = true;
@@ -176,7 +183,7 @@ function EditRoomForm({ identificador, defaultValue, exibir, setExibir, isToUpda
     fullWidth
     maxWidth="sm"
     >
-      <DialogTitle>Editar usuário</DialogTitle>
+      <DialogTitle>Editar Sala</DialogTitle>
       <DialogContent dividers>
         <card>
           <MDBox pt={1}></MDBox>
@@ -220,11 +227,6 @@ function EditRoomForm({ identificador, defaultValue, exibir, setExibir, isToUpda
             <MDButton
               className="button"
               onClick={() => {
-                console.log(inputName);
-                console.log(inputCode);
-                console.log(inputLocal);
-                console.log(inputFechadura);
-                console.log(identificador);
                 const dadosSala = {
                   nome: inputName,
                   codigo: inputCode,
@@ -290,7 +292,7 @@ function EditRoomForm({ identificador, defaultValue, exibir, setExibir, isToUpda
 }
 
 EditRoomForm.defaultProps = {
-  identificadorUsuario: "",
+  identificador: "",
   defaultValue: {
     codSala: "",
     nomeSala: "",
@@ -300,7 +302,7 @@ EditRoomForm.defaultProps = {
 };
 
 EditRoomForm.propTypes = {
-  identificadorUsuario: PropTypes.string,
+  identificador: PropTypes.string,
   defaultValue: {
     codSala: PropTypes.string,
     nomeSala: PropTypes.string,
@@ -309,7 +311,7 @@ EditRoomForm.propTypes = {
   },
   exibir: PropTypes.bool.isRequired,    // obrigatório e precisa ser string
   setExibir: PropTypes.func.isRequired,   // obrigatório e precisa ser função
-  isToUpdate: PropTypes.bool.isRequired,    // obrigatório e precisa ser string
+  isToUpdate: PropTypes.bool.isRequired,    // obrigatório e precisa ser bool
   setIsToUpdate: PropTypes.func.isRequired,   // obrigatório e precisa ser função
 };
 

@@ -81,8 +81,9 @@ function Tables() {
   const [exibirEditUsuario, setExibirEditUsuario] = useState(false);
   const [exibirAutorizacaoUsuario, setExibirAutorizacaoUsuario] = useState(false);
   const [exibirTagWait, setExibirTagWait] = useState(false);
+  const [identificadorSala, setIdentUsuarioSala] = useState("");
   const [exibirSalaEditar, setExibirSalaEditar] = useState(false);
-  const [dadosSalaEditar, setDadosSalaEditar] = useState();
+  const [dadosSalaEditar, setDadosSalaEditar] = useState({id: "", nomeSala: "", codSala: "", codFechadura: "", localizacao: ""});
 
   const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""}});
 
@@ -501,14 +502,15 @@ function Tables() {
 
   const handleRoomEdit = (event, dadosSala) => {
     const dados = {
+      id: dadosSala.id,
       nomeSala: dadosSala.nome,
       codSala: dadosSala.codigo,
       codFechadura: dadosSala.fechadura,
       localizacao: dadosSala.local,
     }
     setDadosSalaEditar(dados);
+    setIdentUsuarioSala(dados.id);
     setExibirSalaEditar(true);
-    console.log("handleRoomEdit");
   };
 
   const { columns, rows } = usersTableData( usuarios, usuariosSalas, handleUserEdit, handleAuthorizeEdit,  handleReadTag );
@@ -516,8 +518,8 @@ function Tables() {
   // const { columns: pColumns, rows: pRows } = projectsTableData();
   const { columns: pColumns, rows: pRows } = roomsTableData(salas,handleRoomEdit);
 
-  console.log("usuariosSala");
-  console.log(usuariosSalas);
+  // console.log("usuariosSala");
+  // console.log(usuariosSalas);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -626,8 +628,9 @@ function Tables() {
         setExibir = {setExibirTagWait}
       />
       <EditRoomForm
-        exibir = {exibirSalaEditar}
+        identificador = {dadosSalaEditar.id}
         defaultValue = {dadosSalaEditar}
+        exibir = {exibirSalaEditar}
         setExibir = {setExibirSalaEditar}
         isToUpdate = {isToUpdateRooms}
         setIsToUpdate = {setIsToUpdateRooms}
