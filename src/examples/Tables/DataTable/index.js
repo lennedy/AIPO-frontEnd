@@ -281,7 +281,7 @@ function DataTable({
                   <MDBox mt={2}>
                     <Popup
                       message="procurar no SUAP"
-                      label="Prouarar no SUAP"
+                      label="Procurar no SUAP"
                       handleAddUser={handleAddUser}
                     />
                   </MDBox>
