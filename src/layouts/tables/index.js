@@ -14,9 +14,12 @@ Coded by www.creative-tim.com
 */
 
 import Popup from "reactjs-popup";
-import { useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 
 // @mui material components
+import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
@@ -25,7 +28,7 @@ import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import Chip from "@mui/material/Chip";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import MenuItem from "@mui/material/MenuItem";
+// import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -41,22 +44,54 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
+import usersTableData from "layouts/tables/data/usersTableData";
+import roomsTableData from "layouts/tables/data/roomsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import MySelect from "./myComponents";
 import getApiAddress from "serverAddress";
 import { useAuth } from "context/AuthProvider";
 import { errorHandling } from "util";
 
+import EditUserForm from "layouts/tables/forms/EditUserForm";
+import EditRoomForm from "layouts/tables/forms/EditRoomForm";
+import AuthorizeUserForm from "layouts/tables/forms/authorizeForm";
+import WaitTagRead from "layouts/tables/forms/WaitTagRead"
+
+
+// import { log } from "console";
+
+  //   // matricula: rowMenu.row.matricula,
+  //   // nome: rowMenu.row.nome,
+  //   usuarioAtivo: rowMenu.row.ativo,
+  //   chave: rowMenu.row.chave,
+  //   nivelGerencia: rowMenu.row.nivelGerencia,
+  //   tipoUsuario: rowMenu.row.tipoUsuario,
+
 function Tables() {
+
+  // Estado único e estável do popup (fora da tabela)
+  const [rowMenu, setRowMenu] = useState({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""} });
+  const open = Boolean(rowMenu.anchorEl);
+  
+  const [usuarios, setUsuarios] = useState();
+  const [salas, setSalas] = useState(0);
+  const [usuariosSalas, setUsuariosSalas] = useState(0);
+  const [identUsuarioEditar, setIdentUsuarioEditar] = useState("");
+  const [dadosUsuarioEditar, setDadosUsuarioEditar] = useState();
+  const [exibirEditUsuario, setExibirEditUsuario] = useState(false);
+  const [exibirAutorizacaoUsuario, setExibirAutorizacaoUsuario] = useState(false);
+  const [exibirTagWait, setExibirTagWait] = useState(false);
+  const [identificadorSala, setIdentUsuarioSala] = useState("");
+  const [exibirSalaEditar, setExibirSalaEditar] = useState(false);
+  const [dadosSalaEditar, setDadosSalaEditar] = useState({id: "", nomeSala: "", codSala: "", codFechadura: "", localizacao: ""});
+
+  const handleCloseRowMenu = () => setRowMenu({ anchorEl: null, row: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "", tipoUsuario: ""}});
+
   const handleAddUser = (event) => {
     alert("teste agora");
   };
 
-  const [form, setInputForm] = useState({
-    matricula: "",
-    nome: "",
-    email: "",
-  });
+
   function AddUserForm() {
     const [SelectSala, selectedSala] = useState([]);
 
@@ -174,7 +209,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
-                  setIsToUpdate(false);
+                  setIsToUpdateUsers(false);
                   const _data = {
                     nome: inputName,
                     matricula: inputMatr,
@@ -193,9 +228,12 @@ function Tables() {
                     },
                   })
                     .then((response) => response.json())
-                    .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
+                    .then((json) => {
+                      errorHandling(authData, json, "Adição realizada com sucesso");
+                      setIsToUpdateUsers(!isToUpdateUsers);
+                    })
                     .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdate(true));
+                    .finally(() => setIsToUpdateUsers(true));
                 }}
               >
                 Adicionar
@@ -322,7 +360,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
-                  setIsToUpdate(false);
+                  setIsToUpdateRooms(false);
                   const _data = {
                     nome: inputSala,
                     codigo: inputCodSala,
@@ -342,7 +380,7 @@ function Tables() {
                     .then((response) => response.json())
                     .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
-                    .finally(() => setIsToUpdate(true));
+                    .finally(() => setIsToUpdateRooms(true));
                 }}
               >
                 Adicionar
@@ -363,11 +401,125 @@ function Tables() {
     );
   }
 
-  const [isToUpdate, setIsToUpdate] = useState(true);
+  const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
+  const [isToUpdateRooms, setIsToUpdateRooms ] = useState(true);
+  // --- estado do formulário de edição (elevado!)
+  const [editingUser, setEditingUser] = React.useState({editing: null, userData: {matricula: "", nome: "", ativo: "", chave: "", nivelGerencia: "usuário", tipoUsuario: "aluno"} });
 
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const authData = useAuth();
+  useEffect(() => {
+    const api = getApiAddress();
+    
 
+    if(isToUpdateUsers){
+      fetch(api.database + "/usuarios", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + authData.tokenLocal,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setUsuarios(data);
+        });
+      fetch(api.database + "/UsuariosSalas")
+        .then((res) => res.json())
+        .then((data) => {
+          setUsuariosSalas(data);
+        });
+      setIsToUpdateUsers(false);
+    }
+
+    if(isToUpdateRooms){
+      fetch(api.database + "/salas")
+        .then((res) => res.json())
+        .then((data) => {
+          setSalas(data);
+        });
+      setIsToUpdateRooms(false);
+    }
+
+  }, [isToUpdateUsers,isToUpdateRooms]);
+
+  const handleUserEdit = (event, dadosUsuario) => {
+    
+    console.log("handleEdit");
+    const dados = {
+      matricula: dadosUsuario.matricula,
+      nome: dadosUsuario.nome,
+      usuarioAtivo: dadosUsuario.ativo,
+      chave: dadosUsuario.chave,
+      nivelGerencia: dadosUsuario.nivelGerencia,
+      tipoUsuario: dadosUsuario.tipoUsuario,
+    };
+    console.log(dados);
+    setDadosUsuarioEditar(dados);
+    setIdentUsuarioEditar(dados.matricula);
+    setExibirEditUsuario(true);
+    // setIsToUpdate(!isToUpdate);
+    // setIsToUpdate(false);
+    
+  };
+
+  const handleAuthorizeEdit = (event, dadosUsuario, dadosSalas) => {
+    console.log("handleAuthorize");
+    setIdentUsuarioEditar(dadosUsuario.matricula);
+    setExibirAutorizacaoUsuario(true);
+  };
+
+  const handleReadTag = (event, dadosUsuario) => {
+    const api = getApiAddress();
+
+    console.log("handlTag");
+    setExibirTagWait(true);
+    fetch(api.serial + "/readKey")
+      .then((response) => response.json())
+      .then((json) => {
+        if (json["status"] == "ok") {
+          // alert("chave lida")
+          fetch(api.database + "/setChave/" + dadosUsuario.matricula, {
+            method: "PUT",
+            body: JSON.stringify({ chave: json["chave"] }),
+            headers: { "Content-type": "application/json; charset=UTF-8" },
+          })
+            .then((response) => response.json())
+            .then((json) =>
+              json["status"] == "ok"
+                ? alert("chave cadastrada no banco")
+                : alert("erro:" + json["status"])
+            )
+            .catch((err) => console.log(err))
+            .finally(() => setIsToUpdateUsers(!isToUpdateUsers));
+        } else {
+          alert("erro:" + json["status"]);
+        }
+        // setUpdateChave(false);
+      })
+      .catch((err) => console.log(err));
+    // .finally(() => setIsToUpdateUsers(true));
+  };
+
+  const handleRoomEdit = (event, dadosSala) => {
+    const dados = {
+      id: dadosSala.id,
+      nomeSala: dadosSala.nome,
+      codSala: dadosSala.codigo,
+      codFechadura: dadosSala.fechadura,
+      localizacao: dadosSala.local,
+    }
+    setDadosSalaEditar(dados);
+    setIdentUsuarioSala(dados.id);
+    setExibirSalaEditar(true);
+  };
+
+  const { columns, rows } = usersTableData( usuarios, usuariosSalas, handleUserEdit, handleAuthorizeEdit,  handleReadTag );
+  
+  // const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns: pColumns, rows: pRows } = roomsTableData(salas,handleRoomEdit);
+
+  // console.log("usuariosSala");
+  // console.log(usuariosSalas);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -432,6 +584,57 @@ function Tables() {
           </Grid>
         </Grid>
       </MDBox>
+     {/* Menu ÚNICO fora da tabela => não desmonta no resize */}
+     <Menu
+       id="row-actions-menu"
+       anchorEl={rowMenu.anchorEl}
+       open={open}
+       onClose={handleCloseRowMenu}
+       keepMounted
+       // deixe via Portal (padrão) para ficar fora da árvore da tabela
+       // disablePortal={false}
+       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+       transformOrigin={{ vertical: "top", horizontal: "right" }}
+     >
+       {/* USE AQUI as mesmas ações que você tinha antes */}
+       <MenuItem onClick={() => { 
+          setEditingUser({editing: true, userData: rowMenu.row});
+          handleCloseRowMenu();
+        }}>
+         Editar
+       </MenuItem>
+       <MenuItem onClick={() => { /* … */ handleCloseRowMenu(); }}>
+         Remover
+       </MenuItem>
+     </Menu>
+      <EditUserForm 
+        identificadorUsuario = {identUsuarioEditar}
+        defaultValue = {dadosUsuarioEditar}
+        editingUser = {exibirEditUsuario}
+        setEditingUser = {setExibirEditUsuario}
+        isToUpdate = {isToUpdateUsers}
+        setIsToUpdate = {setIsToUpdateUsers}
+      />
+      <AuthorizeUserForm
+        identificadorUsuario = {identUsuarioEditar}
+        salas = {salas}
+        exibirForm = {exibirAutorizacaoUsuario}
+        setExibirForm = {setExibirAutorizacaoUsuario}
+        isToUpdate = {isToUpdateUsers}
+        setIsToUpdate = {setIsToUpdateUsers}
+      />
+      <WaitTagRead  
+        exibir = {exibirTagWait}
+        setExibir = {setExibirTagWait}
+      />
+      <EditRoomForm
+        identificador = {dadosSalaEditar.id}
+        defaultValue = {dadosSalaEditar}
+        exibir = {exibirSalaEditar}
+        setExibir = {setExibirSalaEditar}
+        isToUpdate = {isToUpdateRooms}
+        setIsToUpdate = {setIsToUpdateRooms}
+      />
       <Footer />
     </DashboardLayout>
   );
