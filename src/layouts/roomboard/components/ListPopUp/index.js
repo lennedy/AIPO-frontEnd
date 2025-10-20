@@ -39,7 +39,10 @@ function ListOfUsers({title, columns, rows, exibir, setExibir, isToUpdate, setIs
           <div className="actions">
             <MDButton
               className="button"
-              onClick={ handleSendClick }
+              onClick={() => {
+                handleSendClick();
+                setExibir(false);
+              }}
             >
               Enviar solicitação
             </MDButton>
