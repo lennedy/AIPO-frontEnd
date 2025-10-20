@@ -11,7 +11,7 @@ import { Dialog, DialogTitle, DialogContent } from "@mui/material";
 
 import getApiAddress from "serverAddress";
 
-function ListOfUsers({columns, rows, exibir, setExibir, isToUpdate, setIsToUpdate, handleSendClick }) {
+function ListOfUsers({title, columns, rows, exibir, setExibir, isToUpdate, setIsToUpdate, handleSendClick }) {
 
   // const columns = [];
   // const rows = [];
@@ -25,7 +25,7 @@ function ListOfUsers({columns, rows, exibir, setExibir, isToUpdate, setIsToUpdat
     fullWidth
     maxWidth="sm"
     >
-      <DialogTitle>Lista de usuários para autorizar</DialogTitle>
+      <DialogTitle> {title} </DialogTitle>
       <DialogContent dividers>
         <card>
           <DataTable
@@ -65,6 +65,7 @@ ListOfUsers.defaultProps = {
 };
 
 ListOfUsers.propTypes = {
+  title: PropTypes.string,
   columns: PropTypes.array,
   rows: PropTypes.array,
   exibir: PropTypes.bool.isRequired,    // obrigatório e precisa ser string
