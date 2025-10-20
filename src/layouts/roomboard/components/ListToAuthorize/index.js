@@ -27,6 +27,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import SendIcon from "@mui/icons-material/Send";
 import Slider from "@mui/material/Slider";
 import Popup from "examples/Popup";
+import ListOfUsers from "../ListPopUp";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -339,7 +340,15 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           </MDBox>
         </Card>
       </Grid>
+      <ListOfUsers
+        exibir = {configToSend}
+        setExibir = {setConfigToSend}
+        columns = {edColumns}
+        rows = {edRows}
+        handleSendClick = {handleSendClick}
+      />
     </Grid>
+
   );
 }
 

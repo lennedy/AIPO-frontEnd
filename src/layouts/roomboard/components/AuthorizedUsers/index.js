@@ -40,6 +40,7 @@ import MDButton from "components/MDButton";
 import DataTable from "examples/Tables/DataTable";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import AuthorizedTableData from "../../data/AuthorizedUserTableData";
+import ListOfUsers from "../ListPopUp";
 
 import { useMaterialUIController } from "context";
 import getApiAddress from "serverAddress";
@@ -191,6 +192,13 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           noEndBorder
         />
       )}
+      <ListOfUsers
+        exibir = {configToSend}
+        setExibir = {setConfigToSend}
+        columns = {edColumns}
+        rows = {edRows}
+        handleSendClick = {handleSendClick}
+      />
     </Card>
   );
 }
