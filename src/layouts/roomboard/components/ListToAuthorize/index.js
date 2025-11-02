@@ -198,72 +198,29 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
                 {title}
               </MDTypography>
-              {/* {configToSend == false ? null : (
-                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                  <Tooltip title="Enviar autorização" placement="top">
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      fontSize="small"
-                      onClick={handleSendClick}
-                    >
-                      <SendIcon />
-                    </IconButton>
-                  </Tooltip>
-                </MDBox>
-              )} */}
-              {/* {configToSend == false ? ( */}
-                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                  <Tooltip title="Confirmar seleção" placement="top">
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      fontSize="small"
-                      onClick={handleCheckClick}
-                    >
-                      <CheckIcon />
-                    </IconButton>
-                  </Tooltip>
-                </MDBox>
-              {/* ) : (
-                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                  <Tooltip title="Editar seleção" placement="top">
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      fontSize="small"
-                      onClick={handleEditClick}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                </MDBox>
-              )} */}
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Confirmar seleção" placement="top">
+                  <IconButton
+                    sx={{ cursor: "pointer" }}
+                    fontSize="small"
+                    onClick={handleCheckClick}
+                  >
+                    <CheckIcon />
+                  </IconButton>
+                </Tooltip>
+              </MDBox>
             </MDBox>
           </MDBox>
-          {/* {configToSend == false ? ( */}
-            <DataTable
-              table={{ columns: pColumns, rows: pRows }}
-              isSorted={false}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              canSearch
-              noEndBorder
-              buttonEnable={true}
-              handleAddUser={handleAddNewUser}
-            />
-          {/* ) : (
-            <DataTable
-              table={{ columns: edColumns, rows: edRows }}
-              isSorted={false}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
-              onChange={(newValue) => {
-                console.log(newValue);
-              }}
-              onRangePositionChange={(newValue) => {
-                console.log("newValue");
-              }}
-            />
-          )} */}
+          <DataTable
+            table={{ columns: pColumns, rows: pRows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            canSearch
+            noEndBorder
+            buttonEnable={true}
+            handleAddUser={handleAddNewUser}
+          />
         </Card>
       </Grid>
       <Grid item xs={12} md={6} xl={6}>
