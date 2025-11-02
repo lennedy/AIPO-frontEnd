@@ -1,4 +1,7 @@
 import Icon from "@mui/material/Icon";
+import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Tooltip from "@mui/material/Tooltip";
 
 import { useLocation } from "react-router-dom";
@@ -10,6 +13,7 @@ import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import AppBar from "@mui/material/AppBar";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -140,16 +144,24 @@ function RoomData() {
                       </Grid>
                       <Grid>
                         <MDBox>
-                          <Grid container spacing={0}>
-                            <Tabs
-                              value={value}
-                              onChange={handleTabsChange}
-                              orientation="vertical"
-                              aria-label="basic tabs example"
-                            >
-                              <Tab label="Remover acesso" />
-                              <Tab label="Conceder acesso" />
-                            </Tabs>
+                          <Grid item sx={{ ml: "auto" }}>
+                            <AppBar position="static">
+                              <Tabs
+                                value={value}
+                                onChange={handleTabsChange}
+                                // orientation="vertical"
+                                aria-label="basic tabs example"
+                              >
+                                <Tab 
+                                  label="Remoção"
+                                  icon={<GroupRemoveIcon fontSize="medium" sx={{ mt: -0.25 }}/>                                }
+                                />
+                                <Tab
+                                  label="Acesso"
+                                  icon={<GroupAddIcon fontSize="medium" sx={{ mt: -0.25 }}/>}
+                                />
+                              </Tabs>
+                            </AppBar>
                           </Grid>
                         </MDBox>
                         {/* <MDBox py={1}>
