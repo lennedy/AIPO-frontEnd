@@ -1,3 +1,5 @@
+import backgroundImage from "assets/images/bg-profile.jpeg";
+
 import Icon from "@mui/material/Icon";
 import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -118,22 +120,48 @@ function RoomData() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mt={3}>
-        <MDBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={8}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
+      <MDBox position="relative" mb={5}>
+        {/* <MDBox mb={3}> */}
+          {/* <Grid container spacing={3}> */}
+            {/* <Grid item xs={12} lg={8}> */}
+        <MDBox
+          display="flex"
+          alignItems="center"
+          position="relative"
+          minHeight="18.75rem"
+          borderRadius="xl"
+          sx={{
+            backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
+              `${linearGradient(
+                rgba(gradients.info.main, 0.6),
+                rgba(gradients.info.state, 0.6)
+              )}, url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "50%",
+            overflow: "hidden",
+          }}
+        />
+              {/* <Grid container spacing={3}> */}
+                {/* <Grid item xs={12}> */}
                   {/* <RoomHead codigo={location.state.codigo} nome={location.state.nome} /> */}
-                  <Card id="delete-account">
-                    <MDBox
+                  <Card
+                    sx={{
+                      position: "relative",
+                      mt: -8,
+                      mx: 3,
+                      py: 2,
+                      px: 2,
+                    }}
+                  >
+                    {/* <MDBox
                       pt={2}
                       px={2}
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"
-                    >
-                      <Grid>
+                    > */}
+                    <Grid container spacing={3} alignItems="center">
+                       <Grid item>
                         {codigo == null ? (
                           <MDTypography variant="h6" fontWeight="medium">
                             Salas
@@ -142,28 +170,24 @@ function RoomData() {
                           <RoomInfo image={codigo=="A208"?robotica:ifrn} name={nome} codigo={codigo} />
                         )}
                       </Grid>
-                      <Grid>
-                        <MDBox>
-                          <Grid item sx={{ ml: "auto" }}>
-                            <AppBar position="static">
-                              <Tabs
-                                value={value}
-                                onChange={handleTabsChange}
-                                // orientation="vertical"
-                                aria-label="basic tabs example"
-                              >
-                                <Tab 
-                                  label="Remoção"
-                                  icon={<GroupRemoveIcon fontSize="medium" sx={{ mt: -0.25 }}/>                                }
-                                />
-                                <Tab
-                                  label="Acesso"
-                                  icon={<GroupAddIcon fontSize="medium" sx={{ mt: -0.25 }}/>}
-                                />
-                              </Tabs>
-                            </AppBar>
-                          </Grid>
-                        </MDBox>
+                      <Grid item  xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+                        <AppBar position="static">
+                          <Tabs
+                            value={value}
+                            onChange={handleTabsChange}
+                            // orientation="vertical"
+                            aria-label="basic tabs example"
+                          >
+                            <Tab 
+                              label="Tabela de Remoção"
+                              icon={<GroupRemoveIcon fontSize="medium" sx={{ mt: -0.25 }}/>                                }
+                            />
+                            <Tab
+                              label="Tabela de Acesso"
+                              icon={<GroupAddIcon fontSize="medium" sx={{ mt: -0.25 }}/>}
+                            />
+                          </Tabs>
+                        </AppBar>
                         {/* <MDBox py={1}>
                           <MDButton
                             variant="gradient"
@@ -179,12 +203,13 @@ function RoomData() {
                           </MDButton>
                         </MDBox> */}
                       </Grid>
-                    </MDBox>
+                    </Grid>
+                    {/* </MDBox> */}
                     <MDBox p={1}>
                       <Grid container spacing={3}></Grid>
                     </MDBox>
                   </Card>
-                </Grid>
+                {/* </Grid> */}
                 {!addAuthorization ? (
                   <Grid item xs={12} md={8} xl={8}>
                     {
@@ -216,10 +241,10 @@ function RoomData() {
                     />
                   </Grid>
                 ) : null}
-              </Grid>
-            </Grid>
-          </Grid>
-        </MDBox>
+              {/* </Grid> */}
+            {/* </Grid> */}
+          {/* </Grid> */}
+        {/* </MDBox> */}
       </MDBox>
       <Footer />
     </DashboardLayout>
