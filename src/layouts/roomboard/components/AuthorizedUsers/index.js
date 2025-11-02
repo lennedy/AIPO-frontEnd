@@ -40,6 +40,7 @@ import MDButton from "components/MDButton";
 import DataTable from "examples/Tables/DataTable";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import AuthorizedTableData from "../../data/AuthorizedUserTableData";
+import ListOfUsers from "../ListPopUp";
 
 import { useMaterialUIController } from "context";
 import getApiAddress from "serverAddress";
@@ -138,14 +139,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
             {title}
           </MDTypography>
-          {configToSend == false ? null : (
-            // <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-            //   <Tooltip title="Editar autorização" placement="top">
-            //     <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
-            //       <EditIcon />
-            //     </IconButton>
-            //   </Tooltip>
-            // </MDBox>
+          {/* {configToSend == false ? null : (
             <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
               <Tooltip title="Enviar desautorização" placement="top">
                 <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
@@ -153,8 +147,8 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                 </IconButton>
               </Tooltip>
             </MDBox>
-          )}
-          {configToSend == false ? (
+          )} */}
+          {/* {configToSend == false ? ( */}
             <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
               <Tooltip title="Confirmar seleção" placement="top">
                 <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleCheckClick}>
@@ -162,7 +156,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                 </IconButton>
               </Tooltip>
             </MDBox>
-          ) : (
+          {/* ) : (
             <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
               <Tooltip title="Editar seleção" placement="top">
                 <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
@@ -170,10 +164,10 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                 </IconButton>
               </Tooltip>
             </MDBox>
-          )}
+          )} */}
         </MDBox>
       </MDBox>
-      {configToSend == false ? (
+      {/* {configToSend == false ? ( */}
         <DataTable
           table={{ columns: pColumns, rows: pRows }}
           isSorted={false}
@@ -182,7 +176,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           canSearch
           noEndBorder
         />
-      ) : (
+      {/* ) : (
         <DataTable
           table={{ columns: edColumns, rows: edRows }}
           isSorted={false}
@@ -190,7 +184,15 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           showTotalEntries={false}
           noEndBorder
         />
-      )}
+      )} */}
+      <ListOfUsers
+        title = "Lista de usuários para desautoriar"
+        exibir = {configToSend}
+        setExibir = {setConfigToSend}
+        columns = {edColumns}
+        rows = {edRows}
+        handleSendClick = {handleSendClick}
+      />
     </Card>
   );
 }

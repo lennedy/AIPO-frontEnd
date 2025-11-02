@@ -66,6 +66,7 @@ import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
 export default function Data(codigoSala, editState, usuariosParaEditar, isToUpdateUsers) {
+
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -100,7 +101,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
         />
       </Tooltip>
     ));
-
+  
   const [currentTime, setCurrentTime] = useState(0);
   const [Usuarios, setUsuarios] = useState(0);
   const [editHabilitadoArray, setEditHabilitadoArray] = useState(usuariosParaEditar);
@@ -114,8 +115,15 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
   
 
   useEffect(() => {
+
     const api = getApiAddress();
-    fetch(api.database + "/usuarios")
+    fetch(api.database + "/usuarios", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + authData.tokenLocal,
+        },
+      })
       .then((res) => res.json())
       .then((data) => {
         setUsuarios(data);

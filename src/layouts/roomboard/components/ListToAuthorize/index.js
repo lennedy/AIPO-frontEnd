@@ -27,6 +27,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import SendIcon from "@mui/icons-material/Send";
 import Slider from "@mui/material/Slider";
 import Popup from "examples/Popup";
+import ListOfUsers from "../ListPopUp";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -197,7 +198,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
                 {title}
               </MDTypography>
-              {configToSend == false ? null : (
+              {/* {configToSend == false ? null : (
                 <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
                   <Tooltip title="Enviar autorização" placement="top">
                     <IconButton
@@ -209,8 +210,8 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                     </IconButton>
                   </Tooltip>
                 </MDBox>
-              )}
-              {configToSend == false ? (
+              )} */}
+              {/* {configToSend == false ? ( */}
                 <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
                   <Tooltip title="Confirmar seleção" placement="top">
                     <IconButton
@@ -222,7 +223,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                     </IconButton>
                   </Tooltip>
                 </MDBox>
-              ) : (
+              {/* ) : (
                 <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
                   <Tooltip title="Editar seleção" placement="top">
                     <IconButton
@@ -234,10 +235,10 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                     </IconButton>
                   </Tooltip>
                 </MDBox>
-              )}
+              )} */}
             </MDBox>
           </MDBox>
-          {configToSend == false ? (
+          {/* {configToSend == false ? ( */}
             <DataTable
               table={{ columns: pColumns, rows: pRows }}
               isSorted={false}
@@ -248,7 +249,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               buttonEnable={true}
               handleAddUser={handleAddNewUser}
             />
-          ) : (
+          {/* ) : (
             <DataTable
               table={{ columns: edColumns, rows: edRows }}
               isSorted={false}
@@ -262,7 +263,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
                 console.log("newValue");
               }}
             />
-          )}
+          )} */}
         </Card>
       </Grid>
       <Grid item xs={12} md={6} xl={6}>
@@ -339,7 +340,16 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           </MDBox>
         </Card>
       </Grid>
+      <ListOfUsers
+        title = "Lista de usuários para autorizar"
+        exibir = {configToSend}
+        setExibir = {setConfigToSend}
+        columns = {edColumns}
+        rows = {edRows}
+        handleSendClick = {handleSendClick}
+      />
     </Grid>
+
   );
 }
 
