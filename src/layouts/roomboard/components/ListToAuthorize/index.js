@@ -19,6 +19,7 @@ import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import Button from '@mui/material/Button';
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -200,13 +201,21 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               </MDTypography>
               <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
                 <Tooltip title="Confirmar seleção" placement="top">
-                  <IconButton
+                  {/* <IconButton
                     sx={{ cursor: "pointer" }}
                     fontSize="small"
                     onClick={handleCheckClick}
                   >
                     <CheckIcon />
-                  </IconButton>
+                  </IconButton> */}
+                  <Button 
+                    variant="contained"
+                    color={darkMode ? "secondary" : "dark"}
+                    startIcon={<CheckIcon />}
+                    onClick={handleCheckClick}
+                  >
+                    Confirme seleção
+                  </Button>
                 </Tooltip>
               </MDBox>
             </MDBox>
