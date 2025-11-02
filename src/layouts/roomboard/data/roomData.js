@@ -179,11 +179,11 @@ function RoomData() {
                             aria-label="basic tabs example"
                           >
                             <Tab 
-                              label="Tabela de Remoção"
+                              label="Janela de Remoção"
                               icon={<GroupRemoveIcon fontSize="medium" sx={{ mt: -0.25 }}/>                                }
                             />
                             <Tab
-                              label="Tabela de Acesso"
+                              label="Janela de Acesso"
                               icon={<GroupAddIcon fontSize="medium" sx={{ mt: -0.25 }}/>}
                             />
                           </Tabs>
@@ -211,7 +211,7 @@ function RoomData() {
                   </Card>
                 {/* </Grid> */}
                 {!addAuthorization ? (
-                  <Grid item xs={12} md={8} xl={8}>
+                  <Grid item xs={12} md={12} xl={12}>
                     {
                       <AuthorizedUsers
                         title={"Usuários Autorizados"}
@@ -233,12 +233,12 @@ function RoomData() {
                 )}
                 {!addAuthorization ? (
                   <Grid item xs={12} md={4} xl={4}>
-                    <LasAcessOverview
+                    {/* <LasAcessOverview
                       title="Últimos acessos"
                       profiles={roomListData}
                       codigo_salas={codigo}
                       shadow={false}
-                    />
+                    /> */}
                   </Grid>
                 ) : null}
               {/* </Grid> */}

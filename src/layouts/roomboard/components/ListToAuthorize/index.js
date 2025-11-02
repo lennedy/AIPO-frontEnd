@@ -191,7 +191,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Grid py={1} container spacing={1}>
       <Grid item xs={12} md={6} xl={6}>
         <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
           <MDBox pt={2} px={2}>
