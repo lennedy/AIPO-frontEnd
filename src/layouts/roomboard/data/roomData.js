@@ -37,10 +37,11 @@ import authorsTableData from "layouts/tables/data/authorsTableData";
 import RoomInfo from "layouts/roomboard/components/RoomInfo";
 import robotica from "assets/images/lab-robotica.jpeg";
 import ifrn from "assets/images/IFRN_medio.png";
+import breakpoints from "assets/theme/base/breakpoints";
 // import { DateRangePicker, DateRange } from "mui-daterange-picker";
 
 import { useMaterialUIController } from "context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import getApiAddress from "serverAddress";
 
 function RoomData() {
@@ -110,7 +111,28 @@ function RoomData() {
     usersData = data;
   }
 
+  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    // A function that sets the orientation state of the tabs.
+    function handleTabsOrientation() {
+      return window.innerWidth < breakpoints.values.sm
+        ? setTabsOrientation("vertical")
+        : setTabsOrientation("horizontal");
+    }
+
+    /** 
+     The event listener that's calling the handleTabsOrientation function when resizing the window.
+    */
+    window.addEventListener("resize", handleTabsOrientation);
+
+    // Call the handleTabsOrientation function to set the state with the initial value.
+    handleTabsOrientation();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleTabsOrientation);
+  }, [tabsOrientation]);
 
   const handleTabsChange = (event, newValue) => {
     setValue(newValue);
@@ -128,18 +150,18 @@ function RoomData() {
           display="flex"
           alignItems="center"
           position="relative"
-          minHeight="18.75rem"
+          minHeight="4.75rem"
           borderRadius="xl"
-          sx={{
-            backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
-              `${linearGradient(
-                rgba(gradients.info.main, 0.6),
-                rgba(gradients.info.state, 0.6)
-              )}, url(${backgroundImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "50%",
-            overflow: "hidden",
-          }}
+          // sx={{
+          //   backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
+          //     `${linearGradient(
+          //       rgba(gradients.info.main, 0.6),
+          //       rgba(gradients.info.state, 0.6)
+          //     )}, url(${backgroundImage})`,
+          //   backgroundSize: "cover",
+          //   backgroundPosition: "50%",
+          //   overflow: "hidden",
+          // }}
         />
               {/* <Grid container spacing={3}> */}
                 {/* <Grid item xs={12}> */}
@@ -148,7 +170,7 @@ function RoomData() {
                     sx={{
                       position: "relative",
                       mt: -8,
-                      mx: 3,
+                      // mx: 3,
                       py: 2,
                       px: 2,
                     }}
@@ -176,14 +198,15 @@ function RoomData() {
                             value={value}
                             onChange={handleTabsChange}
                             // orientation="vertical"
+                            orientation={tabsOrientation}
                             aria-label="basic tabs example"
                           >
                             <Tab 
-                              label="Janela de Remoção"
+                              label="Aba para Remoção"
                               icon={<GroupRemoveIcon fontSize="medium" sx={{ mt: -0.25 }}/>                                }
                             />
                             <Tab
-                              label="Janela de Acesso"
+                              label="Aba para Acesso"
                               icon={<GroupAddIcon fontSize="medium" sx={{ mt: -0.25 }}/>}
                             />
                           </Tabs>
