@@ -58,6 +58,7 @@ import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
 import { useAuth } from "context/AuthProvider";
+import errorHandling from "util"
 
 //meus componentes
 import MySelect from "layouts/tables/myComponents";
@@ -112,22 +113,41 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
   // const [isToUpdateUsers, setIsToUpdateUsers] = useState(updateUsers);
 
   const authData = useAuth();
-  
 
   useEffect(() => {
-
     const api = getApiAddress();
-    fetch(api.database + "/usuarios", {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: "Bearer " + authData.tokenLocal,
-        },
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        setUsuarios(data);
-      });
+    try{
+      fetch(api.database + "/usuarios", {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + authData.tokenLocal,
+          },
+        })
+        .then((res) => {
+          if(res.status == 401){
+            alert("O login expirou. Refaça o login");
+            authData.logOut();
+            // errorHandling(authData, {status:"Token has expired"}, "");
+            throw new Error(`HTTP ${res.status}`);
+          }
+          return res.json()
+        })
+        .then((data) => {
+          setUsuarios(data);
+          // console.log("usuarios table data sala");
+          // errorHandling();
+          // console.log(data);
+        })
+        .catch((err) => {
+          console.warn("Falha ao buscar usuários:", err);
+          // aqui você pode mostrar snackbar/alert etc.
+        });
+    }
+    catch(error){
+      errorHandling(authData, {status:"Token has expired"}, "");
+      console.error("Falha ao buscar usuários:", error);
+    }
     if (isToUpdateUsers) {
       fetch(api.database + "/usuarios", {
         method: "GET",
@@ -138,6 +158,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
       })
         .then((res) => res.json())
         .then((data) => {
+          // console.log("usuarios table data sala");
           // console.log(data);
           setUsuarios(data);
         });
@@ -222,6 +243,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
     }
   }
   // console.log(usuarios_que_serao_editados);
+
   return {
     columns: [
       { Header: "", accessor: "Editar", width: "1%", align: "left", hidden: false },
