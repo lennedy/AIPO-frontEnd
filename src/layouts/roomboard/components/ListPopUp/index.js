@@ -8,11 +8,15 @@ import DataTable from "examples/Tables/DataTable";
 
 import { useState, useEffect } from "react";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
+import Card from "@mui/material/Card";
+import { useMaterialUIController } from "context";
 
 import getApiAddress from "serverAddress";
 
-function ListOfUsers({title, columns, rows, exibir, setExibir, isToUpdate, setIsToUpdate, handleSendClick }) {
+function ListOfUsers({title, columns, rows, exibir, setExibir, isToUpdate, setIsToUpdate, handleSendClick, shadow}) {
 
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller
   // const columns = [];
   // const rows = [];
 
@@ -25,40 +29,56 @@ function ListOfUsers({title, columns, rows, exibir, setExibir, isToUpdate, setIs
     fullWidth
     maxWidth="sm"
     >
-      <DialogTitle> {title} </DialogTitle>
-      <DialogContent dividers>
-        <card>
-          <DataTable
-            table={{ columns: columns, rows: rows }}
-            isSorted={false}
-            entriesPerPage={false}
-            showTotalEntries={false}
-            noEndBorder
-          />
-          <MDBox pt={1}></MDBox>
-          <div className="actions">
-            <MDButton
-              className="button"
-              onClick={() => {
-                handleSendClick();
-                setExibir(false);
-              }}
-            >
-              Enviar solicitação
-            </MDButton>
-            <MDButton
-              className="button"
-              onClick={() => {
-                console.log("modal closed ");
-                setExibir(false);
-                // close();
-              }}
-            >
-              Cancelar
-            </MDButton>
-          </div>
-        </card>
-      </DialogContent>
+      <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
+        <DialogTitle> {title} </DialogTitle>
+        <DialogContent dividers>
+          <card>
+            <DataTable
+              table={{ columns: columns, rows: rows }}
+              isSorted={false}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
+            <MDBox pt={1}></MDBox>
+            <div className="actions">
+              <MDBox
+                sx={{
+                  display: "flex",
+                  mt: 2,
+                  mr: 1,
+                }}
+              >
+                <MDButton
+                  className="button"
+                  variant="contained"
+                  color={darkMode ? "secondary" : "dark"}
+                  onClick={() => {
+                    handleSendClick();
+                    setExibir(false);
+                  }}
+                >
+                  Enviar solicitação
+                </MDButton>
+                <MDBox sx={{ mx: 1, width: "8rem", minWidth: "8rem" }}>
+                  <MDButton
+                    className="button"
+                    variant="contained"
+                    color={darkMode ? "secondary" : "dark"}
+                    onClick={() => {
+                      console.log("modal closed ");
+                      setExibir(false);
+                      // close();
+                    }}
+                  >
+                    Cancelar
+                  </MDButton>
+                </MDBox>
+              </MDBox>
+            </div>
+          </card>
+        </DialogContent>
+      </Card>
     </Dialog>
   );
 }
