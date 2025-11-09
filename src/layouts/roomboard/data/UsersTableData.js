@@ -117,57 +117,26 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
   useEffect(() => {
     const api = getApiAddress();
 
-    fetch(api.database + "/usuarios", {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: "Bearer " + authData.tokenLocal,
-        },
-      })
-      .then((res) => {
-        // if(res.status == 401){
-        //   alert("O login expirou. Refaça o login");
-          
-        //   // authData.logOut();
-        //   console.log("baratheon");
-        //   errorHandling(authData, res.json(), "");
-        //   throw new Error(`HTTP ${res.status}`);
-        // }
-        errorHandlingConnection(authData, res);
-        return res.json()
-      })
-      .then((data) => {
-        setUsuarios(data);
-        // console.log("usuarios table data sala");
-        // errorHandling();
-        // console.log(data);
-      })
-      .catch((err) => {
-        console.warn("Falha ao buscar usuários:", err);
-        // aqui você pode mostrar snackbar/alert etc.
-      });
-
     if (isToUpdateUsers) {
       fetch(api.database + "/usuarios", {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: "Bearer " + authData.tokenLocal,
-        },
-      })
-        .then((res) => res.json())
+          method: "GET",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + authData.tokenLocal,
+          },
+        })
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json()
+        })
         .then((data) => {
-          // console.log("usuarios table data sala");
-          // console.log(data);
+
           setUsuarios(data);
+        })
+        .catch((err) => {
+          console.warn("Falha ao buscar usuários:", err);
         });
     }
-
-    // fetch(api.database + "/salas")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setSalas(data);
-    //   });
 
     fetch(api.database + "/UsuariosSalas")
       .then((res) => res.json())
