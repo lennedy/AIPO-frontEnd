@@ -35,8 +35,8 @@ const AuthProvider = ({ children }) => {
         body: JSON.stringify(data),
       });
       const res = await response.json();
-      console.log("Toronto");
-      console.log(res);
+      // console.log("Toronto");
+      // console.log(res);
       if (res.status == "ok") {
         setUser({
           nome: res.data.nome_usual,
@@ -44,14 +44,12 @@ const AuthProvider = ({ children }) => {
           tipoUsuario: res.data.tipoUsuario,
           foto: res.data.foto,
         });
-        console.log("Authprovider");
-        console.log(res.data.nome_usual);
+        // console.log("Authprovider");
+        // console.log(res.data.nome_usual);
 
         setToken(res.data.token);
         setNivelGerencia(res.data.nivelGerencia);
         setTokenLocal(res.data.token_local);
-        console.log("coalizao");
-        console.log(res.data.token_local);
         if (lembrar) {
           localStorage.setItem("site.token", res.data.token);
           localStorage.setItem("site.tokenLocal", res.data.token_local);
