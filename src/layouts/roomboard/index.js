@@ -25,12 +25,7 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 import RoomCard from "layouts/roomboard/components/InfoCards/RoomCard";
-import PaymentMethod from "layouts/billing/components/PaymentMethod";
 // import RoomHead from "layouts/roomboard/components/RoomHead";
 
 // Data
@@ -50,11 +45,6 @@ function Roomboard() {
   const [rooms, setRooms] = useState(0);
 
   useEffect(() => {
-    // fetch("/time")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setCurrentTime(data.time);
-    //   });
     const api = getApiAddress();
     fetch(api.database + "/salas")
       .then((res) => res.json())
@@ -63,10 +53,6 @@ function Roomboard() {
         setRooms(data);
       });
   }, []);
-
-  const { sales, tasks } = reportsLineChartData();
-  const dataChart = reportsBarChartData();
-  // console.log(rooms[0].codigo);
 
   var salas = [];
   for (let key in rooms) {
@@ -93,56 +79,7 @@ function Roomboard() {
               </Grid>
             </Grid>
           </Grid>
-          {/* <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Acessos por dia"
-                  description="Número de acesso na semana"
-                  date="just updated"
-                  chart={dataChart}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="Acessos por mês"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="just updated"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="dark"
-                  title="Acesso por Sala"
-                  description="As quatro sals mais acessadas"
-                  date="just updated"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid>
-          </Grid> */}
         </MDBox>
-        {/* <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
-            </Grid>
-          </Grid>
-        </MDBox> */}
       </MDBox>
       <Footer />
     </DashboardLayout>
