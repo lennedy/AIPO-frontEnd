@@ -50,7 +50,7 @@ import projectsTableData from "layouts/tables/data/projectsTableData";
 import MySelect from "./myComponents";
 import getApiAddress from "serverAddress";
 import { useAuth } from "context/AuthProvider";
-import { errorHandling } from "util";
+import { errorHandlingAPI, errorHandlingConnection} from "util";
 
 import EditUserForm from "layouts/tables/forms/EditUserForm";
 import EditRoomForm from "layouts/tables/forms/EditRoomForm";
@@ -227,9 +227,12 @@ function Tables() {
                       Authorization: "Bearer " + authData.tokenLocal,
                     },
                   })
-                    .then((response) => response.json())
+                    .then((response) => {
+                      errorHandlingConnection(authData, response);
+                      return response.json();
+                    })
                     .then((json) => {
-                      errorHandling(authData, json, "Adição realizada com sucesso");
+                      errorHandlingAPI(authData, json, "Adição realizada com sucesso");
                       setIsToUpdateUsers(!isToUpdateUsers);
                     })
                     .catch((err) => console.log(err))
@@ -377,8 +380,11 @@ function Tables() {
                       Authorization: "Bearer " + authData.tokenLocal,
                     },
                   })
-                    .then((response) => response.json())
-                    .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
+                    .then((response) => {
+                      errorHandlingConnection(authData, response);
+                      return response.json();
+                    })
+                    .then((json) => errorHandlingAPI(authData, json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdateRooms(true));
                 }}
@@ -419,12 +425,18 @@ function Tables() {
           Authorization: "Bearer " + authData.tokenLocal,
         },
       })
-        .then((res) => res.json())
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json();
+        })
         .then((data) => {
           setUsuarios(data);
         });
       fetch(api.database + "/UsuariosSalas")
-        .then((res) => res.json())
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json();
+        })
         .then((data) => {
           setUsuariosSalas(data);
         });

@@ -40,7 +40,7 @@ export function errorHandlingConnection(authData, json) {
     alert("Erro de conexão: "+json.status);
   }
 }
-export function errorHandling(authData, json, message) {
+export function errorHandlingAPI(authData, json, message) {
   console.log("passei na funcao util");
   if (json["status"] === "ok") {
     alert(message);
