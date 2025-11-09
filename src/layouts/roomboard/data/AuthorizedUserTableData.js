@@ -109,17 +109,13 @@ export default function Data(codigoSala, editState, usuariosParaEditar, update) 
   const [isToUpdate, setIsToUpdate] = useState(true);
   const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
 
-  console.log("Update tabelas");
-  console.log(update);
+
   useEffect(() => {
     const api = getApiAddress();
-    console.log("useEffect tabelas");
-    console.log(isToUpdate);
     if (isToUpdate) {
       fetch(api.database + "/getUsuariosPorSala/" + codigoSala)
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           var authorizedUsers = [];
           for (let key in data.allHours) {
             const allHours = {
@@ -241,7 +237,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar, update) 
       }
     }
   }
-  // console.log(usuarios_que_serao_editados);
+
   return {
     columns: [
       { Header: "", accessor: "tipoAcesso", width: "1%", align: "left", hidden: false },

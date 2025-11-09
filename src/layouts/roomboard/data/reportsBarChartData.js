@@ -53,8 +53,6 @@ export default function chartData() {
 
   const data_inicia_final = { data_inicial: dates[6]["date"], data_final: dates[0]["date"] };
 
-  // console.log(dates);
-
   useEffect(() => {
     const api = getApiAddress();
     fetch(api.database + "/acessosData", {
@@ -107,9 +105,6 @@ export default function chartData() {
           setAcessosSexta(sexta);
           setAcessosSabado(sabado);
 
-          // console.log(formatDate(new Date(dados[35]["timestamp"]), "aa-mm-dd"));
-          // console.log(dates2[1]);
-          // console.log(dados);
         }
       });
   }, []);

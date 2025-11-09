@@ -166,8 +166,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     setIsToUpdate(false);
     const api = getApiAddress();
 
-    console.log(userData);
-
     fetch(api.database + "/adicionarUsuarios", {
       method: "POST",
       body: JSON.stringify(userData),
@@ -178,7 +176,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log(json);
 
         if (json["status"] == "ok") {
           alert("Adição realizada com sucesso");
