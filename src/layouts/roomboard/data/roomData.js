@@ -12,33 +12,22 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import AppBar from "@mui/material/AppBar";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 
-import roomListData from "layouts/profile/data/roomListData";
-import RoomList from "examples/Lists/RoomList";
 import AuthorizedUsers from "../components/AuthorizedUsers";
 import ListToAuthorize from "../components/ListToAuthorize";
-import LasAcessOverview from "layouts/roomboard/components/LastAcessOverview";
-import PaymentMethod from "layouts/billing/components/PaymentMethod";
-import RoomHead from "layouts/roomboard/components/RoomHead";
 
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-
-import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import RoomInfo from "layouts/roomboard/components/RoomInfo";
 import robotica from "assets/images/lab-robotica.jpeg";
 import ifrn from "assets/images/IFRN_medio.png";
 import breakpoints from "assets/theme/base/breakpoints";
-// import { DateRangePicker, DateRange } from "mui-daterange-picker";
+
 
 import { useMaterialUIController } from "context";
 import { useState, useEffect } from "react";
@@ -48,19 +37,15 @@ function RoomData() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const location = useLocation();
-  // const { pathname, hash, key } = useLocation();
-  const dataChart = reportsBarChartData();
   const authorizedUsers = [];
   const { columns: pColumns, rows: pRows } = authorsTableData();
   const codigo = location.state.codigo;
   const nome = location.state.nome;
   const [addAuthorization, setAddAuthorization] = useState(false);
   const [isToUpdate, setIsToUpdate] = useState(false);
-  // const [listToAuthorize, setListToAuthorize] = useState({});
   var usersData = { enableToSend: false };
 
   const handleClick = (event) => {
-    // setAddAuthorization(!addAuthorization);
     if (codigo != null) {
       var methodToApi = "PUT";
       var dataToServer = {};

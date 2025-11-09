@@ -75,9 +75,6 @@ function DataTable({
     return "dt:"+sig;
   }, [table]);
 
-  // console.log("ave");
-  // console.log(persistenceId);
-
   const [paginationModel, setPaginationModel] = useState(() => {
     try {
       const saved = JSON.parse(
@@ -143,7 +140,6 @@ function DataTable({
   useEffect(() => {
     const model = { page: pageIndex, pageSize };
     setPaginationModel(model);
-    console.log("trump");
     try {
       window.localStorage.setItem(persistenceId, JSON.stringify(model));
     } catch {}

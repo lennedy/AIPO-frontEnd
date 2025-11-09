@@ -50,7 +50,7 @@ import projectsTableData from "layouts/tables/data/projectsTableData";
 import MySelect from "./myComponents";
 import getApiAddress from "serverAddress";
 import { useAuth } from "context/AuthProvider";
-import { errorHandling } from "util";
+import { errorHandlingAPI, errorHandlingConnection} from "util";
 
 import EditUserForm from "layouts/tables/forms/EditUserForm";
 import EditRoomForm from "layouts/tables/forms/EditRoomForm";
@@ -216,7 +216,7 @@ function Tables() {
                     tipoUsuario: inputTipoUsuario[0],
                     nivelGerencia: inputNivelGeren[0],
                   };
-                  console.log(_data);
+                  // console.log(_data);
                   const api = getApiAddress();
 
                   fetch(api.database + "/adicionarUsuarios", {
@@ -227,9 +227,12 @@ function Tables() {
                       Authorization: "Bearer " + authData.tokenLocal,
                     },
                   })
-                    .then((response) => response.json())
+                    .then((response) => {
+                      errorHandlingConnection(authData, response);
+                      return response.json();
+                    })
                     .then((json) => {
-                      errorHandling(authData, json, "Adição realizada com sucesso");
+                      errorHandlingAPI(authData, json, "Adição realizada com sucesso");
                       setIsToUpdateUsers(!isToUpdateUsers);
                     })
                     .catch((err) => console.log(err))
@@ -241,7 +244,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
-                  console.log("modal closed ");
+                  // console.log("modal closed ");
                   close();
                 }}
               >
@@ -367,7 +370,7 @@ function Tables() {
                     local: inputLocalSala,
                     fechadura: inputFechadura,
                   };
-                  console.log(_data);
+                  // console.log(_data);
                   const api = getApiAddress();
                   fetch(api.database + "/adicionarSala", {
                     method: "POST",
@@ -377,8 +380,11 @@ function Tables() {
                       Authorization: "Bearer " + authData.tokenLocal,
                     },
                   })
-                    .then((response) => response.json())
-                    .then((json) => errorHandling(authData, json, "Adição realizada com sucesso"))
+                    .then((response) => {
+                      errorHandlingConnection(authData, response);
+                      return response.json();
+                    })
+                    .then((json) => errorHandlingAPI(authData, json, "Adição realizada com sucesso"))
                     .catch((err) => console.log(err))
                     .finally(() => setIsToUpdateRooms(true));
                 }}
@@ -419,12 +425,18 @@ function Tables() {
           Authorization: "Bearer " + authData.tokenLocal,
         },
       })
-        .then((res) => res.json())
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json();
+        })
         .then((data) => {
           setUsuarios(data);
         });
       fetch(api.database + "/UsuariosSalas")
-        .then((res) => res.json())
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json();
+        })
         .then((data) => {
           setUsuariosSalas(data);
         });
@@ -444,7 +456,7 @@ function Tables() {
 
   const handleUserEdit = (event, dadosUsuario) => {
     
-    console.log("handleEdit");
+    // console.log("handleEdit");
     const dados = {
       matricula: dadosUsuario.matricula,
       nome: dadosUsuario.nome,
@@ -453,7 +465,7 @@ function Tables() {
       nivelGerencia: dadosUsuario.nivelGerencia,
       tipoUsuario: dadosUsuario.tipoUsuario,
     };
-    console.log(dados);
+    // console.log(dados);
     setDadosUsuarioEditar(dados);
     setIdentUsuarioEditar(dados.matricula);
     setExibirEditUsuario(true);
@@ -463,7 +475,7 @@ function Tables() {
   };
 
   const handleAuthorizeEdit = (event, dadosUsuario, dadosSalas) => {
-    console.log("handleAuthorize");
+    // console.log("handleAuthorize");
     setIdentUsuarioEditar(dadosUsuario.matricula);
     setExibirAutorizacaoUsuario(true);
   };
@@ -471,7 +483,7 @@ function Tables() {
   const handleReadTag = (event, dadosUsuario) => {
     const api = getApiAddress();
 
-    console.log("handlTag");
+    // console.log("handlTag");
     setExibirTagWait(true);
     fetch(api.serial + "/readKey")
       .then((response) => response.json())

@@ -63,8 +63,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
 
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
 
-  console.log("usuariosAutorizados");
-
   var usersToRemove = [];
   for (let key in edRows) {
     usersToRemove.push({ matricula: edRows[key].author.props.email });
@@ -130,8 +128,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   };
 
   const handleSendClick2 = (event) => {
-    console.log("estiveaqui");
-    console.log(usersEdit);
     setConfigToSend(false);
   };
 
