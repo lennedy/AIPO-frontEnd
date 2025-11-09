@@ -216,7 +216,7 @@ function Tables() {
                     tipoUsuario: inputTipoUsuario[0],
                     nivelGerencia: inputNivelGeren[0],
                   };
-                  console.log(_data);
+                  // console.log(_data);
                   const api = getApiAddress();
 
                   fetch(api.database + "/adicionarUsuarios", {
@@ -244,7 +244,7 @@ function Tables() {
               <MDButton
                 className="button"
                 onClick={() => {
-                  console.log("modal closed ");
+                  // console.log("modal closed ");
                   close();
                 }}
               >
@@ -370,7 +370,7 @@ function Tables() {
                     local: inputLocalSala,
                     fechadura: inputFechadura,
                   };
-                  console.log(_data);
+                  // console.log(_data);
                   const api = getApiAddress();
                   fetch(api.database + "/adicionarSala", {
                     method: "POST",
@@ -456,7 +456,7 @@ function Tables() {
 
   const handleUserEdit = (event, dadosUsuario) => {
     
-    console.log("handleEdit");
+    // console.log("handleEdit");
     const dados = {
       matricula: dadosUsuario.matricula,
       nome: dadosUsuario.nome,
@@ -465,7 +465,7 @@ function Tables() {
       nivelGerencia: dadosUsuario.nivelGerencia,
       tipoUsuario: dadosUsuario.tipoUsuario,
     };
-    console.log(dados);
+    // console.log(dados);
     setDadosUsuarioEditar(dados);
     setIdentUsuarioEditar(dados.matricula);
     setExibirEditUsuario(true);
@@ -475,7 +475,7 @@ function Tables() {
   };
 
   const handleAuthorizeEdit = (event, dadosUsuario, dadosSalas) => {
-    console.log("handleAuthorize");
+    // console.log("handleAuthorize");
     setIdentUsuarioEditar(dadosUsuario.matricula);
     setExibirAutorizacaoUsuario(true);
   };
@@ -483,7 +483,7 @@ function Tables() {
   const handleReadTag = (event, dadosUsuario) => {
     const api = getApiAddress();
 
-    console.log("handlTag");
+    // console.log("handlTag");
     setExibirTagWait(true);
     fetch(api.serial + "/readKey")
       .then((response) => response.json())
