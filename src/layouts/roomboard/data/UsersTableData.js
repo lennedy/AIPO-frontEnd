@@ -58,7 +58,7 @@ import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
 import { useAuth } from "context/AuthProvider";
-import errorHandling from "util"
+import { errorHandling, errorHandlingConnection } from "util"
 
 //meus componentes
 import MySelect from "layouts/tables/myComponents";
@@ -116,38 +116,37 @@ export default function Data(codigoSala, editState, usuariosParaEditar, isToUpda
 
   useEffect(() => {
     const api = getApiAddress();
-    try{
-      fetch(api.database + "/usuarios", {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            Authorization: "Bearer " + authData.tokenLocal,
-          },
-        })
-        .then((res) => {
-          if(res.status == 401){
-            alert("O login expirou. Refaça o login");
-            authData.logOut();
-            // errorHandling(authData, {status:"Token has expired"}, "");
-            throw new Error(`HTTP ${res.status}`);
-          }
-          return res.json()
-        })
-        .then((data) => {
-          setUsuarios(data);
-          // console.log("usuarios table data sala");
-          // errorHandling();
-          // console.log(data);
-        })
-        .catch((err) => {
-          console.warn("Falha ao buscar usuários:", err);
-          // aqui você pode mostrar snackbar/alert etc.
-        });
-    }
-    catch(error){
-      errorHandling(authData, {status:"Token has expired"}, "");
-      console.error("Falha ao buscar usuários:", error);
-    }
+
+    fetch(api.database + "/usuarios", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + authData.tokenLocal,
+        },
+      })
+      .then((res) => {
+        // if(res.status == 401){
+        //   alert("O login expirou. Refaça o login");
+          
+        //   // authData.logOut();
+        //   console.log("baratheon");
+        //   errorHandling(authData, res.json(), "");
+        //   throw new Error(`HTTP ${res.status}`);
+        // }
+        errorHandlingConnection(authData, res);
+        return res.json()
+      })
+      .then((data) => {
+        setUsuarios(data);
+        // console.log("usuarios table data sala");
+        // errorHandling();
+        // console.log(data);
+      })
+      .catch((err) => {
+        console.warn("Falha ao buscar usuários:", err);
+        // aqui você pode mostrar snackbar/alert etc.
+      });
+
     if (isToUpdateUsers) {
       fetch(api.database + "/usuarios", {
         method: "GET",
