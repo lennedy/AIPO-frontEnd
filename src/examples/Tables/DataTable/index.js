@@ -55,6 +55,27 @@ function DataTable({
   // sem desmontar o componente.
   dataVersion,
 }) {
+
+  const normalize = (v) =>
+  (v ?? "")
+    .toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos
+    .toLowerCase()
+    .trim();
+    
+  function accentInsensitiveGlobalFilter(rows, columnIds, filterValue) {
+    const query = normalize(filterValue);
+    if (!query) return rows;
+
+    return rows.filter((row) =>
+      columnIds.some((id) => {
+        const cellValue = row.values[id];
+        return normalize(cellValue).includes(query);
+      })
+    );
+  }
+
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
@@ -93,6 +114,7 @@ function DataTable({
     {
       columns,
       data,
+      globalFilter: accentInsensitiveGlobalFilter,
       autoResetPage: false,
       autoResetFilters: false,
       autoResetSortBy: false,
@@ -236,7 +258,9 @@ function DataTable({
                 fullWidth
                 onChange={({ currentTarget }) => {
                   setSearch(search);
-                  onSearchChange(currentTarget.value);
+                  const textoSemEspaco = currentTarget.value.trim();
+                  const textoSemAcento = textoSemEspaco.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                  onSearchChange(textoSemAcento);
                 }}
               />
             </MDBox>
