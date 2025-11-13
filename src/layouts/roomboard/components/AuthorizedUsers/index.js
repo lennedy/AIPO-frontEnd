@@ -19,6 +19,7 @@ import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import Button from '@mui/material/Button';
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SendIcon from "@mui/icons-material/Send";
@@ -40,6 +41,9 @@ import MDButton from "components/MDButton";
 import DataTable from "examples/Tables/DataTable";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import AuthorizedTableData from "../../data/AuthorizedUserTableData";
+import LasAcessOverview from "layouts/roomboard/components/LastAcessOverview";
+import roomListData from "layouts/profile/data/roomListData";
+import ListOfUsers from "../ListPopUp";
 
 import { useMaterialUIController } from "context";
 import getApiAddress from "serverAddress";
@@ -58,8 +62,6 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
-
-  console.log("usuariosAutorizados");
 
   var usersToRemove = [];
   for (let key in edRows) {
@@ -126,63 +128,76 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   };
 
   const handleSendClick2 = (event) => {
-    console.log("estiveaqui");
-    console.log(usersEdit);
     setConfigToSend(false);
   };
 
   return (
-    <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
-      <MDBox pt={2} px={2}>
-        <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
-          <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-            {title}
-          </MDTypography>
-          {configToSend == false ? null : (
-            // <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-            //   <Tooltip title="Editar autorização" placement="top">
-            //     <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
-            //       <EditIcon />
-            //     </IconButton>
-            //   </Tooltip>
-            // </MDBox>
-            <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-              <Tooltip title="Enviar desautorização" placement="top">
-                <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
-                  <SendIcon />
-                </IconButton>
-              </Tooltip>
-            </MDBox>
-          )}
-          {configToSend == false ? (
-            <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-              <Tooltip title="Confirmar seleção" placement="top">
-                <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleCheckClick}>
-                  <CheckIcon />
-                </IconButton>
-              </Tooltip>
-            </MDBox>
-          ) : (
-            <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-              <Tooltip title="Editar seleção" placement="top">
-                <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-            </MDBox>
-          )}
-        </MDBox>
-      </MDBox>
-      {configToSend == false ? (
-        <DataTable
-          table={{ columns: pColumns, rows: pRows }}
-          isSorted={false}
-          entriesPerPage={false}
-          showTotalEntries={false}
-          canSearch
-          noEndBorder
+    // <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
+    <Grid py={1} container spacing={1}>
+      {/* <MDBox pt={2} px={2}> */}
+      <Grid item xs={12} md={6} xl={6}>
+        <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
+          <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
+            <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
+              {title}
+            </MDTypography>
+            {/* {configToSend == false ? null : (
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Enviar desautorização" placement="top">
+                  <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleSendClick}>
+                    <SendIcon />
+                  </IconButton>
+                </Tooltip>
+              </MDBox>
+            )} */}
+            {/* {configToSend == false ? ( */}
+              <MDBox>
+                <Tooltip title="Confirmar seleção" placement="top">
+                  {/* <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleCheckClick}>
+                    <CheckIcon />
+                  </IconButton> */}
+                  <Button 
+                    variant="contained"
+                    color={darkMode ? "secondary" : "dark"}
+                    startIcon={<CheckIcon />}
+                    onClick={handleCheckClick}
+                  >
+                    Confirme seleção
+                  </Button>
+                </Tooltip>
+              </MDBox>
+            {/* ) : (
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Editar seleção" placement="top">
+                  <IconButton sx={{ cursor: "pointer" }} fontSize="small" onClick={handleEditClick}>
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+              </MDBox>
+            )} */}
+          </MDBox>
+        
+        {/* </MDBox> */}
+        {/* {configToSend == false ? ( */}
+          <DataTable
+            table={{ columns: pColumns, rows: pRows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            canSearch
+            noEndBorder
+          />
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={6} xl={6}>
+        <LasAcessOverview
+          title="Últimos acessos"
+          profiles={roomListData}
+          codigo_salas={profiles.codigo}
+          shadow={false}
         />
-      ) : (
+      </Grid>
+      {/* ) : (
         <DataTable
           table={{ columns: edColumns, rows: edRows }}
           isSorted={false}
@@ -190,8 +205,18 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           showTotalEntries={false}
           noEndBorder
         />
-      )}
-    </Card>
+      )} */}
+      <ListOfUsers
+        title = "Lista de usuários para desautoriar"
+        exibir = {configToSend}
+        setExibir = {setConfigToSend}
+        columns = {edColumns}
+        rows = {edRows}
+        handleSendClick = {handleSendClick}
+        shadow={shadow}
+      />
+    </Grid>
+    // </Card>
   );
 }
 

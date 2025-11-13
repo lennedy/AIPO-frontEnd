@@ -39,6 +39,8 @@ import MDPagination from "components/MDPagination";
 import DataTableHeadCell from "examples/Tables/DataTable/DataTableHeadCell";
 import DataTableBodyCell from "examples/Tables/DataTable/DataTableBodyCell";
 
+import Popup from "examples/Popup";
+
 function DataTable({
   entriesPerPage,
   canSearch,
@@ -47,16 +49,85 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
+  buttonEnable,
+  handleAddUser,
+  // Opcional: use isto no(s) lugar(es) em que você usava `key` para forçar atualização
+  // sem desmontar o componente.
+  dataVersion,
 }) {
+
+  const normalize = (v) =>
+  (v ?? "")
+    .toString()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos
+    .toLowerCase()
+    .trim();
+    
+  function accentInsensitiveGlobalFilter(rows, columnIds, filterValue) {
+    const query = normalize(filterValue);
+    if (!query) return rows;
+
+    return rows.filter((row) =>
+      columnIds.some((id) => {
+        const cellValue = row.values[id];
+        return normalize(cellValue).includes(query);
+      })
+    );
+  }
+
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
     : ["5", "10", "15", "20", "25"];
-  const columns = useMemo(() => table.columns, [table]);
-  const data = useMemo(() => table.rows, [table]);
+  
+  // Se precisar recalcular quando algo externo mudar (antes você usava `key`),
+  // use a prop `dataVersion` como dependência dos memos, em vez de forçar unmount.
+  const columns = useMemo(() => table.columns, [table, dataVersion]);
+  const data = useMemo(() => table.rows, [table, dataVersion]);
+
+  // --- "paginationModel" equivalente (controlado + persistido) ---
+  const persistenceId = useMemo(() => {
+    // cria um id estável por conjunto de colunas (evita conflito entre tabelas diferentes)
+    const sig =
+      (table?.columns || [])
+        .map((c) => c.accessor || c.Header)
+        .join("|") || "default";
+    return "dt:"+sig;
+  }, [table]);
+
+  const [paginationModel, setPaginationModel] = useState(() => {
+    try {
+      const saved = JSON.parse(
+        window.localStorage.getItem(persistenceId) || "{}"
+      );
+      return {
+        page: Number.isInteger(saved.page) ? saved.page : 0,
+        pageSize: saved.pageSize || defaultValue || 10,
+      };
+    } catch {
+      return { page: 0, pageSize: defaultValue || 10 };
+    }
+  });
 
   const tableInstance = useTable(
-    { columns, data, initialState: { pageIndex: 0 } },
+    {
+      columns,
+      data,
+      globalFilter: accentInsensitiveGlobalFilter,
+      autoResetPage: false,
+      autoResetFilters: false,
+      autoResetSortBy: false,
+      autoResetGlobalFilter: false,
+      //initialState: { pageIndex: 0 }
+      // Começa do que estava salvo
+      initialState: {
+        pageIndex: 0,
+        pageSize: paginationModel.pageSize,
+      },
+      // Não reseta página automaticamente quando data/ordenação muda
+      autoResetPage: false, // ver docs do usePagination :contentReference[oaicite:2]{index=2}
+    },
     useGlobalFilter,
     useSortBy,
     usePagination
@@ -80,17 +151,27 @@ function DataTable({
     state: { pageIndex, pageSize, globalFilter },
   } = tableInstance;
 
-  // Set the default value for the entries per page when component mounts
-  useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
+  // Garante pageSize inicial conforme entriesPerPage
+  useEffect(() => setPageSize(defaultValue || 10), [defaultValue, setPageSize]);
 
-  // Set the entries per page value based on the select value
+  // Atualiza pageSize pela UI
   const setEntriesPerPage = (value) => setPageSize(value);
+
+
+  // Persiste mudanças de page/pageSize -> localStorage
+  useEffect(() => {
+    const model = { page: pageIndex, pageSize };
+    setPaginationModel(model);
+    try {
+      window.localStorage.setItem(persistenceId, JSON.stringify(model));
+    } catch {}
+  }, [pageIndex, pageSize, persistenceId]);
 
   // Render the paginations
   const renderPagination = pageOptions.map((option) => (
     <MDPagination
       item
-      key={option}
+      key={"p-"+option}
       onClick={() => gotoPage(Number(option))}
       active={pageIndex === option}
     >
@@ -114,6 +195,7 @@ function DataTable({
   // Search input state handle
   const onSearchChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
+    if (pageIndex !== 0) gotoPage(0);
   }, 100);
 
   // A function that sets the sorted value for the table
@@ -176,7 +258,9 @@ function DataTable({
                 fullWidth
                 onChange={({ currentTarget }) => {
                   setSearch(search);
-                  onSearchChange(currentTarget.value);
+                  const textoSemEspaco = currentTarget.value.trim();
+                  const textoSemAcento = textoSemEspaco.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                  onSearchChange(textoSemAcento);
                 }}
               />
             </MDBox>
@@ -185,11 +269,14 @@ function DataTable({
       ) : null}
       <Table {...getTableProps()}>
         <MDBox component="thead">
-          {headerGroups.map((headerGroup, key) => (
-            <TableRow key={key} {...headerGroup.getHeaderGroupProps()}>
+          {headerGroups.map((headerGroup, groupIdx) => (
+            <TableRow
+              key={headerGroup.id || groupIdx}
+              {...headerGroup.getHeaderGroupProps?.()}
+            >
               {headerGroup.headers.map((column, idx) => (
                 <DataTableHeadCell
-                  key={idx}
+                  key={column.id || idx}
                   {...column.getHeaderProps(isSorted && column.getSortByToggleProps())}
                   width={column.width ? column.width : "auto"}
                   align={column.align ? column.align : "left"}
@@ -204,25 +291,44 @@ function DataTable({
           ))}
         </MDBox>
         <TableBody {...getTableBodyProps()}>
-          {page.map((row, key) => {
-            prepareRow(row);
-            return (
-              <TableRow key={key} {...row.getRowProps()}>
-                {row.cells.map((cell, idx) => (
-                  <DataTableBodyCell
-                    key={idx}
-                    noBorder={noEndBorder && rows.length - 1 === key}
-                    align={cell.column.align ? cell.column.align : "left"}
-                    {...cell.getCellProps()}
-                    hidden={cell.column.hidden}
-                  >
-                    {cell.render("Cell")}
-                    {/* {cell.column.hidden != true ? cell.render("Cell") : null} */}
-                  </DataTableBodyCell>
-                ))}
-              </TableRow>
-            );
-          })}
+          {rows.length === 0 && buttonEnable == true ? (
+            <TableRow>
+              <DataTableBodyCell colSpan={columns.length} align="center">
+                <MDBox py={3}>
+                  <MDTypography variant="button" fontWeight="regular">
+                    Nenhum resultado encontrado.
+                  </MDTypography>
+                  <MDBox mt={2}>
+                    <Popup
+                      message="procurar no SUAP"
+                      label="Procurar no SUAP"
+                      handleAddUser={handleAddUser}
+                    />
+                  </MDBox>
+                </MDBox>
+              </DataTableBodyCell>
+            </TableRow>
+          ) : (
+            page.map((row, rowIdx) => {
+              prepareRow(row);
+              return (
+                <TableRow key={row.id || rowIdx} {...row.getRowProps?.()}>
+                  {row.cells.map((cell, idx) => (
+                    <DataTableBodyCell
+                      key={""+(cell.column.id || idx)+"-"+(row.id || rowIdx)}
+                      noBorder={noEndBorder && rows.length - 1 === (row.id || rowIdx)}
+                      align={cell.column.align ? cell.column.align : "left"}
+                      {...cell.getCellProps?.()}
+                      hidden={cell.column.hidden}
+                    >
+                      {cell.render("Cell")}
+                      {/* {cell.column.hidden != true ? cell.render("Cell") : null} */}
+                    </DataTableBodyCell>
+                  ))}
+                </TableRow>
+              );
+            })
+          )}
         </TableBody>
       </Table>
 
@@ -280,7 +386,8 @@ DataTable.defaultProps = {
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },
   isSorted: true,
-  noEndBorder: false,
+  buttonEnable: false,
+  dataVersion: undefined,
 };
 
 // Typechecking props for the DataTable
@@ -310,6 +417,11 @@ DataTable.propTypes = {
   }),
   isSorted: PropTypes.bool,
   noEndBorder: PropTypes.bool,
+  buttonEnable: PropTypes.bool,
+  handleAddUser: PropTypes.func,
+  // Use isto quando você *antes* colocava `key={...}` para forçar recálculo:
+  // passe `dataVersion={...}` e nós só recalculamos os memos (sem unmount).
+  dataVersion: PropTypes.any,
 };
 
 export default DataTable;

@@ -1,4 +1,9 @@
+import backgroundImage from "assets/images/bg-profile.jpeg";
+
 import Icon from "@mui/material/Icon";
+import GroupRemoveIcon from '@mui/icons-material/GroupRemove';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import Tooltip from "@mui/material/Tooltip";
 
 import { useLocation } from "react-router-dom";
@@ -7,52 +12,40 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import AppBar from "@mui/material/AppBar";
 import Footer from "examples/Footer";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 
-import roomListData from "layouts/profile/data/roomListData";
-import RoomList from "examples/Lists/RoomList";
 import AuthorizedUsers from "../components/AuthorizedUsers";
 import ListToAuthorize from "../components/ListToAuthorize";
-import LasAcessOverview from "layouts/roomboard/components/LastAcessOverview";
-import PaymentMethod from "layouts/billing/components/PaymentMethod";
-import RoomHead from "layouts/roomboard/components/RoomHead";
 
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-
-import DataTable from "examples/Tables/DataTable";
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import RoomInfo from "layouts/roomboard/components/RoomInfo";
 import robotica from "assets/images/lab-robotica.jpeg";
-// import { DateRangePicker, DateRange } from "mui-daterange-picker";
+import ifrn from "assets/images/IFRN_medio.png";
+import breakpoints from "assets/theme/base/breakpoints";
+
 
 import { useMaterialUIController } from "context";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import getApiAddress from "serverAddress";
 
 function RoomData() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const location = useLocation();
-  // const { pathname, hash, key } = useLocation();
-  const dataChart = reportsBarChartData();
   const authorizedUsers = [];
   const { columns: pColumns, rows: pRows } = authorsTableData();
   const codigo = location.state.codigo;
   const nome = location.state.nome;
   const [addAuthorization, setAddAuthorization] = useState(false);
   const [isToUpdate, setIsToUpdate] = useState(false);
-  // const [listToAuthorize, setListToAuthorize] = useState({});
   var usersData = { enableToSend: false };
 
   const handleClick = (event) => {
-    // setAddAuthorization(!addAuthorization);
     if (codigo != null) {
       var methodToApi = "PUT";
       var dataToServer = {};
@@ -103,7 +96,28 @@ function RoomData() {
     usersData = data;
   }
 
+  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    // A function that sets the orientation state of the tabs.
+    function handleTabsOrientation() {
+      return window.innerWidth < breakpoints.values.sm
+        ? setTabsOrientation("vertical")
+        : setTabsOrientation("horizontal");
+    }
+
+    /** 
+     The event listener that's calling the handleTabsOrientation function when resizing the window.
+    */
+    window.addEventListener("resize", handleTabsOrientation);
+
+    // Call the handleTabsOrientation function to set the state with the initial value.
+    handleTabsOrientation();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleTabsOrientation);
+  }, [tabsOrientation]);
 
   const handleTabsChange = (event, newValue) => {
     setValue(newValue);
@@ -113,44 +127,75 @@ function RoomData() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mt={3}>
-        <MDBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={8}>
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
+      <MDBox position="relative" mb={5}>
+        {/* <MDBox mb={3}> */}
+          {/* <Grid container spacing={3}> */}
+            {/* <Grid item xs={12} lg={8}> */}
+        <MDBox
+          display="flex"
+          alignItems="center"
+          position="relative"
+          minHeight="4.75rem"
+          borderRadius="xl"
+          // sx={{
+          //   backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
+          //     `${linearGradient(
+          //       rgba(gradients.info.main, 0.6),
+          //       rgba(gradients.info.state, 0.6)
+          //     )}, url(${backgroundImage})`,
+          //   backgroundSize: "cover",
+          //   backgroundPosition: "50%",
+          //   overflow: "hidden",
+          // }}
+        />
+              {/* <Grid container spacing={3}> */}
+                {/* <Grid item xs={12}> */}
                   {/* <RoomHead codigo={location.state.codigo} nome={location.state.nome} /> */}
-                  <Card id="delete-account">
-                    <MDBox
+                  <Card
+                    sx={{
+                      position: "relative",
+                      mt: -8,
+                      // mx: 3,
+                      py: 2,
+                      px: 2,
+                    }}
+                  >
+                    {/* <MDBox
                       pt={2}
                       px={2}
                       display="flex"
                       justifyContent="space-between"
                       alignItems="center"
-                    >
-                      <Grid>
+                    > */}
+                    <Grid container spacing={3} alignItems="center">
+                       <Grid item>
                         {codigo == null ? (
                           <MDTypography variant="h6" fontWeight="medium">
                             Salas
                           </MDTypography>
                         ) : (
-                          <RoomInfo image={robotica} name={nome} codigo={codigo} />
+                          <RoomInfo image={codigo=="A208"?robotica:ifrn} name={nome} codigo={codigo} />
                         )}
                       </Grid>
-                      <Grid>
-                        <MDBox>
-                          <Grid container spacing={0}>
-                            <Tabs
-                              value={value}
-                              onChange={handleTabsChange}
-                              orientation="vertical"
-                              aria-label="basic tabs example"
-                            >
-                              <Tab label="Remover acesso" />
-                              <Tab label="Conceder acesso" />
-                            </Tabs>
-                          </Grid>
-                        </MDBox>
+                      <Grid item  xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+                        <AppBar position="static">
+                          <Tabs
+                            value={value}
+                            onChange={handleTabsChange}
+                            // orientation="vertical"
+                            orientation={tabsOrientation}
+                            aria-label="basic tabs example"
+                          >
+                            <Tab 
+                              label="Aba para Remoção"
+                              icon={<GroupRemoveIcon fontSize="medium" sx={{ mt: -0.25 }}/>                                }
+                            />
+                            <Tab
+                              label="Aba para Acesso"
+                              icon={<GroupAddIcon fontSize="medium" sx={{ mt: -0.25 }}/>}
+                            />
+                          </Tabs>
+                        </AppBar>
                         {/* <MDBox py={1}>
                           <MDButton
                             variant="gradient"
@@ -166,14 +211,15 @@ function RoomData() {
                           </MDButton>
                         </MDBox> */}
                       </Grid>
-                    </MDBox>
+                    </Grid>
+                    {/* </MDBox> */}
                     <MDBox p={1}>
                       <Grid container spacing={3}></Grid>
                     </MDBox>
                   </Card>
-                </Grid>
+                {/* </Grid> */}
                 {!addAuthorization ? (
-                  <Grid item xs={12} md={8} xl={8}>
+                  <Grid item xs={12} md={12} xl={12}>
                     {
                       <AuthorizedUsers
                         title={"Usuários Autorizados"}
@@ -195,18 +241,18 @@ function RoomData() {
                 )}
                 {!addAuthorization ? (
                   <Grid item xs={12} md={4} xl={4}>
-                    <LasAcessOverview
+                    {/* <LasAcessOverview
                       title="Últimos acessos"
                       profiles={roomListData}
                       codigo_salas={codigo}
                       shadow={false}
-                    />
+                    /> */}
                   </Grid>
                 ) : null}
-              </Grid>
-            </Grid>
-          </Grid>
-        </MDBox>
+              {/* </Grid> */}
+            {/* </Grid> */}
+          {/* </Grid> */}
+        {/* </MDBox> */}
       </MDBox>
       <Footer />
     </DashboardLayout>

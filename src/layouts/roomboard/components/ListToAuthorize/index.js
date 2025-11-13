@@ -19,11 +19,16 @@ import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
+import Button from '@mui/material/Button';
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import CheckIcon from "@mui/icons-material/Check";
 import SendIcon from "@mui/icons-material/Send";
 import Slider from "@mui/material/Slider";
+import Popup from "examples/Popup";
+import ListOfUsers from "../ListPopUp";
 
 // react-routers components
 import { Link } from "react-router-dom";
@@ -52,11 +57,15 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs from "dayjs";
 import getApiAddress from "serverAddress";
 
+import { useAuth } from "context/AuthProvider";
+
 function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
+  const authData = useAuth();
+
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  const [isToUpdate, setIsToUpdate] = useState(false);
+  const [isToUpdate, setIsToUpdate] = useState(true);
   const [editEnable, setEditEnable] = useState(false);
   const [configToSend, setConfigToSend] = useState(false);
   const [usersEdit, setUsersEdit] = useState({});
@@ -67,15 +76,13 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
   // const [horarioInicioValue, setHorarioInicioValue] = useState(0);
   // const [horarioFimValue, setHorarioFimValue] = useState(24);
 
-  const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit);
-
+  const autorizados = UsersTableData(profiles.codigo, editEnable, usersEdit, isToUpdate);
   var { columns: pColumns, rows: pRows, usersToEdit: pUsersToEdit } = autorizados;
 
   const { columns: edColumns, rows: edRows } = autorizados.usersToEdit;
 
   const minDistanceSlider = 0;
   const maxDistanceSlider = 24;
-
   var userToAuthorize = [];
   for (let key in edRows) {
     userToAuthorize.push({ matricula: edRows[key].author.props.email });
@@ -111,7 +118,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
 
   const handleSendClick = (event) => {
     if (enableToSend) {
-      setIsToUpdate(false);
+      // setIsToUpdate(false);
       const dataToServer = {
         usuarios: dataToParent.usersToAuthorize,
         dataInicio: dataToParent.beginDate,
@@ -134,7 +141,7 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           }
         })
         .catch((err) => console.log(err))
-        .finally(() => setIsToUpdate(true));
+        .finally(() => setIsToUpdate(!isToUpdate));
     } else {
       alert("usuarios não selecionados");
     }
@@ -154,8 +161,34 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
     }
   };
 
+  const handleAddNewUser = (userData) => {
+    // event.preventDefault();
+    setIsToUpdate(false);
+    const api = getApiAddress();
+
+    fetch(api.database + "/adicionarUsuarios", {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: "Bearer " + authData.tokenLocal,
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => {
+
+        if (json["status"] == "ok") {
+          alert("Adição realizada com sucesso");
+        } else {
+          alert("Erro:" + json["status"]);
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsToUpdate(true));
+  };
+
   return (
-    <Grid container spacing={3}>
+    <Grid py={1} container spacing={1}>
       <Grid item xs={12} md={6} xl={6}>
         <Card sx={{ height: "100%", boxShadow: !shadow && "none" }}>
           <MDBox pt={2} px={2}>
@@ -163,70 +196,37 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
               <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
                 {title}
               </MDTypography>
-              {configToSend == false ? null : (
-                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                  <Tooltip title="Enviar autorização" placement="top">
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      fontSize="small"
-                      onClick={handleSendClick}
-                    >
-                      <SendIcon />
-                    </IconButton>
-                  </Tooltip>
-                </MDBox>
-              )}
-              {configToSend == false ? (
-                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                  <Tooltip title="Confirmar seleção" placement="top">
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      fontSize="small"
-                      onClick={handleCheckClick}
-                    >
-                      <CheckIcon />
-                    </IconButton>
-                  </Tooltip>
-                </MDBox>
-              ) : (
-                <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
-                  <Tooltip title="Editar seleção" placement="top">
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      fontSize="small"
-                      onClick={handleEditClick}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                </MDBox>
-              )}
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Confirmar seleção" placement="top">
+                  {/* <IconButton
+                    sx={{ cursor: "pointer" }}
+                    fontSize="small"
+                    onClick={handleCheckClick}
+                  >
+                    <CheckIcon />
+                  </IconButton> */}
+                  <Button 
+                    variant="contained"
+                    color={darkMode ? "secondary" : "dark"}
+                    startIcon={<CheckIcon />}
+                    onClick={handleCheckClick}
+                  >
+                    Confirme seleção
+                  </Button>
+                </Tooltip>
+              </MDBox>
             </MDBox>
           </MDBox>
-          {configToSend == false ? (
-            <DataTable
-              table={{ columns: pColumns, rows: pRows }}
-              isSorted={false}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              canSearch
-              noEndBorder
-            />
-          ) : (
-            <DataTable
-              table={{ columns: edColumns, rows: edRows }}
-              isSorted={false}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
-              onChange={(newValue) => {
-                console.log(newValue);
-              }}
-              onRangePositionChange={(newValue) => {
-                console.log("newValue");
-              }}
-            />
-          )}
+          <DataTable
+            table={{ columns: pColumns, rows: pRows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            canSearch
+            noEndBorder
+            buttonEnable={true}
+            handleAddUser={handleAddNewUser}
+          />
         </Card>
       </Grid>
       <Grid item xs={12} md={6} xl={6}>
@@ -303,7 +303,16 @@ function AuthorizedUsers({ title, profiles, shadow, sendDataToParent }) {
           </MDBox>
         </Card>
       </Grid>
+      <ListOfUsers
+        title = "Lista de usuários para autorizar"
+        exibir = {configToSend}
+        setExibir = {setConfigToSend}
+        columns = {edColumns}
+        rows = {edRows}
+        handleSendClick = {handleSendClick}
+      />
     </Grid>
+
   );
 }
 

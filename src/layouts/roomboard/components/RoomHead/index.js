@@ -40,7 +40,7 @@ function RoomHead({ nome, codigo, localizacao }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
-  console.log(codigo);
+  // console.log(codigo);
   return (
     <Card id="delete-account">
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">

@@ -32,3 +32,22 @@ export function getDate_last30Days() {
 export function getDate_last7Days() {
   return getDate_lastDays(6);
 }
+export function errorHandlingConnection(authData, json) {
+  if(json.status == "401"){
+    alert("O login expirou. Refaça o login.");
+    authData.logOut();
+  } else if(json.status != "200") {
+    alert("Erro de conexão: "+json.status);
+  }
+}
+export function errorHandlingAPI(authData, json, message) {
+  console.log("passei na funcao util");
+  if (json["status"] === "ok") {
+    alert(message);
+  } else if (json["status"] === "Token has expired") {
+    alert("O login expirou. Refaça o login");
+    authData.logOut();
+  } else {
+    alert("Erro:" + json["status"]);
+  }
+}

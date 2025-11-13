@@ -57,13 +57,17 @@ import logoSlack from "assets/images/small-logos/logo-slack.svg";
 import logoSpotify from "assets/images/small-logos/logo-spotify.svg";
 import logoInvesion from "assets/images/small-logos/logo-invision.svg";
 
+import { useAuth } from "context/AuthProvider";
+import { errorHandling, errorHandlingConnection } from "util"
+
 //meus componentes
 import MySelect from "layouts/tables/myComponents";
 
 import getApiAddress from "serverAddress";
 import { Hidden } from "@mui/material";
 
-export default function Data(codigoSala, editState, usuariosParaEditar) {
+export default function Data(codigoSala, editState, usuariosParaEditar, isToUpdateUsers) {
+
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -98,7 +102,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
         />
       </Tooltip>
     ));
-
+  
   const [currentTime, setCurrentTime] = useState(0);
   const [Usuarios, setUsuarios] = useState(0);
   const [editHabilitadoArray, setEditHabilitadoArray] = useState(usuariosParaEditar);
@@ -106,36 +110,40 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
   const [UsuariosSalas, setUsuariosSalas] = useState(0);
 
   const [isToUpdate, setIsToUpdate] = useState(true);
-  const [isToUpdateUsers, setIsToUpdateUsers] = useState(true);
+  // const [isToUpdateUsers, setIsToUpdateUsers] = useState(updateUsers);
+
+  const authData = useAuth();
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/time")
-      .then((res) => res.json())
-      .then((data) => {
-        setCurrentTime(data.time);
-      });
+
     if (isToUpdateUsers) {
-      fetch(api.database + "/usuarios")
-        .then((res) => res.json())
+      fetch(api.database + "/usuarios", {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + authData.tokenLocal,
+          },
+        })
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json()
+        })
         .then((data) => {
-          // console.log(data);
+
           setUsuarios(data);
+        })
+        .catch((err) => {
+          console.warn("Falha ao buscar usuários:", err);
         });
     }
-
-    // fetch(api.database + "/salas")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     setSalas(data);
-    //   });
 
     fetch(api.database + "/UsuariosSalas")
       .then((res) => res.json())
       .then((data) => {
         setUsuariosSalas(data);
       });
-  }, [isToUpdate, isToUpdateUsers]);
+  }, [isToUpdateUsers, isToUpdate]);
 
   const Job = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
@@ -203,6 +211,7 @@ export default function Data(codigoSala, editState, usuariosParaEditar) {
     }
   }
   // console.log(usuarios_que_serao_editados);
+
   return {
     columns: [
       { Header: "", accessor: "Editar", width: "1%", align: "left", hidden: false },
