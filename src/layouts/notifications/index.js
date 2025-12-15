@@ -67,8 +67,8 @@ function Notifications() {
 
     socket.on("mqtt_message", (payload) => {
       console.log("Recebi do backend (mqtt_message):", payload);
-      setLastMessage(payload);
-      setMessages((old) => [payload, ...old]);
+      // setLastMessage(payload);
+      // setMessages((old) => [payload, ...old]);
     });
 
     return () => {
