@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 
 import { io } from "socket.io-client";
 
+import { useAuth } from "context/AuthProvider";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -39,6 +41,8 @@ function Notifications() {
   const [warningSB, setWarningSB] = useState(false);
   const [errorSB, setErrorSB] = useState(false);
 
+  const [acessoSB, setAcessoSB] = useState(false);
+
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   const openInfoSB = () => setInfoSB(true);
@@ -48,9 +52,20 @@ function Notifications() {
   const openErrorSB = () => setErrorSB(true);
   const closeErrorSB = () => setErrorSB(false);
 
+  const openAcessoSB = () => setAcessoSB(true);
+  const closeAcessoSB = () => setAcessoSB(false);
+
   const SOCKET_URL = "http://localhost:5000";
 
-  const socket = io(SOCKET_URL);
+  const authData = useAuth();
+  const token  = authData.tokenLocal;
+
+  // const socket = io(SOCKET_URL);
+
+  const socket =  io(SOCKET_URL, {
+                    auth: { token },
+                    transports: ["websocket"], // opcional
+                  });
 
   useEffect(() => {
     socket.onAny((event, ...args) => {
@@ -67,6 +82,8 @@ function Notifications() {
 
     socket.on("mqtt_message", (payload) => {
       console.log("Recebi do backend (mqtt_message):", payload);
+      // openInfoSB();
+      openAcessoSB();
       // setLastMessage(payload);
       // setMessages((old) => [payload, ...old]);
     });
@@ -114,6 +131,19 @@ function Notifications() {
       close={closeInfoSB}
     />
   );
+
+  const acessoComSucesso = (
+    <MDSnackbar
+      icon="notifications"
+      title="Material Dashboard"
+      content="Acesso realizado"
+      dateTime="11 mins ago"
+      open={acessoSB}
+      onClose={closeAcessoSB}
+      close={closeAcessoSB}
+    />
+  );
+
 
   const renderWarningSB = (
     <MDSnackbar
@@ -214,6 +244,7 @@ function Notifications() {
                     <MDButton variant="gradient" color="error" onClick={openErrorSB} fullWidth>
                       error notification
                     </MDButton>
+                    {acessoComSucesso}
                     {renderErrorSB}
                   </Grid>
                 </Grid>
