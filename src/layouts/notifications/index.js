@@ -30,7 +30,6 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import AccessNotification from "layouts/notifications/components/accessNotification"
 
 function Notifications() {
   const [successSB, setSuccessSB] = useState(false);
@@ -209,7 +208,6 @@ function Notifications() {
           </Grid>
         </Grid>
       </MDBox>
-      <AccessNotification/>
       <Footer />
     </DashboardLayout>
   );
