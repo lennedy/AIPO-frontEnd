@@ -13,7 +13,11 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { io } from "socket.io-client";
+
+import { useAuth } from "context/AuthProvider";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -30,9 +34,8 @@ import MDSnackbar from "components/MDSnackbar";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import AccessNotification from "layouts/notifications/components/accessNotification"
 
-function Notifications() {
+function AccessNotification() {
   const [successSB, setSuccessSB] = useState(false);
   const [infoSB, setInfoSB] = useState(false);
   const [warningSB, setWarningSB] = useState(false);
@@ -52,6 +55,46 @@ function Notifications() {
   const openAcessoSB = () => setAcessoSB(true);
   const closeAcessoSB = () => setAcessoSB(false);
 
+  const SOCKET_URL = "http://localhost:5000";
+
+  const authData = useAuth();
+  const token  = authData.tokenLocal;
+
+  // const socket = io(SOCKET_URL);
+
+  const socket =  io(SOCKET_URL, {
+                    auth: { token },
+                    transports: ["websocket"], // opcional
+                  });
+
+  useEffect(() => {
+    socket.onAny((event, ...args) => {
+      console.log("[socket.io] evento recebido:", event, args);
+    });
+
+    socket.on("connect", () => {
+      console.log("Conectado ao backend via WebSocket. ID:", socket.id);
+    });
+
+    socket.on("server_message", (msg) => {
+      console.log("Mensagem do servidor:", msg);
+    });
+
+    socket.on("mqtt_message", (payload) => {
+      console.log("Recebi do backend (mqtt_message):", payload);
+      // openInfoSB();
+      openAcessoSB();
+      // setLastMessage(payload);
+      // setMessages((old) => [payload, ...old]);
+    });
+
+    return () => {
+      socket.offAny();
+      socket.off("connect");
+      socket.off("server_message");
+      socket.off("mqtt_message");
+    };
+  }, []);
 
   const alertContent = (name) => (
     <MDTypography variant="body2" color="white">
@@ -132,87 +175,10 @@ function Notifications() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox mt={6} mb={3}>
-        <Grid container spacing={3} justifyContent="center">
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2}>
-                <MDTypography variant="h5">Alerts</MDTypography>
-              </MDBox>
-              <MDBox pt={2} px={2}>
-                <MDAlert color="primary" dismissible>
-                  {alertContent("primary")}
-                </MDAlert>
-                <MDAlert color="secondary" dismissible>
-                  {alertContent("secondary")}
-                </MDAlert>
-                <MDAlert color="success" dismissible>
-                  {alertContent("success")}
-                </MDAlert>
-                <MDAlert color="error" dismissible>
-                  {alertContent("error")}
-                </MDAlert>
-                <MDAlert color="warning" dismissible>
-                  {alertContent("warning")}
-                </MDAlert>
-                <MDAlert color="info" dismissible>
-                  {alertContent("info")}
-                </MDAlert>
-                <MDAlert color="light" dismissible>
-                  {alertContent("light")}
-                </MDAlert>
-                <MDAlert color="dark" dismissible>
-                  {alertContent("dark")}
-                </MDAlert>
-              </MDBox>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} lg={8}>
-            <Card>
-              <MDBox p={2} lineHeight={0}>
-                <MDTypography variant="h5">Notifications</MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
-                  Notifications on this page use Toasts from Bootstrap. Read more details here.
-                </MDTypography>
-              </MDBox>
-              <MDBox p={2}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="success" onClick={openSuccessSB} fullWidth>
-                      success notification
-                    </MDButton>
-                    {renderSuccessSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="info" onClick={openInfoSB} fullWidth>
-                      info notification
-                    </MDButton>
-                    {renderInfoSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="warning" onClick={openWarningSB} fullWidth>
-                      warning notification
-                    </MDButton>
-                    {renderWarningSB}
-                  </Grid>
-                  <Grid item xs={12} sm={6} lg={3}>
-                    <MDButton variant="gradient" color="error" onClick={openErrorSB} fullWidth>
-                      error notification
-                    </MDButton>
-                    {renderErrorSB}
-                  </Grid>
-                </Grid>
-              </MDBox>
-            </Card>
-          </Grid>
-        </Grid>
-      </MDBox>
-      <AccessNotification/>
+      {acessoComSucesso}
       <Footer />
     </DashboardLayout>
   );
 }
 
-export default Notifications;
+export default AccessNotification;
