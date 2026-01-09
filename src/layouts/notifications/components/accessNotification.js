@@ -35,14 +35,12 @@ function AccessNotification() {
   const SOCKET_URL = "http://localhost:5000";
 
   const authData = useAuth();
-  const token  = authData.tokenLocal;
-
-  const socket =  io(SOCKET_URL, {
-                    auth: { token },
-                    transports: ["websocket"], // opcional
-                  });
 
   useEffect(() => {
+
+    const socket = authData.socket;
+    if (!socket) return;
+
     socket.onAny((event, ...args) => {
       console.log("[socket.io] evento recebido:", event, args);
     });
@@ -66,15 +64,16 @@ function AccessNotification() {
       socket.off("server_message");
       socket.off("mqtt_message");
     };
-  }, []);
+
+  }, [authData.socket]);
 
   const acessoComSucesso = (
     <MDSnackbar
       color="success"
       icon="notifications"
-      title="Material Dashboard"
-      content="Acesso realizado"
-      dateTime="11 mins ago"
+      title="Acesso realizado"
+      content="Usuário Lennedy Campos Soares acessou sala A212"
+      dateTime="19h32"
       open={acessoSB}
       onClose={closeAcessoSB}
       close={closeAcessoSB}

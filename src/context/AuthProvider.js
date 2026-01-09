@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import Alert from "@mui/material/Alert";
 import getApiAddress from "serverAddress";
+import { io } from "socket.io-client";
 
 const AuthContext = createContext();
 
@@ -22,6 +23,7 @@ const AuthProvider = ({ children }) => {
   const [nivelGerencia, setNivelGerencia] = useState(
     localStorage.getItem("site.nivelGerencia") || ""
   );
+  const [socket, setSoket] = useState();
 
   const navigate = useNavigate();
   const loginAction = async (data, lembrar) => {
@@ -47,6 +49,7 @@ const AuthProvider = ({ children }) => {
         // console.log("Authprovider");
         // console.log(res.data.nome_usual);
 
+
         setToken(res.data.token);
         setNivelGerencia(res.data.nivelGerencia);
         setTokenLocal(res.data.token_local);
@@ -59,12 +62,25 @@ const AuthProvider = ({ children }) => {
           localStorage.setItem("site.tipoUsuario", res.data.tipoUsuario);
           localStorage.setItem("site.foto", res.data.foto);
         }
+
         // navigate("/profile");
         if (res.data.nivelGerencia == "administrador") {
           navigate("/dashboard");
         } else {
           navigate("/profile");
         }
+
+        const SOCKET_URL = "http://localhost:5000";
+        const socket =  io(SOCKET_URL, {
+                auth: {  token: res.data.token_local },
+                transports: ["polling"],
+                reconnectionAttempts: 5,
+                reconnectionDelay: 500,
+              });
+        console.log("Authprovider");
+        console.log(socket);
+        setSoket(socket);
+        
         return;
       } else {
         throw new Error(res.status);
@@ -81,8 +97,13 @@ const AuthProvider = ({ children }) => {
   };
 
   const logOut = () => {
+    if (socket?.connected || socket) {
+      socket.disconnect();
+    }
+
     setUser(null);
     setToken("");
+    setSoket(null);
     localStorage.removeItem("site.token");
     localStorage.removeItem("site.tokenLocal");
     localStorage.removeItem("site.nivelGerencia");
@@ -94,7 +115,7 @@ const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, tokenLocal, user, nivelGerencia, loginAction, logOut }}>
+    <AuthContext.Provider value={{ token, tokenLocal, user, nivelGerencia, socket, loginAction, logOut }}>
       {children}
     </AuthContext.Provider>
   );
