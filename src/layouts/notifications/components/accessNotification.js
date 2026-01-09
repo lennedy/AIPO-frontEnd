@@ -15,19 +15,17 @@ Coded by www.creative-tim.com
 
 import { useEffect, useState } from "react";
 
-import { io } from "socket.io-client";
-
 import { useAuth } from "context/AuthProvider";
 
 
 // Material Dashboard 2 React components
-import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 import MDSnackbar from "components/MDSnackbar";
 
 function AccessNotification() {
 
   const [acessoSB, setAcessoSB] = useState(false);
+  const [payload, setPayload] = useState({usuario:"", sala:"", horario: "", sucesso:"false"});
 
   const openAcessoSB = () => setAcessoSB(true);
   const closeAcessoSB = () => setAcessoSB(false);
@@ -55,6 +53,8 @@ function AccessNotification() {
 
     socket.on("mqtt_message", (payload) => {
       console.log("Recebi do backend (mqtt_message):", payload);
+      console.log("Recebi do backend (mqtt_message usuario):", payload.data.usuario);
+      setPayload(payload.data);
       openAcessoSB();
     });
 
@@ -72,8 +72,8 @@ function AccessNotification() {
       color="success"
       icon="notifications"
       title="Acesso realizado"
-      content="Usuário Lennedy Campos Soares acessou sala A212"
-      dateTime="19h32"
+      content={payload.usuario+" acessou a sala "+payload.sala}
+      dateTime={payload.horario}
       open={acessoSB}
       onClose={closeAcessoSB}
       close={closeAcessoSB}
