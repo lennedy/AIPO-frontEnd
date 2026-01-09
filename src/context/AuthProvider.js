@@ -66,9 +66,8 @@ const AuthProvider = ({ children }) => {
         } else {
           navigate("/profile");
         }
-
-        const SOCKET_URL = "http://localhost:5000";
-        const socket =  io(SOCKET_URL, {
+        
+        const socket =  io(api.database, {
                 auth: {  token: res.data.token_local },
                 transports: ["polling"],
                 reconnectionAttempts: 5,

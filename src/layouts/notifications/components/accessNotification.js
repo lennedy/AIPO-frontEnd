@@ -30,8 +30,6 @@ function AccessNotification() {
   const openAcessoSB = () => setAcessoSB(true);
   const closeAcessoSB = () => setAcessoSB(false);
 
-  const SOCKET_URL = "http://localhost:5000";
-
   const authData = useAuth();
 
   useEffect(() => {
