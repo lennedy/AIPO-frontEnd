@@ -52,8 +52,6 @@ function AccessNotification() {
     });
 
     socket.on("mqtt_message", (payload) => {
-      console.log("Recebi do backend (mqtt_message):", payload);
-      console.log("Recebi do backend (mqtt_message usuario):", payload.data.usuario);
       setPayload(payload.data);
       openAcessoSB();
     });

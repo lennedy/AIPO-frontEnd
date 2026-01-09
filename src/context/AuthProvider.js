@@ -46,9 +46,6 @@ const AuthProvider = ({ children }) => {
           tipoUsuario: res.data.tipoUsuario,
           foto: res.data.foto,
         });
-        // console.log("Authprovider");
-        // console.log(res.data.nome_usual);
-
 
         setToken(res.data.token);
         setNivelGerencia(res.data.nivelGerencia);
@@ -77,8 +74,6 @@ const AuthProvider = ({ children }) => {
                 reconnectionAttempts: 5,
                 reconnectionDelay: 500,
               });
-        console.log("Authprovider");
-        console.log(socket);
         setSoket(socket);
         
         return;
