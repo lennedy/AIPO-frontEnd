@@ -22,11 +22,8 @@ import { useAuth } from "context/AuthProvider";
 
 // Material Dashboard 2 React components
 import MDTypography from "components/MDTypography";
+import MDBox from "components/MDBox";
 import MDSnackbar from "components/MDSnackbar";
-
-// Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import Footer from "examples/Footer";
 
 function AccessNotification() {
 
@@ -86,9 +83,9 @@ function AccessNotification() {
 
 
   return (
-    <DashboardLayout>
+    <MDBox>
       {acessoComSucesso}
-    </DashboardLayout>
+    </MDBox>
   );
 }
 
