@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import getApiAddress from "serverAddress";
 
@@ -44,6 +44,9 @@ export default function ChartData(updateFather) {
   }
 
   const data_inicia_final = { data_inicial: dates[6]["date"], data_final: dates[0]["date"] };
+
+  console.log("Bar Chart Data");
+  console.log(data_inicia_final);
 
   console.log("Estive aqui");
   console.log(dates);
@@ -108,7 +111,7 @@ export default function ChartData(updateFather) {
       });
   }, [updateFather]);
 
-  return {
+  return useMemo(() =>({
     labels: ["S", "T", "Q", "Q", "S", "S", "D"],
     datasets: {
       label: "Acessos",
@@ -122,7 +125,7 @@ export default function ChartData(updateFather) {
         acessosDomingo,
       ],
     },
-  };
+  }), [acessosDomingo, acessosSegunda, acessosTerca, acessosQuarta, acessosQuinta, acessosSexta, acessosSabado]);
 }
 
 // export default {

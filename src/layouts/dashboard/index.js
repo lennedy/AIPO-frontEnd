@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -49,14 +49,14 @@ function Dashboard() {
   const [numUsuariosAtivos, serNumUsariosAtivos] = useState(0);
   const [numAcessosMes, setNumAcessosMes] = useState(0);
   const [numAcessos7Dias, setNumAcessos7Dias] = useState(0);
-  const [update, setUpdate] = useState(true);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
 
-  const data_inicia_final_30 = getDate_last30Days();
+  const data_inicia_final_30 = useMemo(() => getDate_last30Days(), []);
 
-  const data_inicia_final_7 = getDate_last7Days();
+  const data_inicia_final_7 = useMemo(() => getDate_last7Days(), []);
 
   const authData = useAuth();
   const socket = authData.socket;
@@ -69,7 +69,7 @@ function Dashboard() {
       console.log("oxi oxi!!!");
       console.log(payload);
       if(payload.data.erro==false &&  payload.data.chaveCadastrada==true){
-        setUpdate(true);
+        setRefreshTick((t) => t + 1);
       }
     };
 
@@ -112,8 +112,7 @@ function Dashboard() {
         console.log(data_inicia_final_7);
         setNumAcessos7Dias(data.numResults);
       });
-    setUpdate(false);
-  }, [update]);
+  }, [refreshTick]);
 
   useEffect(() => {
     const api = getApiAddress();
@@ -125,9 +124,9 @@ function Dashboard() {
       });
   }, []);
 
-  const { sales, tasks } = reportsLineChartData(update);
-  const { acessosSalas } = reportsRoomsData(update);
-  const dataChart = reportsBarChartData(update);
+  const { sales, tasks } =  reportsLineChartData(refreshTick);
+  const { acessosSalas } = reportsRoomsData(refreshTick);
+  const dataChart = reportsBarChartData(refreshTick);
   return (
     <DashboardLayout>
       <DashboardNavbar />

@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import getApiAddress from "serverAddress";
 
@@ -137,7 +137,7 @@ export default function ChartData(updateFather) {
       });
   }, [updateFather]);
 
-  const data = {
+  const data = useMemo(() => ({
     sales: {
       labels: ["Jan", "Fev", "Mar", "Apr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
       datasets: {
@@ -162,7 +162,8 @@ export default function ChartData(updateFather) {
       labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       datasets: { label: "Desktop apps", data: [50, 40, 300, 220, 500, 250, 400, 230, 500] },
     },
-  };
+  }),[acessosJaneiro, acessosFevereiro, acessosMarco, acessosAbril, acessosMaio, acessosJunho,
+    acessosJulho, acessosAgosto, acessosSetembro, acessosOutrubro, acessosNovembro, acessosDezembro]);
 
   return data;
 }

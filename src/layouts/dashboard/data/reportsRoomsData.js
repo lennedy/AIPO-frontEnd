@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import getApiAddress from "serverAddress";
 
@@ -26,7 +26,7 @@ export default function RoomsData(updateFather) {
 
   const NUM_MAXIMO_SALAS = 4;
 
-  const data_inicia_final = getDate_last30Days();
+  const data_inicia_final = useMemo(() => getDate_last30Days(),[]);
 
   useEffect(() => {
     const api = getApiAddress();
@@ -71,19 +71,13 @@ export default function RoomsData(updateFather) {
         }
       });
   }, [updateFather]);
-  console.log(numAcessos);
-  console.log(salasAcessadas);
-  const data = {
+
+  const data = useMemo(() => ({
     acessosSalas: {
       labels: salasAcessadas,
       datasets: { label: "nº de acessos", data: numAcessos },
     },
-  };
+  }), [salasAcessadas, numAcessos]);
 
   return data;
 }
-
-// export default {
-//   labels: ["M", "T", "W", "T", "F", "S", "S"],
-//   datasets: { label: "Sales", data: [50, 20, 10, 22, 50, 10, 40] },
-// };
