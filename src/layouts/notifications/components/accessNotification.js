@@ -74,7 +74,7 @@ function AccessNotification() {
       console.log("Mensagem do servidor:", msg);
     });
 
-    socket.on("mqtt_message", (payload) => {
+    socket.on("access_message", (payload) => {
       const api = getApiAddress();
       
       if(payload.data.erro == true){
