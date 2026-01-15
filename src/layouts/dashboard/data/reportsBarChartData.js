@@ -20,7 +20,7 @@ import getApiAddress from "serverAddress";
 
 import formatDate from "util";
 
-export default function ChartData() {
+export default function ChartData(updateFather) {
   const [acessosDomingo, setAcessosDomingo] = useState(0);
   const [acessosSegunda, setAcessosSegunda] = useState(0);
   const [acessosTerca, setAcessosTerca] = useState(0);
@@ -28,6 +28,7 @@ export default function ChartData() {
   const [acessosQuinta, setAcessosQuinta] = useState(0);
   const [acessosSexta, setAcessosSexta] = useState(0);
   const [acessosSabado, setAcessosSabado] = useState(0);
+  const [update, setUpdate] = useState(updateFather);
 
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
@@ -105,7 +106,7 @@ export default function ChartData() {
           // console.log(dados);
         }
       });
-  }, []);
+  }, [updateFather]);
 
   return {
     labels: ["S", "T", "Q", "Q", "S", "S", "D"],

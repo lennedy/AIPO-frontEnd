@@ -41,6 +41,7 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import getApiAddress from "serverAddress";
 import formatDate from "util";
 import { getDate_last30Days, getDate_last7Days } from "util";
+import { useAuth } from "context/AuthProvider";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -48,6 +49,7 @@ function Dashboard() {
   const [numUsuariosAtivos, serNumUsariosAtivos] = useState(0);
   const [numAcessosMes, setNumAcessosMes] = useState(0);
   const [numAcessos7Dias, setNumAcessos7Dias] = useState(0);
+  const [update, setUpdate] = useState(true);
 
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
@@ -55,6 +57,28 @@ function Dashboard() {
   const data_inicia_final_30 = getDate_last30Days();
 
   const data_inicia_final_7 = getDate_last7Days();
+
+  const authData = useAuth();
+  const socket = authData.socket;
+
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handler = (payload) => {
+      console.log("oxi oxi!!!");
+      console.log(payload);
+      if(payload.data.erro==false &&  payload.data.chaveCadastrada==true){
+        setUpdate(true);
+      }
+    };
+
+    socket.on("access_monitoring", handler);
+
+    return () => {
+      socket.off("access_monitoring", handler); // remove o listener corretamente
+    };
+  }, [socket]);
 
   useEffect(() => {
     // fetch("/time")
@@ -67,13 +91,6 @@ function Dashboard() {
       .then((res) => res.json())
       .then((data) => {
         setAccessToday(data.numAcessos);
-      });
-
-    fetch(api.database + "/getUsuariosAtivos")
-      .then((res) => res.json())
-      .then((data) => {
-        serNumUsariosAtivos(data.users.length);
-        // setAccessToday(data.numAcessos);
       });
     fetch(api.database + "/acessosData", {
       method: "PUT",
@@ -95,11 +112,22 @@ function Dashboard() {
         console.log(data_inicia_final_7);
         setNumAcessos7Dias(data.numResults);
       });
-  });
+    setUpdate(false);
+  }, [update]);
 
-  const { sales, tasks } = reportsLineChartData();
-  const { acessosSalas } = reportsRoomsData();
-  const dataChart = reportsBarChartData();
+  useEffect(() => {
+    const api = getApiAddress();
+    fetch(api.database + "/getUsuariosAtivos")
+      .then((res) => res.json())
+      .then((data) => {
+        serNumUsariosAtivos(data.users.length);
+        // setAccessToday(data.numAcessos);
+      });
+  }, []);
+
+  const { sales, tasks } = reportsLineChartData(update);
+  const { acessosSalas } = reportsRoomsData(update);
+  const dataChart = reportsBarChartData(update);
   return (
     <DashboardLayout>
       <DashboardNavbar />

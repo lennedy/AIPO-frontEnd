@@ -28,7 +28,7 @@ function formatDate(date, format) {
   return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
 }
 
-export default function ChartData() {
+export default function ChartData(updateFather) {
   const [acessosJaneiro, setAcessosJaneiro] = useState(100);
   const [acessosFevereiro, setAcessosFeveriero] = useState(0);
   const [acessosMarco, setAcessosMarco] = useState(0);
@@ -135,7 +135,7 @@ export default function ChartData() {
           setAcessosDezembro(dez);
         }
       });
-  }, []);
+  }, [updateFather]);
 
   const data = {
     sales: {

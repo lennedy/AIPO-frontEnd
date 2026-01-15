@@ -20,7 +20,7 @@ import getApiAddress from "serverAddress";
 
 import { getDate_last30Days } from "util";
 
-export default function RoomsData() {
+export default function RoomsData(updateFather) {
   const [numAcessos, setNumAcessos] = useState([]);
   const [salasAcessadas, setSalasAcessads] = useState([]);
 
@@ -70,7 +70,7 @@ export default function RoomsData() {
           alert("erro ao adquirir dados");
         }
       });
-  }, []);
+  }, [updateFather]);
   console.log(numAcessos);
   console.log(salasAcessadas);
   const data = {
