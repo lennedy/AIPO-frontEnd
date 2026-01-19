@@ -49,6 +49,15 @@ function Dashboard() {
   const [numUsuariosAtivos, serNumUsariosAtivos] = useState(0);
   const [numAcessosMes, setNumAcessosMes] = useState(0);
   const [numAcessos7Dias, setNumAcessos7Dias] = useState(0);
+  const [acessos, setAcessos] =  useState(
+    {
+      "acessoHoje":"0",
+      "acesso7dias":"0",
+      "acesso30dias":"0",
+      "porMes":[{"mes":1, "qtd":0}],
+      "porDiaNaSemana":[{"dia":"", "qtd":0}],
+    }
+  );
   const [refreshTick, setRefreshTick] = useState(0);
 
   const timeElapsed = Date.now();
@@ -69,7 +78,7 @@ function Dashboard() {
       console.log("oxi oxi!!!");
       console.log(payload);
       if(payload.data.erro==false &&  payload.data.chaveCadastrada==true){
-        setRefreshTick((t) => t + 1);
+        setRefreshTick((t) => t + 1); 
       }
     };
 
@@ -87,30 +96,19 @@ function Dashboard() {
     //     setCurrentTime(data.time);
     //   });
     const api = getApiAddress();
-    fetch(api.database + "/acessosHoje")
+    fetch(api.database + "/dashboard")
       .then((res) => res.json())
       .then((data) => {
-        setAccessToday(data.numAcessos);
-      });
-    fetch(api.database + "/acessosData", {
-      method: "PUT",
-      body: JSON.stringify(data_inicia_final_30),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setNumAcessosMes(data.numResults);
-      });
-    fetch(api.database + "/acessosData", {
-      method: "PUT",
-      body: JSON.stringify(data_inicia_final_7),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Terminal");
-        console.log(data_inicia_final_7);
-        setNumAcessos7Dias(data.numResults);
+        setAcessos({
+          "acessoHoje":data.numAcessosHoje, 
+          "acesso7dias":data.numAcessosSemana, 
+          "acesso30dias":data.numAcessos30Dias,
+          "porMes":data.numAcessosPorMes,
+          "porDiaNaSemana":data.numAcessosPorSemana,
+        });
+        console.log("dfajdflajsfls");
+        console.log(data.numAcessosPorMes);
+        console.log(data.numAcessosPorSemana);
       });
   }, [refreshTick]);
 
@@ -124,9 +122,10 @@ function Dashboard() {
       });
   }, []);
 
-  const { sales, tasks } =  reportsLineChartData(refreshTick);
-  const { acessosSalas } = reportsRoomsData(refreshTick);
-  const dataChart = reportsBarChartData(refreshTick);
+  const { sales, tasks } =  reportsLineChartData(acessos.porMes);
+  const { acessosSalas } = reportsRoomsData();
+  const dataChart = reportsBarChartData(acessos.porDiaNaSemana);
+  console.log(dataChart)
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -138,7 +137,7 @@ function Dashboard() {
                 color="dark"
                 icon="event"
                 title="Acessos em 7 dias"
-                count={numAcessos7Dias}
+                count={acessos.acesso7dias}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -152,7 +151,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="today"
                 title="Nº de acessos hoje"
-                count={numberAccess}
+                count={acessos.acessoHoje}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -167,7 +166,7 @@ function Dashboard() {
                 color="success"
                 icon="event"
                 title="Acessos em 30 dias"
-                count={numAcessosMes}
+                count={acessos.acesso30dias}
                 percentage={{
                   color: "success",
                   amount: "",

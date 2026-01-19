@@ -28,7 +28,12 @@ function formatDate(date, format) {
   return format.replace(/mm|dd|aa|aaaa/gi, (matched) => map[matched]);
 }
 
-export default function ChartData(updateFather) {
+function getQtdPorMes(mes, dados) {
+  const item = dados.find(obj => obj.mes === mes);
+  return item ? item.qtd : 0; // ou 0, ou undefined
+}
+
+export default function ChartData(acessosPorMes) {
   const [acessosJaneiro, setAcessosJaneiro] = useState(100);
   const [acessosFevereiro, setAcessosFeveriero] = useState(0);
   const [acessosMarco, setAcessosMarco] = useState(0);
@@ -41,6 +46,7 @@ export default function ChartData(updateFather) {
   const [acessosOutrubro, setAcessosOutubro] = useState(0);
   const [acessosNovembro, setAcessosNovembro] = useState(0);
   const [acessosDezembro, setAcessosDezembro] = useState(0);
+  const [numAcessos, setNumAcessos] = useState([100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
@@ -57,85 +63,15 @@ export default function ChartData(updateFather) {
 
   useEffect(() => {
     const api = getApiAddress();
-    fetch(api.database + "/acessosData", {
-      method: "PUT",
-      body: JSON.stringify(data_inicia_final),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        var jan = 0;
-        var fev = 0;
-        var mar = 0;
-        var abr = 0;
-        var mai = 0;
-        var jun = 0;
-        var jul = 0;
-        var ago = 0;
-        var set = 0;
-        var out = 0;
-        var nov = 0;
-        var dez = 0;
-
-        if (json["status"] == "ok") {
-          const dados = json["Dados"];
-          for (var i = 0; i < json["numResults"]; i++) {
-            const acessDate = new Date(dados[i]["timestamp"]);
-            const mes = acessDate.getMonth();
-            switch (mes) {
-              case 0:
-                jan++;
-                break;
-              case 1:
-                fev++;
-                break;
-              case 2:
-                mar++;
-                break;
-              case 3:
-                abr++;
-                break;
-              case 4:
-                mai++;
-                break;
-              case 5:
-                jun++;
-                break;
-              case 6:
-                jul++;
-                break;
-              case 7:
-                ago++;
-                break;
-              case 8:
-                set++;
-                break;
-              case 9:
-                out++;
-                break;
-              case 10:
-                nov++;
-                break;
-              case 11:
-                dez++;
-                break;
-            }
-          }
-          setAcessosJaneiro(jan);
-          setAcessosFeveriero(fev);
-          setAcessosMarco(mar);
-          setAcessosAbril(abr);
-          setAcessosMaio(mai);
-          setAcessosJunho(jun);
-          setAcessosJulho(jul);
-          setAcessosAgosto(ago);
-          setAcessosSetembro(set);
-          setAcessosNovembro(nov);
-          setAcessosOutubro(out);
-          setAcessosDezembro(dez);
-        }
-      });
-  }, [updateFather]);
+    let array = [];
+    for (let i = 1; i <= 12; i++) {
+      // console.log(i);
+      array.push( getQtdPorMes(i,acessosPorMes) );
+    }
+    setAcessosJaneiro(array[0]);
+    setNumAcessos(array);
+    
+  }, [acessosPorMes]);
 
   const data = useMemo(() => ({
     sales: {
@@ -143,18 +79,18 @@ export default function ChartData(updateFather) {
       datasets: {
         label: "acessos por mês",
         data: [
-          acessosJaneiro,
-          acessosFevereiro,
-          acessosMarco,
-          acessosAbril,
-          acessosMaio,
-          acessosJunho,
-          acessosJulho,
-          acessosAgosto,
-          acessosSetembro,
-          acessosOutrubro,
-          acessosNovembro,
-          acessosDezembro,
+          numAcessos[0],
+          numAcessos[1],
+          numAcessos[2],
+          numAcessos[3],
+          numAcessos[4],
+          numAcessos[5],
+          numAcessos[6],
+          numAcessos[7],
+          numAcessos[8],
+          numAcessos[9],
+          numAcessos[10],
+          numAcessos[11],
         ],
       },
     },

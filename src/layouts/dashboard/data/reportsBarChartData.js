@@ -20,7 +20,7 @@ import getApiAddress from "serverAddress";
 
 import formatDate from "util";
 
-export default function ChartData(updateFather) {
+export default function ChartData(numAcessosPorDiaNaSemana) {
   const [acessosDomingo, setAcessosDomingo] = useState(0);
   const [acessosSegunda, setAcessosSegunda] = useState(0);
   const [acessosTerca, setAcessosTerca] = useState(0);
@@ -28,104 +28,76 @@ export default function ChartData(updateFather) {
   const [acessosQuinta, setAcessosQuinta] = useState(0);
   const [acessosSexta, setAcessosSexta] = useState(0);
   const [acessosSabado, setAcessosSabado] = useState(0);
-  const [update, setUpdate] = useState(updateFather);
-
-  const timeElapsed = Date.now();
-  const today = new Date(timeElapsed);
-  //const formatedToday = formatDate(today, "aa-mm-dd");
-
-  const dates = [];
-  const dates2 = [];
-  const day = new Date();
-  for (var i = 0; i < 7; i++) {
-    day.setDate(today.getDate() - i);
-    dates.push({ week: day.getDay(), date: formatDate(day, "aa-mm-dd") });
-    dates2[day.getDay()] = formatDate(day, "aa-mm-dd");
-  }
-
-  const data_inicia_final = { data_inicial: dates[6]["date"], data_final: dates[0]["date"] };
-
-  console.log("Bar Chart Data");
-  console.log(data_inicia_final);
-
-  console.log("Estive aqui");
-  console.log(dates);
-  console.log(data_inicia_final);
+  const [numAcessos, setNumAcessos] = useState(
+    [
+      {"domingo": 5},
+      {"segunda": 0},
+      {"terca": 0},
+      {"quarta": 0},
+      {"quinta": 0},
+      {"sexta": 0},
+      {"sabado": 0},
+    ]
+  );
 
   useEffect(() => {
-    const api = getApiAddress();
-    fetch(api.database + "/acessosData", {
-      method: "PUT",
-      body: JSON.stringify(data_inicia_final),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        var domingo = 0;
-        var segunda = 0;
-        var terca = 0;
-        var quarta = 0;
-        var quinta = 0;
-        var sexta = 0;
-        var sabado = 0;
-        if (json["status"] == "ok") {
-          const dados = json["Dados"];
-          for (var i = 0; i < json["numResults"]; i++) {
-            const acessDate = new Date(dados[i]["timestamp"]);
-            switch (formatDate(acessDate, "aa-mm-dd")) {
-              case dates2[0]:
-                domingo++;
-                break;
-              case dates2[1]:
-                segunda++;
-                break;
-              case dates2[2]:
-                terca++;
-                break;
-              case dates2[3]:
-                quarta++;
-                break;
-              case dates2[4]:
-                quinta++;
-                break;
-              case dates2[5]:
-                sexta++;
-                break;
-              case dates2[6]:
-                sabado++;
-                break;
-            }
-          }
-          setAcessosDomingo(domingo);
-          setAcessosSegunda(segunda);
-          setAcessosTerca(terca);
-          setAcessosQuarta(quarta);
-          setAcessosQuinta(quinta);
-          setAcessosSexta(sexta);
-          setAcessosSabado(sabado);
+    let acessoSemana =[
+      {"domingo": 5},
+      {"segunda": 0},
+      {"terca": 0},
+      {"quarta": 0},
+      {"quinta": 0},
+      {"sexta": 0},
+      {"sabado": 0},
+    ];
+    for (const acesso of numAcessosPorDiaNaSemana) {
+      const dataSemana = new Date(acesso.dia);
+      dataSemana.setHours(dataSemana.getHours() + 3);
+      switch(dataSemana.getDay()){
+        case 0:
+          acessoSemana.domingo = acesso.qtd;
+          break;
+        case 1:
+          acessoSemana.segunda = acesso.qtd;
+          break;
+        case 2:
+          acessoSemana.terca = acesso.qtd;
+          break;
+        case 3:
+          acessoSemana.quarta = acesso.qtd;
+          break;
+        case 4:
+          acessoSemana.quinta = acesso.qtd;
+          break;
+        case 5:
+          acessoSemana.sexta = acesso.qtd;
+          break;
+        case 6:
+          acessoSemana.sabado = acesso.qtd;
+          break;
+      }
+    }
+    setNumAcessos(acessoSemana);
+    setAcessosDomingo(acessoSemana.domingo);
 
-          // console.log(formatDate(new Date(dados[35]["timestamp"]), "aa-mm-dd"));
-          // console.log(dates2[1]);
-          // console.log(dados);
-        }
-      });
-  }, [updateFather]);
+  }, [numAcessosPorDiaNaSemana]);
 
   return useMemo(() =>({
     labels: ["S", "T", "Q", "Q", "S", "S", "D"],
     datasets: {
       label: "Acessos",
       data: [
-        acessosSegunda,
-        acessosTerca,
-        acessosQuarta,
-        acessosQuinta,
-        acessosSexta,
-        acessosSabado,
+        numAcessos.segunda,
+        numAcessos.terca,
+        numAcessos.quarta,
+        numAcessos.quinta,
+        numAcessos.sexta,
+        numAcessos.sabado,
+        numAcessos.domingo,
         acessosDomingo,
       ],
     },
-  }), [acessosDomingo, acessosSegunda, acessosTerca, acessosQuarta, acessosQuinta, acessosSexta, acessosSabado]);
+  }), [numAcessos.domingo, numAcessos.segunda, numAcessos.terca, numAcessos.quarta, numAcessos.quinta, numAcessos.sexta, numAcessos.sabado]);
 }
 
 // export default {
