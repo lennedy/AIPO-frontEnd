@@ -56,6 +56,7 @@ function Dashboard() {
       "acesso30dias":"0",
       "porMes":[{"mes":1, "qtd":0}],
       "porDiaNaSemana":[{"dia":"", "qtd":0}],
+      "porSalas":[{"codigo":"", "qtd":0}],
     }
   );
   const [refreshTick, setRefreshTick] = useState(0);
@@ -105,6 +106,7 @@ function Dashboard() {
           "acesso30dias":data.numAcessos30Dias,
           "porMes":data.numAcessosPorMes,
           "porDiaNaSemana":data.numAcessosPorSemana,
+          "porSalas":data.numAcessosPorSala,
         });
         console.log("dfajdflajsfls");
         console.log(data.numAcessosPorMes);
@@ -123,9 +125,9 @@ function Dashboard() {
   }, []);
 
   const { sales, tasks } =  reportsLineChartData(acessos.porMes);
-  const { acessosSalas } = reportsRoomsData();
+  const { acessosSalas } = reportsRoomsData(acessos.porSalas);
   const dataChart = reportsBarChartData(acessos.porDiaNaSemana);
-  console.log(dataChart)
+  // console.log(dataChart)
   return (
     <DashboardLayout>
       <DashboardNavbar />

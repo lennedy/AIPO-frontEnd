@@ -20,64 +20,84 @@ import getApiAddress from "serverAddress";
 
 import { getDate_last30Days } from "util";
 
-export default function RoomsData(updateFather) {
+export default function RoomsData(acessosPorSala) {
   const [numAcessos, setNumAcessos] = useState([]);
-  const [salasAcessadas, setSalasAcessads] = useState([]);
+  const [salasAcessadas, setSalasAcessadas] = useState([]);
+  const [acessos, setAcessos] = useState(
+    {
+      salasAcessadas:["","","",""],
+      numAcessos:[0,0,0,0],
+    }
+  );
 
   const NUM_MAXIMO_SALAS = 4;
 
   const data_inicia_final = useMemo(() => getDate_last30Days(),[]);
 
   useEffect(() => {
-    const api = getApiAddress();
-    fetch(api.database + "/getTodosAcessosPorSala", {
-      method: "POST",
-      body: JSON.stringify(data_inicia_final),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json["status"] == "ok") {
-          const dados = json["numAccess"];
-          let todasSalas = Object.keys(dados);
-          var acessos = [];
-          var salasParaInterface = [];
+    console.log("acessosPorSala");
+    console.log(acessosPorSala);
+    let numAcessosSala=[];
+    let salas=[];
+    for (const sala of acessosPorSala){
+      salas.push(sala.codigo);
+      numAcessosSala.push(sala.qtd);
+    }
+    let a={salasAcessadas:[], numAcessos:[]};
+    a.salasAcessadas = salas;
+    a.numAcessos = numAcessosSala;
 
-          todasSalas.forEach((sala, i) => {
-            if (todasSalas.length < NUM_MAXIMO_SALAS) {
-              acessos.push(dados[sala]);
-              salasParaInterface.push(sala);
-            } else {
-              if (i < NUM_MAXIMO_SALAS) {
-                acessos.push(dados[sala]);
-                salasParaInterface.push(sala);
-              } else {
-                let min = Math.min(...acessos);
-                if (min < dados[sala]) {
-                  const minIndex = acessos.indexOf(min);
-                  acessos.splice(minIndex, 1);
-                  salasParaInterface.splice(minIndex, 1);
+    setAcessos(a);
 
-                  acessos.push(dados[sala]);
-                  salasParaInterface.push(sala);
-                }
-              }
-            }
-          });
-          setNumAcessos(acessos);
-          setSalasAcessads(salasParaInterface);
-        } else {
-          alert("erro ao adquirir dados");
-        }
-      });
-  }, [updateFather]);
+    // const api = getApiAddress();
+    // fetch(api.database + "/getTodosAcessosPorSala", {
+    //   method: "POST",
+    //   body: JSON.stringify(data_inicia_final),
+    //   headers: { "Content-type": "application/json; charset=UTF-8" },
+    // })
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     if (json["status"] == "ok") {
+    //       const dados = json["numAccess"];
+    //       let todasSalas = Object.keys(dados);
+    //       var acessos = [];
+    //       var salasParaInterface = [];
+
+    //       todasSalas.forEach((sala, i) => {
+    //         if (todasSalas.length < NUM_MAXIMO_SALAS) {
+    //           acessos.push(dados[sala]);
+    //           salasParaInterface.push(sala);
+    //         } else {
+    //           if (i < NUM_MAXIMO_SALAS) {
+    //             acessos.push(dados[sala]);
+    //             salasParaInterface.push(sala);
+    //           } else {
+    //             let min = Math.min(...acessos);
+    //             if (min < dados[sala]) {
+    //               const minIndex = acessos.indexOf(min);
+    //               acessos.splice(minIndex, 1);
+    //               salasParaInterface.splice(minIndex, 1);
+
+    //               acessos.push(dados[sala]);
+    //               salasParaInterface.push(sala);
+    //             }
+    //           }
+    //         }
+    //       });
+    //       setNumAcessos(acessos);
+    //       setSalasAcessads(salasParaInterface);
+    //     } else {
+    //       alert("erro ao adquirir dados");
+    //     }
+    //   });
+  }, [acessosPorSala]);
 
   const data = useMemo(() => ({
     acessosSalas: {
-      labels: salasAcessadas,
-      datasets: { label: "nº de acessos", data: numAcessos },
+      labels: acessos.salasAcessadas,
+      datasets: { label: "nº de acessos", data: acessos.numAcessos },
     },
-  }), [salasAcessadas, numAcessos]);
+  }), [acessos.salasAcessadas, acessos.numAcessos]);
 
   return data;
 }
