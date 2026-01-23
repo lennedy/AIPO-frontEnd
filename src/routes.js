@@ -46,6 +46,7 @@ import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
+import AcessoHistorico from "layouts/historicoAcesso";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -139,6 +140,15 @@ const routes = [
     icon: <Icon fontSize="small">MeetingRoom</Icon>,
     route: "/roomdata",
     component: <RoomData />,
+    nivelGerencia: "gerente",
+  },
+  {
+    type: "collapse",
+    name: "Historico",
+    key: "historicosala",
+    icon: <Icon fontSize="small">MeetingRoom</Icon>,
+    route: "/historico",
+    component: <AcessoHistorico />,
     nivelGerencia: "gerente",
   },
 ];
