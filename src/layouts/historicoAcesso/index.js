@@ -51,7 +51,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Authors Table
+                  Histórico de Acessos
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
