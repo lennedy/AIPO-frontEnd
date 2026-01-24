@@ -28,12 +28,10 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "layouts/historicoAcesso/data/authorsTableData";
-import projectsTableData from "layouts/historicoAcesso/data/projectsTableData";
+import authorsTableData from "layouts/historicoAcesso/data/acessoPorUsuario";
 
 function Tables() {
   const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
 
   return (
     <DashboardLayout>
