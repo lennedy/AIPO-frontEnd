@@ -146,7 +146,7 @@ const routes = [
     type: "collapse",
     name: "Historico",
     key: "historicosala",
-    icon: <Icon fontSize="small">MeetingRoom</Icon>,
+    icon: <Icon fontSize="small">access_time</Icon>,
     route: "/historico",
     component: <AcessoHistorico />,
     nivelGerencia: "gerente",
