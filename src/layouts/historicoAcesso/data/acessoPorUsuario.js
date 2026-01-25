@@ -22,31 +22,77 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
 // Images
+import UserImg from "assets/images/usuario.png";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { Search } from "@mui/icons-material";
 
-export default function data() {
-  const Author = ({ image, name, email }) => (
+export default function data(historicoAcessos) {
+  const Usuario = ({ image, name, matricula }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
         </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
+        <MDTypography variant="caption">{matricula}</MDTypography>
       </MDBox>
     </MDBox>
   );
 
-  const Job = ({ title, description }) => (
+  const Sala = ({ simbolo, nomeSala }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
+        {simbolo}
       </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
+      <MDTypography variant="caption">{nomeSala}</MDTypography>
     </MDBox>
   );
+
+  // console.log("Acessos:");
+  // console.log(historicoAcessos);
+
+  let acessos=[];
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  for(const acesso of historicoAcessos){
+    const data = new Date(acesso.timestamp);
+    data.setHours(data.getHours() + 3);
+    const dia  = data.toLocaleDateString("pt-BR");
+    const hora = data.toLocaleTimeString("pt-BR");
+    const alvo = new Date(data);
+    alvo.setHours(0, 0, 0, 0);
+    const diffDias = (alvo - hoje) / (1000 * 60 * 60 * 24);
+    const linha = 
+    {
+      usuario: <Usuario image={UserImg} name={acesso.usuario_nome} matricula={acesso.usuario_matricula} />,
+      sala: <Sala simbolo={acesso.sala_codigo} nomeSala={acesso.sala_nome} />,
+      status: (
+        <MDBox ml={-1}>
+          <MDBadge
+            badgeContent={acesso.autorizado ? "autorizado": "não autorizado"} 
+            color={acesso.autorizado ? "success": "error"}  
+            variant="gradient" 
+            size="sm" 
+          />
+        </MDBox>
+        ),
+        diaHorario: (
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+            { diffDias===0 ? "hoje":
+              ( 
+                diffDias===-1 ? "ontem" : dia
+              )
+            } às {hora}
+          </MDTypography>
+        ),
+        search: acesso.usuario_nome+acesso.usuario_matricula+acesso.sala_nome+acesso.sala_codigo, 
+    };
+    acessos.push(linha);
+    
+  }
 
   return {
     columns: [
@@ -54,94 +100,9 @@ export default function data() {
       { Header: "sala", accessor: "sala", align: "left" },
       { Header: "status", accessor: "status", align: "center" },
       { Header: "Horario de Acesso", accessor: "diaHorario", align: "center" },
+      { Header: "search", accessor: "search", align: "center", hidden: true },
   
     ],
-
-    rows: [
-      {
-        usuario: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        sala: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        diaHorario: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18 de 14h33
-          </MDTypography>
-        ),
-      },
-      {
-        usuario: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        sala: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        diaHorario: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            11/01/19 de 16h22
-          </MDTypography>
-        ),
-      },
-      {
-        usuario: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        sala: <Job title="Executive" description="Projects" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        diaHorario: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            19/09/17
-          </MDTypography>
-        ),
-      },
-      {
-        usuario: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-        sala: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        diaHorario: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            24/12/08
-          </MDTypography>
-        ),
-      },
-      {
-        usuario: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-        sala: <Job title="Manager" description="Executive" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        diaHorario: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            04/10/21
-          </MDTypography>
-        ),
-      },
-      {
-        usuario: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-        sala: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        diaHorario: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            14/09/20
-          </MDTypography>
-        ),
-      },
-    ],
+    rows: acessos, 
   };
 }
