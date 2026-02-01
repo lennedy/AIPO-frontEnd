@@ -255,7 +255,6 @@ function Historico() {
         data_inicia_final["data_final"] = format(customUntil, "yy-MM-dd");
       }
 
-      console.log("tartaruga");
       fetch(api.database + "/getHistoricoAcessos", {
         method: "POST",
         body: JSON.stringify(data_inicia_final),
@@ -270,7 +269,6 @@ function Historico() {
         })
         .then((json) => {
           // errorHandlingAPI(authData, json, "");
-          // console.log(json);
           sethistoricoAcessos(json.data);
         })
         .catch((err) => console.log(err));
@@ -297,8 +295,6 @@ function Historico() {
 
   const { columns, rows } = authorsTableData(historicoAcessos);
 
-  // console.log(historicoAcessos);
-
   const handleExportTable = () => {
     const headers = ["Nome", "Matrícula", "Código da Sala", "Nome da Sala", "Dia", "Horário", "Autorização"];
     
@@ -317,7 +313,6 @@ function Historico() {
         ]
       );
     });
-    console.log(bodyLines);
 
     downloadCSV("tabela.csv", [headerLine, ...bodyLines].join("\n"));
   };
