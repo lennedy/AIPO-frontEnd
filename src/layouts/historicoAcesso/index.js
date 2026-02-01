@@ -65,6 +65,14 @@ function FilterDrawer({open, initialValue, onClose, onApply}){
   const [customUntil, setCustomUntil] = useState(startOfDay(new Date())); // data inicial custom
 
   useEffect(() => {
+    if (customFrom > customUntil) setCustomFrom(customUntil);
+  }, [customUntil]);
+
+  useEffect(() => {
+    if (customFrom > customUntil) setCustomUntil(customFrom);
+  }, [customFrom]);
+
+  useEffect(() => {
     if (open) setPreset(initialValue); // reabre com valores atuais
   }, [open, initialValue]);
 
@@ -220,10 +228,6 @@ function Historico() {
   const [customFrom, setCustomFrom] = useState(startOfDay(subDays(new Date(), 7))); // data inicial custom
   const [filterAplied, setFilterAplied] = useState(preset);
   const [customUntil, setCustomUntil] = useState(startOfDay(new Date())); // data inicial custom
-
-  useEffect(() => {
-    if (customFrom > customUntil) setCustomFrom(customUntil);
-  }, [customFrom, customUntil]);
 
   useEffect(() => {
     const api = getApiAddress();
