@@ -316,11 +316,7 @@ function Historico() {
                 </MDTypography>
 
                 <MDButton
-                  onClick={() =>{ 
-                    setOpenFilter(true);
-                    console.log("ipanguaçu");
-                    console.log(openFilter);
-                  }}
+                  onClick={() => setOpenFilter(true) }
                   variant="outlined" 
                   size="small"
                   sx={{ color: "white" }}
