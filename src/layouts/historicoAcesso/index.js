@@ -35,6 +35,7 @@ import TextField from "@mui/material/TextField";
 // icons
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import DownloadIcon from '@mui/icons-material/Download';
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -50,7 +51,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ptBR } from "date-fns/locale";
-import {getDate_lastDays, getDate_last30Days } from "util";
+import {getDate_lastDays,  downloadCSV, toCSVLine } from "util";
 
 import { startOfDay, subDays, format } from "date-fns";
 
@@ -276,8 +277,6 @@ function Historico() {
     }
   },[filterAplied,customFrom, customUntil]);
 
-  const { columns, rows } = authorsTableData(historicoAcessos);
-
   let date_message="Filtro de 7 dias"
   switch(preset){
     case "1d":
@@ -294,6 +293,33 @@ function Historico() {
       break;
     default:
       date_message= "Filtro personalizado";
+  };
+
+  const { columns, rows } = authorsTableData(historicoAcessos);
+
+  // console.log(historicoAcessos);
+
+  const handleExportTable = () => {
+    const headers = ["Nome", "Matrícula", "Código da Sala", "Nome da Sala", "Dia", "Horário", "Autorização"];
+    
+    const headerLine = toCSVLine(headers);
+
+    const bodyLines = historicoAcessos.map((r) => {
+      const timestamp =  new Date(r.timestamp);
+      timestamp.setHours(timestamp.getHours()+3);
+      const  dia = format(timestamp, "dd/MM/yy");
+      const  horario = format(timestamp, "HH:mm:ss");
+      return toCSVLine(
+        [
+          r.usuario_nome, r.usuario_matricula,
+          r.sala_codigo, r.sala_nome, dia, horario,
+          r.autorizado? "Autorizado":"Não Autorizado"
+        ]
+      );
+    });
+    console.log(bodyLines);
+
+    downloadCSV("tabela.csv", [headerLine, ...bodyLines].join("\n"));
   };
 
   return (
@@ -316,17 +342,37 @@ function Historico() {
                 <MDTypography variant="h6" color="white">
                   Histórico de Acessos
                 </MDTypography>
-
-                <MDButton
-                  onClick={() => setOpenFilter(true) }
-                  variant="outlined" 
-                  size="small"
-                  sx={{ color: "white" }}
-                  aria-label="Abrir filtros"
-                  startIcon={<CalendarTodayIcon />}
+                <MDBox
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  gap={1}
                 >
-                  {" | "+date_message}
-                </MDButton>
+                  <MDButton
+                    onClick={() => setOpenFilter(true) }
+                    variant="outlined" 
+                    size="small"
+                    sx={{ color: "white" }}
+                    aria-label="Abrir filtros"
+                    startIcon={<CalendarTodayIcon />}
+                  >
+                    {/* <MDTypography variant="button" color="light" fontWeight="small"> */}
+                      {date_message}
+                    {/* </MDTypography> */}
+                  </MDButton>
+
+                  <MDButton
+                    variant="outlined" 
+                    size="small"
+                    sx={{ color: "white" }}
+                    startIcon={<DownloadIcon />}
+                    onClick={handleExportTable}   // ou handleExportTable
+                  >
+                    {/* <MDTypography variant="button" color="light" fontWeight="small"> */}
+                      exportar
+                    {/* </MDTypography> */}
+                  </MDButton>
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
