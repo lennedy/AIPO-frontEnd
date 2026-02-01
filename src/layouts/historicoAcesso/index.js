@@ -22,6 +22,7 @@ import Card from "@mui/material/Card";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDInput from "components/MDInput";
 import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
@@ -49,50 +50,23 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ptBR } from "date-fns/locale";
+import {getDate_lastDays, getDate_last30Days } from "util";
 
+import { startOfDay, subDays, format } from "date-fns";
 
 // Data
 import authorsTableData from "layouts/historicoAcesso/data/acessoPorUsuario";
+import MDButton from "components/MDButton";
 
-function startOfDay(d) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-
-function Historico() {
-
-  const authData = useAuth();
-  const [historicoAcessos, sethistoricoAcessos] = useState([]);
-    
-  // Drawer
-  const [openFilter, setOpenFilter] = useState(false);
-
-   // filtro: presets + data personalizada (data inicial)
-  const [preset, setPreset] = useState("7d"); // "1d" | "7d" | "30d" | "12m" | "custom"
-  const [customFrom, setCustomFrom] = useState(startOfDay(new Date())); // data inicial custom
+function FilterDrawer({open, initialValue, onClose, onApply}){
+  const [preset, setPreset] = useState(initialValue);
+  const [filterAplied, setFilterAplied] = useState(preset);
+  const [customFrom, setCustomFrom] = useState(startOfDay(subDays(new Date(), 7))); // data inicial custom
+  const [customUntil, setCustomUntil] = useState(startOfDay(new Date())); // data inicial custom
 
   useEffect(() => {
-    const api = getApiAddress();
-
-    fetch(api.database + "/getHistoricoAcessos", {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-        Authorization: "Bearer " + authData.tokenLocal,
-      },
-    })
-      .then((res) => {
-        errorHandlingConnection(authData, res);
-        return res.json();
-      })
-      .then((json) => {
-        // errorHandlingAPI(authData, json, "");
-        // console.log(json);
-        sethistoricoAcessos(json.data);
-      })
-      .catch((err) => console.log(err));
-  },[]);
+    if (open) setPreset(initialValue); // reabre com valores atuais
+  }, [open, initialValue]);
 
   const fromDate = useMemo(() => {
     const now = new Date();
@@ -122,17 +96,181 @@ function Historico() {
     return d;
   }, [preset, customFrom]);
 
-  // filtra no front antes de montar a tabela
-  const historicoFiltrado = useMemo(() => {
-    return historicoAcessos.filter((a) => {
-      const ts = new Date(a.timestamp);
-      ts.setHours(ts.getHours() + 3); //converte para o horário de brasilia
+  return (
+    <Drawer 
+      anchor="right"
+      open={open}
+      onClose={onClose}
+      PaperProps={{ sx: { width: 360, p: 2 } }}
+    >
+      <MDTypography variant="h6" gutterBottom>
+        Filtros
+      </MDTypography>
+      <Divider sx={{ mb: 2 }} />
 
-      return ts >= fromDate;
-    });
-  }, [historicoAcessos, fromDate]);
+      <Stack spacing={2}>
+        <MDTypography variant="button" fontWeight="medium">
+          Período
+        </MDTypography>
 
-  const { columns, rows } = authorsTableData(historicoFiltrado);
+        <ToggleButtonGroup
+          value={preset}
+          exclusive
+          onChange={(_, v) => v && setPreset(v)}
+          size="small"
+          orientation="vertical"
+        >
+          <ToggleButton value="1d">
+            <MDTypography variant="button" color="dark" fontWeight="small">
+              1 dia
+            </MDTypography>
+          </ToggleButton>
+          <ToggleButton value="7d">
+            <MDTypography variant="button" color="dark" fontWeight="small">
+              7 dias
+            </MDTypography>
+          </ToggleButton>
+          <ToggleButton value="30d">
+            <MDTypography variant="button" color="dark" fontWeight="small">
+              30 dias
+            </MDTypography>
+          </ToggleButton>
+          <ToggleButton value="12m">
+            <MDTypography variant="button" color="dark" fontWeight="small">
+              12 meses
+            </MDTypography>
+          </ToggleButton>
+          <ToggleButton value="custom">
+            <MDTypography variant="button" color="dark" fontWeight="small">
+              Personalizado
+            </MDTypography>
+          </ToggleButton>
+        </ToggleButtonGroup>
+
+        {preset === "custom" && (
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
+            <DatePicker
+              label="A partir de"
+              value={customFrom}
+              onChange={(v) => v && setCustomFrom(startOfDay(v))}
+              slots={{
+                textField: (params) => <TextField {...params} fullWidth size="small" />,
+              }}
+            />
+            <DatePicker
+              label="Até o dia"
+              value={customUntil}
+              onChange={(v) => v && setCustomUntil(startOfDay(v))}
+              slots={{
+                textField: (params) => <TextField {...params} fullWidth size="small" />,
+              }}
+            />
+          </LocalizationProvider>
+        )}
+        
+        {preset !== "custom" && (
+          <MDInput
+            label="Filtrando desde"
+            value={fromDate.toLocaleDateString("pt-BR")}
+            color="light"
+            size="small"
+            variant="standard"
+            readonly
+          />
+        )}
+
+        <MDButton
+          variant="outlined"
+          color="dark"
+          onClick={() => onApply({ preset, customFrom, customUntil, fromDate })}
+        >
+          <MDTypography variant="button" color="dark" fontWeight="medium">
+            Aplicar
+          </MDTypography>
+        </MDButton>
+
+        <MDButton
+          variant="outlined"
+          color="dark"
+          onClick={() => {
+            setPreset(initialValue);
+            setCustomFrom(startOfDay(new Date()));
+            onClose();
+          }}
+        >
+          <MDTypography variant="button" color="dark" fontWeight="medium">
+            Limpar
+          </MDTypography>
+        </MDButton>
+      </Stack>
+    </Drawer>
+  );
+}
+
+function Historico() {
+
+  const authData = useAuth();
+  const [historicoAcessos, sethistoricoAcessos] = useState([]);
+    
+  // Drawer
+  const [openFilter, setOpenFilter] = useState(false);
+
+   // filtro: presets + data personalizada (data inicial)
+  const [preset, setPreset] = useState("7d"); // "1d" | "7d" | "30d" | "12m" | "custom"
+  const [customFrom, setCustomFrom] = useState(startOfDay(subDays(new Date(), 7))); // data inicial custom
+  const [filterAplied, setFilterAplied] = useState(preset);
+  const [customUntil, setCustomUntil] = useState(startOfDay(new Date())); // data inicial custom
+
+  useEffect(() => {
+    if (customFrom > customUntil) setCustomFrom(customUntil);
+  }, [customFrom, customUntil]);
+
+  useEffect(() => {
+    const api = getApiAddress();
+
+    if(!openFilter){
+      var data_inicia_final = getDate_lastDays(30);
+      
+      if((preset === "1d")){
+        data_inicia_final = getDate_lastDays(1);
+      }
+      else if((preset === "7d")){
+        data_inicia_final = getDate_lastDays(7);
+      }
+      else if((preset === "30d")){
+        data_inicia_final = getDate_lastDays(30);
+      }
+      else if((preset === "12m")){
+        data_inicia_final = getDate_lastDays(365);
+      }
+      else if((preset === "custom")){
+        data_inicia_final["data_inicial"] = format(customFrom, "yy-MM-dd");
+        data_inicia_final["data_final"] = format(customUntil, "yy-MM-dd");
+      }
+
+      console.log("tartaruga");
+      fetch(api.database + "/getHistoricoAcessos", {
+        method: "POST",
+        body: JSON.stringify(data_inicia_final),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + authData.tokenLocal,
+        },
+      })
+        .then((res) => {
+          errorHandlingConnection(authData, res);
+          return res.json();
+        })
+        .then((json) => {
+          // errorHandlingAPI(authData, json, "");
+          // console.log(json);
+          sethistoricoAcessos(json.data);
+        })
+        .catch((err) => console.log(err));
+    }
+  },[filterAplied,customFrom, customUntil]);
+
+  const { columns, rows } = authorsTableData(historicoAcessos);
 
   let date_message="Filtro de 7 dias"
   switch(preset){
@@ -173,8 +311,12 @@ function Historico() {
                   Histórico de Acessos
                 </MDTypography>
 
-                <Button
-                  onClick={() => setOpenFilter(true)}
+                <MDButton
+                  onClick={() =>{ 
+                    setOpenFilter(true);
+                    console.log("ipanguaçu");
+                    console.log(openFilter);
+                  }}
                   variant="outlined" 
                   size="small"
                   sx={{ color: "white" }}
@@ -182,8 +324,7 @@ function Historico() {
                   startIcon={<CalendarTodayIcon />}
                 >
                   {" | "+date_message}
-                  {/* <FilterListIcon /> */}
-                </Button>
+                </MDButton>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
@@ -200,72 +341,20 @@ function Historico() {
         </Grid>
       </MDBox>
 
-      <Drawer
-        anchor="right"
+      <FilterDrawer
         open={openFilter}
+        initialValue={preset}
+        onApply = 
+          {({ preset, customFrom, customUntil, fromDate }) => {
+            setFilterAplied(preset);
+            setPreset(preset);
+            setCustomFrom(customFrom);
+            setCustomUntil(customUntil);
+            setOpenFilter(false);
+          }}
         onClose={() => setOpenFilter(false)}
-        PaperProps={{ sx: { width: 360, p: 2 } }}
-      >
-        <MDTypography variant="h6" gutterBottom>
-          Filtros
-        </MDTypography>
-        <Divider sx={{ mb: 2 }} />
-
-        <Stack spacing={2}>
-          <MDTypography variant="button" fontWeight="medium">
-            Período
-          </MDTypography>
-
-          <ToggleButtonGroup
-            value={preset}
-            exclusive
-            onChange={(_, v) => v && setPreset(v)}
-            size="small"
-            orientation="vertical"
-          >
-            <ToggleButton value="1d">1 dia</ToggleButton>
-            <ToggleButton value="7d">7 dias</ToggleButton>
-            <ToggleButton value="30d">30 dias</ToggleButton>
-            <ToggleButton value="12m">12 meses</ToggleButton>
-            <ToggleButton value="custom">Personalizado</ToggleButton>
-          </ToggleButtonGroup>
-
-          {preset === "custom" && (
-            <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-              <DatePicker
-                label="A partir de"
-                value={customFrom}
-                onChange={(v) => v && setCustomFrom(startOfDay(v))}
-                slots={{
-                  textField: (params) => <TextField {...params} fullWidth size="small" />,
-                }}
-              />
-            </LocalizationProvider>
-          )}
-
-          <TextField
-            label="Filtrando desde"
-            value={fromDate.toLocaleDateString("pt-BR")}
-            size="small"
-            fullWidth
-            disabled
-          />
-
-          <Button variant="contained" onClick={() => setOpenFilter(false)}>
-            Aplicar
-          </Button>
-
-          <Button
-            variant="text"
-            onClick={() => {
-              setPreset("7d");
-              setCustomFrom(startOfDay(new Date()));
-            }}
-          >
-            Limpar
-          </Button>
-        </Stack>
-      </Drawer>
+        
+      />
 
       <Footer />
     </DashboardLayout>
