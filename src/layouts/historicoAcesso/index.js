@@ -161,16 +161,18 @@ function FilterDrawer({open, initialValue, onClose, onApply}){
               label="A partir de"
               value={customFrom}
               onChange={(v) => v && setCustomFrom(startOfDay(v))}
-              slots={{
-                textField: (params) => <TextField {...params} fullWidth size="small" />,
+              slotProps={{
+                textField: { fullWidth: true, size: "small" },
+                popper: { disablePortal: false }, // ajuda em layouts com Drawer/transform
               }}
             />
             <DatePicker
               label="Até o dia"
               value={customUntil}
               onChange={(v) => v && setCustomUntil(startOfDay(v))}
-              slots={{
-                textField: (params) => <TextField {...params} fullWidth size="small" />,
+              slotProps={{
+                textField: { fullWidth: true, size: "small" },
+                popper: { disablePortal: false },
               }}
             />
           </LocalizationProvider>
