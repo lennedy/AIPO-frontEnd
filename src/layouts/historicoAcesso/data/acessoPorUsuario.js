@@ -96,9 +96,9 @@ export default function data(historicoAcessos) {
 
   return {
     columns: [
-      { Header: "usuario", accessor: "usuario", width: "45%", align: "left" },
-      { Header: "sala", accessor: "sala", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
+      { Header: "Usuario", accessor: "usuario", width: "45%", align: "left" },
+      { Header: "Sala", accessor: "sala", align: "left" },
+      { Header: "Status", accessor: "status", align: "center" },
       { Header: "Horario de Acesso", accessor: "diaHorario", align: "center" },
       { Header: "search", accessor: "search", align: "center", hidden: true },
   
