@@ -90,9 +90,9 @@ export default function UsersTableData(Usuarios, UsuariosSalas, onEdit, onAuthor
             }
             variant="gradient"
             size="small"
-            onClick={() => {
+            onClick={(e) => {
               if (Usuarios[key].ativo == 1) {
-                onReadTag();
+                onReadTag(e,Usuarios[key]);
               } 
             }}
           >
