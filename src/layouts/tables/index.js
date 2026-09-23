@@ -490,6 +490,7 @@ function Tables() {
       .then((json) => {
         if (json["status"] == "ok") {
           // alert("chave lida")
+          setExibirTagWait(false);
           fetch(api.database + "/setChave/" + dadosUsuario.matricula, {
             method: "PUT",
             body: JSON.stringify({ chave: json["chave"] }),
