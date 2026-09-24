@@ -505,12 +505,13 @@ function Tables() {
             .catch((err) => console.log(err))
             .finally(() => setIsToUpdateUsers(!isToUpdateUsers));
         } else {
+          setExibirTagWait(false);
           alert("erro:" + json["status"]);
         }
         // setUpdateChave(false);
       })
-      .catch((err) => console.log(err));
-    // .finally(() => setIsToUpdateUsers(true));
+      .catch((err) => console.log(err))
+      .finally(() => setExibirTagWait(false));
   };
 
   const handleRoomEdit = (event, dadosSala) => {
