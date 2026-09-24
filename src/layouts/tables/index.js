@@ -490,6 +490,7 @@ function Tables() {
       .then((json) => {
         if (json["status"] == "ok") {
           // alert("chave lida")
+          setExibirTagWait(false);
           fetch(api.database + "/setChave/" + dadosUsuario.matricula, {
             method: "PUT",
             body: JSON.stringify({ chave: json["chave"] }),
@@ -504,12 +505,13 @@ function Tables() {
             .catch((err) => console.log(err))
             .finally(() => setIsToUpdateUsers(!isToUpdateUsers));
         } else {
+          setExibirTagWait(false);
           alert("erro:" + json["status"]);
         }
         // setUpdateChave(false);
       })
-      .catch((err) => console.log(err));
-    // .finally(() => setIsToUpdateUsers(true));
+      .catch((err) => console.log(err))
+      .finally(() => setExibirTagWait(false));
   };
 
   const handleRoomEdit = (event, dadosSala) => {
