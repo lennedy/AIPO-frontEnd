@@ -27,3 +27,7 @@ edicaoSalas.code-workspace
 src.code-workspace
 
 *.code-workspace
+
+nginx-ssl.conf
+
+nginx.conf
